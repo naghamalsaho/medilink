@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medilink/View/Screans/LoginScrean.dart';
+import 'package:medilink/View/Screens/LoginScreen.dart';
 import 'package:medilink/Widgets/animated_logo.dart';
 import 'package:medilink/Widgets/app_name_text.dart';
 import 'package:medilink/Widgets/splash_background.dart';

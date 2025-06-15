@@ -1,6 +1,6 @@
 //  cximport 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
-import 'package:medilink/View/Screans/SplashScrean.dart';
+import 'package:medilink/View/Screens/SplashScreen.dart';
 
 void main() {
   runApp(const MyApp());
