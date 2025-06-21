@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:medilink/view/screen/LoginScreen.dart';
-import 'package:medilink/view/widget/animated_logo.dart';
-import 'package:medilink/view/widget/app_name_text.dart';
-import 'package:medilink/view/widget/splash_background%20copy.dart';
+import 'package:medilink/view/screen/login/LoginScreen.dart';
+import 'package:medilink/view/widget/login/animated_logo.dart';
+import 'package:medilink/view/widget/login/app_name_text.dart';
+import 'package:medilink/view/widget/login/splash_background%20copy.dart';
 
 
 class SplashScreen extends StatefulWidget {

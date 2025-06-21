@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:medilink/controller/ThemeController.dart';
+import 'package:medilink/core/localization/changelocal.dart';
+import 'package:medilink/core/localization/translation.dart';
+import 'package:medilink/core/services/MyServices.dart';
 import 'package:medilink/view/screen/HomePage.dart';
 import 'package:medilink/core/constants/Themes.dart';
-import 'package:medilink/view/screen/MainLayout.dart';
-import 'package:medilink/view/widget/Sidebar.dart';
+import 'package:medilink/view/widget/home/MainLayout.dart';
+import 'package:medilink/view/widget/home/Sidebar.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // أولًا: تهيئة ThemeController والـ SharedPreferences
+  // ✅ تهيئة MyServices
+  await Get.putAsync<MyServices>(() => MyServices().init());
+
+  // ✅ ThemeController
   await Get.putAsync<ThemeController>(() => ThemeController().init());
 
-  // ثانيًا: تسجيل SidebarController كي يُصبح متاحًا للعثور عليه
+  // ✅ LocalController
+  Get.put(LocalController());
+
+  // ✅ SidebarController
   Get.put(SidebarController());
 
   runApp(MyApp());
 }
+
 
 
 class MyApp extends StatelessWidget {
@@ -30,6 +40,9 @@ class MyApp extends StatelessWidget {
           theme: Themes.customLightTheme,
           darkTheme: Themes.customDarkTheme,
           themeMode: themeController.themeMode.value,
+           translations: MyTranslation(), // 🔸 ربط الترجمة
+  locale: Get.find<LocalController>().language, // 🔸 اللغة الحالية
+  fallbackLocale: const Locale("en"),
           home: MainLayout(),
         ));
   }

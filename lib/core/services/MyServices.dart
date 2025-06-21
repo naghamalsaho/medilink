@@ -1,11 +1,12 @@
-import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class MyServices extends GetxService {
-  final GetStorage box = GetStorage();
-}
+  late final GetStorage box;
 
-Future<void> initServices() async {
-  await GetStorage.init();
-  Get.put(MyServices());
+  Future<MyServices> init() async {
+    await GetStorage.init();
+    box = GetStorage();
+    return this;
+  }
 }

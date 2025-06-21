@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:medilink/view/widget/login_form.dart';
+import 'package:medilink/view/widget/login/login_form.dart';
 
 
 class LoginScreen extends StatefulWidget {

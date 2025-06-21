@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:medilink/controller/ThemeController.dart';
-import 'package:medilink/view/widget/Sidebar.dart';
+import 'package:medilink/view/widget/home/Sidebar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
