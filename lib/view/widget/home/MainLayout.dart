@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:medilink/view/screen/notification/NotificationsPage.dart';
 import 'package:medilink/view/screen/profile/ProfilePage.dart';
-
+import 'package:medilink/view/widget/LanguageDialog.dart';
 import 'package:medilink/view/widget/home/Sidebar.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-
-import 'package:medilink/view/widget/home/Sidebar.dart';
+import 'package:medilink/controller/ThemeController.dart';
+import 'package:medilink/core/localization/changelocal.dart';
 
 
 class MainLayout extends StatelessWidget {
   MainLayout({Key? key}) : super(key: key);
+
   final SidebarController sidebarController = Get.find<SidebarController>();
+  final ThemeController themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
+    final isDark = themeController.themeMode.value == ThemeMode.dark;
+    final iconColor = isDark ? Colors.blue[200] : Colors.blue[800];
+
     return Scaffold(
       body: Column(
         children: [
@@ -25,11 +26,11 @@ class MainLayout extends StatelessWidget {
           Container(
             height: 60,
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // ◀️ جهة اليسار: الشعار + الاسم
+                // ◀️ الشعار والاسم
                 Row(
                   children: [
                     Image.asset('assets/images/logo.png', height: 40),
@@ -41,22 +42,88 @@ class MainLayout extends StatelessWidget {
                   ],
                 ),
 
-                // ▶️ جهة اليمين: إشعارات + الحساب
+                // ▶️ الإعدادات والإشعارات والحساب
                 Row(
                   children: [
+                    // ⚙️ قائمة الإعدادات المنسدلة
+                    PopupMenuButton<String>(
+                      icon: Icon(Icons.settings, color: iconColor),
+                      tooltip: "Settings",
+                      color: Colors.blue.shade50.withOpacity(0.95),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      offset: const Offset(0, 45),
+                      elevation: 10,
+                      onSelected: (value) {
+                        if (value == 'theme') {
+                          themeController.toggleTheme();
+                        } else if (value == 'language_dialog') {
+                          showDialog(
+                            context: context,
+                            builder: (context) => const LanguageDialog(),
+                          );
+                        }
+                      },
+                      itemBuilder: (BuildContext context) => [
+                        PopupMenuItem<String>(
+                          value: 'theme',
+                          child: Row(
+                            children: [
+                              Icon(
+                                isDark ? Icons.light_mode : Icons.dark_mode,
+                                color: Colors.blue[800],
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'تبديل الوضع',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.blue[900],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const PopupMenuDivider(),
+                        PopupMenuItem<String>(
+                          value: 'language_dialog',
+                          child: Row(
+                            children: [
+                              Icon(Icons.language, color: Colors.blue[800]),
+                              const SizedBox(width: 10),
+                              Text(
+                                'اللغة',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.blue[900],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    // 🔔 الإشعارات
                     IconButton(
-                      icon: Icon(Icons.notifications_none),
+                      icon: Icon(Icons.notifications_none, color: iconColor),
                       tooltip: "Notifications",
                       onPressed: () {
-                        sidebarController.selectedIndex.value = 30; // إشعارات
+                        sidebarController.selectedIndex.value = 30;
                       },
                     ),
+
                     const SizedBox(width: 8),
+
+                    // 👤 الحساب
                     IconButton(
-                      icon: Icon(Icons.account_circle_outlined),
+                      icon: Icon(Icons.account_circle_outlined, color: iconColor),
                       tooltip: "Profile",
                       onPressed: () {
-                        sidebarController.selectedIndex.value = 40; // البروفايل
+                        sidebarController.selectedIndex.value = 40;
                       },
                     ),
                   ],
@@ -65,29 +132,25 @@ class MainLayout extends StatelessWidget {
             ),
           ),
 
-          // ✅ أسفل الشريط: الصف الكامل للـ Sidebar والمحتوى المتغير
+          // ✅ الصف الكامل للـ Sidebar والمحتوى
           Expanded(
             child: Row(
               children: [
                 Sidebar(),
-
-                // ✅ المحتوى حسب الزر المختار
                 Expanded(
                   child: Obx(() {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
-                       // return DashboardPage(); // لوحة القيادة
+                        return const Center(child: Text("Dashboard Page"));
                       case 30:
-                        return NotificationPage(); // الإشعارات
-                      case 99:
-                        return ProfilePage(); // الملف الشخصي
-                      case 6:
-                       // return SettingsCircleMenu(); // الإعدادات
+                        return NotificationPage();
+                      case 40:
+                        return ProfilePage();
                       default:
                         return Center(
                           child: Text(
                             'Page ${sidebarController.selectedIndex.value}',
-                            style: TextStyle(fontSize: 24),
+                            style: const TextStyle(fontSize: 24),
                           ),
                         );
                     }

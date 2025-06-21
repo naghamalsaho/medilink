@@ -40,10 +40,10 @@ class Sidebar extends StatelessWidget {
                 if (index == staticItems.length) {
                   return Padding(
                     padding: const EdgeInsets.only(left: 0, top: 8, bottom: 12),
-                    child: RadialSettingsButton(
-                      themeController: themeController,
-                      sidebarController: sidebarController,
-                    ),
+                 //   child: RadialSettingsButton(
+                 //     themeController: themeController,
+                 //     sidebarController: sidebarController,
+                 //   ),
                   );
                 }
 
@@ -51,38 +51,61 @@ class Sidebar extends StatelessWidget {
                 final isSelected =
                     sidebarController.selectedIndex.value == index;
 
-                return GestureDetector(
-                  onTap: () {
-                    sidebarController.selectedIndex.value = index;
-                    sidebarController.showSettingsMenu.value = false;
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    color: isSelected ? AppColor.primary : Colors.transparent,
-                    child: ListTile(
-                      leading: Icon(
-                        item['icon'],
-                        color: isSelected
-                            ? AppColor.accent
-                            : Theme.of(context).iconTheme.color,
-                      ),
-                      title: Text(
-                        item['label'],
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(
-                              color: isSelected
-                                  ? AppColor.accent
-                                  : Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .color,
-                            ),
-                      ),
-                    ),
+                return Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6),
+  child: Obx(() {
+    final isSelected = sidebarController.selectedIndex.value == index;
+
+    return GestureDetector(
+      onTap: () {
+        sidebarController.selectedIndex.value = index;
+        sidebarController.showSettingsMenu.value = false;
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
+          color: isSelected ? AppColor.primary.withOpacity(0.15) : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? AppColor.primary : Colors.grey.shade300,
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColor.primary.withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  )
+                ]
+              : [],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Row(
+          children: [
+            Icon(
+              item['icon'],
+              color: isSelected ? AppColor.accent : Theme.of(context).iconTheme.color,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              item['label'],
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: isSelected
+                        ? AppColor.accent
+                        : Theme.of(context).textTheme.bodyLarge!.color,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
-                );
+            ),
+          ],
+        ),
+      ),
+    );
+  }),
+);
+
+
               },
             ),
           ),
