@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medilink/core/constants/AppColor.dart';
 
-
 class SplashBackground extends StatelessWidget {
   final Widget child;
 
@@ -13,12 +12,11 @@ class SplashBackground extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.center,
-            radius: 0.85,
-            colors: [AppColor.bgLight, Colors.white],
-            stops: [0, 1],
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.grey.shade100, Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: child,

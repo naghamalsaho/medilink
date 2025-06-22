@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:medilink/view/screen/DashboardPage.dart';
 import 'package:medilink/view/screen/notification/NotificationsPage.dart';
 import 'package:medilink/view/screen/profile/ProfilePage.dart';
 import 'package:medilink/view/widget/LanguageDialog.dart';
 import 'package:medilink/view/widget/home/Sidebar.dart';
 import 'package:medilink/controller/ThemeController.dart';
-import 'package:medilink/core/localization/changelocal.dart';
-
+import 'package:medilink/view/widget/login/PulsingLogo.dart';
 
 class MainLayout extends StatelessWidget {
   MainLayout({Key? key}) : super(key: key);
@@ -17,44 +17,47 @@ class MainLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = themeController.themeMode.value == ThemeMode.dark;
-    final iconColor = isDark ? Colors.blue[200] : Colors.blue[800];
+    final iconColor = isDark ? Colors.blue[200] : Colors.grey[700];
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F6F8),
       body: Column(
         children: [
-          // ✅ الشريط العلوي الثابت
+          // ✅ Custom AppBar
           Container(
             height: 60,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            color: Theme.of(context).scaffoldBackgroundColor,
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            color: Colors.white,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // ◀️ الشعار والاسم
+                // Logo + App Name
                 Row(
                   children: [
-                    Image.asset('assets/images/logo.png', height: 40),
-                    const SizedBox(width: 10),
+                    PulsingHeart(),
+                    const SizedBox(width: 12),
                     Text(
                       'MediLink',
-                      style: Theme.of(context).textTheme.headlineSmall,
+                      style: TextStyle(
+                        fontFamily: 'Cairo', // تأكد أن الخط معرف
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                     ),
                   ],
                 ),
 
-                // ▶️ الإعدادات والإشعارات والحساب
+                // Actions: settings, notifications, profile
                 Row(
                   children: [
-                    // ⚙️ قائمة الإعدادات المنسدلة
                     PopupMenuButton<String>(
                       icon: Icon(Icons.settings, color: iconColor),
                       tooltip: "Settings",
-                      color: Colors.blue.shade50.withOpacity(0.95),
+                      color: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      offset: const Offset(0, 45),
-                      elevation: 10,
                       onSelected: (value) {
                         if (value == 'theme') {
                           themeController.toggleTheme();
@@ -65,49 +68,47 @@ class MainLayout extends StatelessWidget {
                           );
                         }
                       },
-                      itemBuilder: (BuildContext context) => [
-                        PopupMenuItem<String>(
-                          value: 'theme',
-                          child: Row(
-                            children: [
-                              Icon(
-                                isDark ? Icons.light_mode : Icons.dark_mode,
-                                color: Colors.blue[800],
+                      itemBuilder:
+                          (BuildContext context) => [
+                            PopupMenuItem<String>(
+                              value: 'theme',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    isDark ? Icons.light_mode : Icons.dark_mode,
+                                    color: Colors.blue[800],
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'Toggle Theme',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.blue[900],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: 10),
-                              Text(
-                                'تبديل الوضع',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.blue[900],
-                                ),
+                            ),
+                            const PopupMenuDivider(),
+                            PopupMenuItem<String>(
+                              value: 'language_dialog',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.language, color: Colors.blue[800]),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'Language',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.blue[900],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        const PopupMenuDivider(),
-                        PopupMenuItem<String>(
-                          value: 'language_dialog',
-                          child: Row(
-                            children: [
-                              Icon(Icons.language, color: Colors.blue[800]),
-                              const SizedBox(width: 10),
-                              Text(
-                                'اللغة',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.blue[900],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                            ),
+                          ],
                     ),
-
                     const SizedBox(width: 10),
-
-                    // 🔔 الإشعارات
                     IconButton(
                       icon: Icon(Icons.notifications_none, color: iconColor),
                       tooltip: "Notifications",
@@ -115,12 +116,12 @@ class MainLayout extends StatelessWidget {
                         sidebarController.selectedIndex.value = 30;
                       },
                     ),
-
                     const SizedBox(width: 8),
-
-                    // 👤 الحساب
                     IconButton(
-                      icon: Icon(Icons.account_circle_outlined, color: iconColor),
+                      icon: Icon(
+                        Icons.account_circle_outlined,
+                        color: iconColor,
+                      ),
                       tooltip: "Profile",
                       onPressed: () {
                         sidebarController.selectedIndex.value = 40;
@@ -132,7 +133,7 @@ class MainLayout extends StatelessWidget {
             ),
           ),
 
-          // ✅ الصف الكامل للـ Sidebar والمحتوى
+          // ✅ Body: Sidebar + Content
           Expanded(
             child: Row(
               children: [
@@ -141,7 +142,17 @@ class MainLayout extends StatelessWidget {
                   child: Obx(() {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
-                        return const Center(child: Text("Dashboard Page"));
+                        return DashboardPage(); // لو أنت معرف الكلاس مسبقًا
+                      case 1:
+                        return const Center(child: Text("Appointments Page"));
+                      case 2:
+                        return const Center(child: Text("Patients Page"));
+                      case 3:
+                        return const Center(child: Text("Doctors Page"));
+                      case 4:
+                        return const Center(child: Text("Records Page"));
+                      case 5:
+                        return const Center(child: Text("Reports Page"));
                       case 30:
                         return NotificationPage();
                       case 40:
