@@ -142,7 +142,7 @@ class MainLayout extends StatelessWidget {
                   child: Obx(() {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
-                        return DashboardPage(); // لو أنت معرف الكلاس مسبقًا
+                        return DashboardPage();
                       case 1:
                         return const Center(child: Text("Appointments Page"));
                       case 2:

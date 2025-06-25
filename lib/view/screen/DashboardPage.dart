@@ -1,85 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:medilink/view/widget/dashbord/AppointmentListCard.dart';
+import 'package:medilink/view/widget/dashbord/NotificationRow.dart';
 import 'package:medilink/view/widget/dashbord/StatCard%20.dart';
+import 'package:medilink/view/widget/dashbord/WelcomeBanner%20.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ✅ Page title
-          const Text(
-            'Dashboard',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+    return Scaffold(
+      backgroundColor: Colors.grey.shade100,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const WelcomeBanner(), // ✅ الترحيب العلوي
+            const SizedBox(height: 20),
+
+            // ✅ كروت الإحصائيات
+            Center(
+              child: Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                children: const [
+                  StatsCard(
+                    title: "Pending Appointments",
+                    value: "4",
+                    badge: "2-",
+                    icon: Icons.access_time,
+                    color: Colors.orange,
+                  ),
+                  StatsCard(
+                    title: "New Files",
+                    value: "8",
+                    badge: "3+",
+                    icon: Icons.description_outlined,
+                    color: Colors.purple,
+                  ),
+                  StatsCard(
+                    title: "Today's Appointments",
+                    value: "23",
+                    badge: "5+",
+                    icon: Icons.calendar_today_outlined,
+                    color: Colors.green,
+                  ),
+                  StatsCard(
+                    title: "Total Patients",
+                    value: "1,248",
+                    badge: "12%",
+                    icon: Icons.groups_outlined,
+                    color: Colors.blue,
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          const SizedBox(height: 24),
+            const SizedBox(height: 30),
 
-          // ✅ Stat cards (responsive grid)
-          Wrap(
-            spacing: 16,
-            runSpacing: 16,
-            children: const [
-              StatCard(
-                title: 'Patients',
-                value: '1,248',
-                icon: Icons.groups,
-                color: Colors.blue,
-              ),
-              StatCard(
-                title: 'Appointments',
-                value: '329',
-                icon: Icons.calendar_today,
-                color: Colors.green,
-              ),
-              StatCard(
-                title: 'Doctors',
-                value: '27',
-                icon: Icons.medical_services,
-                color: Colors.purple,
-              ),
-              StatCard(
-                title: 'Reports',
-                value: '89',
-                icon: Icons.insert_chart,
-                color: Colors.orange,
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 32),
-
-          // ✅ Placeholder for charts
-          Container(
-            height: 240,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8,
-                  offset: Offset(0, 4),
+            // ✅ محتوى أسفل البطاقات
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                // ⬅️ إشعارات مهمة + إحصائيات
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    children: [
+                      ImportantNotifications(),
+                      SizedBox(height: 20),
+                      // WeeklyStats(),
+                    ],
+                  ),
                 ),
+                SizedBox(width: 20),
+                // ➡️ مواعيد اليوم
+                Expanded(flex: 2, child: AppointmentsList()),
               ],
             ),
-            child: const Center(
-              child: Text(
-                'Analytics Chart (Coming Soon)',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
