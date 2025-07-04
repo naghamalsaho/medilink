@@ -8,6 +8,12 @@ import 'package:medilink/core/localization/changelocal.dart';
 import 'package:medilink/core/localization/translation.dart';
 import 'package:medilink/core/services/MyServices.dart';
 
+import 'package:medilink/core/constants/Themes.dart';
+import 'package:medilink/view/screen/DashboardPage.dart';
+import 'package:medilink/view/screen/login/SplashScreen.dart';
+import 'package:medilink/view/widget/home/MainLayout.dart';
+import 'package:medilink/view/widget/home/Sidebar.dart';
+import 'package:medilink/routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

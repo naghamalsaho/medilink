@@ -4,10 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
-<<<<<<< HEAD
   file_selector_windows
-=======
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

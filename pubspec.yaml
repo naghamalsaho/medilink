@@ -60,12 +60,8 @@ flutter:
 
   assets:
     - assets/images/
-<<<<<<< HEAD
     - assets/lottie/
-=======
-    - assets/audio/splash-audio.mp3
-  #   - images/a_dot_ham.jpeg
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

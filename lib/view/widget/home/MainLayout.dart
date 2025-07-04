@@ -2,23 +2,20 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-<<<<<<< HEAD
+
 import 'package:lottie/lottie.dart';
 
 import 'package:medilink/controller/profileController.dart';
 import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/view/screen/AppointmentPage.dart';
-=======
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
 import 'package:medilink/view/screen/DashboardPage.dart';
 import 'package:medilink/view/screen/notification/NotificationsPage.dart';
 import 'package:medilink/view/screen/profile/ProfilePage.dart';
 import 'package:medilink/view/widget/LanguageDialog.dart';
 import 'package:medilink/view/widget/home/Sidebar.dart';
-<<<<<<< HEAD
-=======
-import 'package:medilink/controller/ThemeController.dart';
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
+
 import 'package:medilink/view/widget/login/PulsingLogo.dart';
 
 class MainLayout extends StatelessWidget {
@@ -37,11 +34,8 @@ class MainLayout extends StatelessWidget {
       backgroundColor: const Color(0xFFF5F6F8),
       body: Column(
         children: [
-<<<<<<< HEAD
+
           // الشريط العلوي الثابت
-=======
-          // ✅ Custom AppBar
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
           Container(
             height: 60,
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -49,11 +43,9 @@ class MainLayout extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-<<<<<<< HEAD
+
                 // شعار واسم التطبيق
-=======
-                // Logo + App Name
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
                 Row(
                   children: [
                     PulsingHeart(),
@@ -70,7 +62,7 @@ class MainLayout extends StatelessWidget {
                   ],
                 ),
 
-<<<<<<< HEAD
+
                 // الإعدادات والإشعارات والحساب
                 Row(
                   children: [
@@ -79,15 +71,7 @@ class MainLayout extends StatelessWidget {
                       icon: Icon(Icons.settings, color: iconColor),
                       tooltip: 'Settings',
                       color: Colors.blue.shade50.withOpacity(0.95),
-=======
-                // Actions: settings, notifications, profile
-                Row(
-                  children: [
-                    PopupMenuButton<String>(
-                      icon: Icon(Icons.settings, color: iconColor),
-                      tooltip: "Settings",
-                      color: Colors.white,
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -102,13 +86,10 @@ class MainLayout extends StatelessWidget {
                         }
                       },
                       itemBuilder:
-<<<<<<< HEAD
+
                           (_) => [
                             PopupMenuItem(
-=======
-                          (BuildContext context) => [
-                            PopupMenuItem<String>(
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
                               value: 'theme',
                               child: Row(
                                 children: [
@@ -118,11 +99,9 @@ class MainLayout extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
-<<<<<<< HEAD
+
                                     'تبديل الوضع',
-=======
-                                    'Toggle Theme',
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       color: Colors.blue[900],
@@ -132,22 +111,18 @@ class MainLayout extends StatelessWidget {
                               ),
                             ),
                             const PopupMenuDivider(),
-<<<<<<< HEAD
+
                             PopupMenuItem(
-=======
-                            PopupMenuItem<String>(
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
                               value: 'language_dialog',
                               child: Row(
                                 children: [
                                   Icon(Icons.language, color: Colors.blue[800]),
                                   const SizedBox(width: 10),
                                   Text(
-<<<<<<< HEAD
+
                                     'اللغة',
-=======
-                                    'Language',
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       color: Colors.blue[900],
@@ -159,11 +134,8 @@ class MainLayout extends StatelessWidget {
                           ],
                     ),
                     const SizedBox(width: 10),
-<<<<<<< HEAD
 
-                    // إشعارات
-=======
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
                     IconButton(
                       icon: Icon(Icons.notifications_none, color: iconColor),
                       tooltip: 'Notifications',
@@ -171,7 +143,7 @@ class MainLayout extends StatelessWidget {
                           () => sidebarController.selectedIndex.value = 30,
                     ),
                     const SizedBox(width: 8),
-<<<<<<< HEAD
+
 
                     // عرض صورة واسم المستخدم
                     // عرض صورة واسم المستخدم
@@ -220,29 +192,16 @@ GestureDetector(
   }),
 ),
 
-=======
-                    IconButton(
-                      icon: Icon(
-                        Icons.account_circle_outlined,
-                        color: iconColor,
-                      ),
-                      tooltip: "Profile",
-                      onPressed: () {
-                        sidebarController.selectedIndex.value = 40;
-                      },
-                    ),
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
                   ],
                 ),
               ],
             ),
           ),
 
-<<<<<<< HEAD
+
           // المحتوى مع الشريط الجانبي
-=======
-          // ✅ Body: Sidebar + Content
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
           Expanded(
             child: Row(
               children: [
@@ -251,15 +210,11 @@ GestureDetector(
                   child: Obx(() {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
-<<<<<<< HEAD
+
                         return const DashboardPage();
                       case 1:
                         return  AppointmentsPage();
-=======
-                        return DashboardPage();
-                      case 1:
-                        return const Center(child: Text("Appointments Page"));
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
                       case 2:
                         return const Center(child: Text("Patients Page"));
                       case 3:

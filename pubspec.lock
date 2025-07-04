@@ -18,11 +18,7 @@ packages:
     source: hosted
     version: "2.12.0"
   audioplayers:
-<<<<<<< HEAD
     dependency: "direct main"
-=======
-    dependency: "direct dev"
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
     description:
       name: audioplayers
       sha256: c05c6147124cd63e725e861335a8b4d57300b80e6e92cea7c145c739223bbaef
@@ -109,7 +105,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
-<<<<<<< HEAD
   cross_file:
     dependency: transitive
     description:
@@ -118,8 +113,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.4+2"
-=======
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
   crypto:
     dependency: transitive
     description:
@@ -168,7 +161,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
-<<<<<<< HEAD
   file_selector_linux:
     dependency: transitive
     description:
@@ -201,8 +193,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.3+4"
-=======
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
   fixnum:
     dependency: transitive
     description:
@@ -259,11 +249,7 @@ packages:
     source: hosted
     version: "2.1.1"
   http:
-<<<<<<< HEAD
     dependency: "direct main"
-=======
-    dependency: transitive
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
     description:
       name: http
       sha256: "2c11f3f94c687ee9bad77c171151672986360b2b001d109814ee7140b2cf261b"
@@ -278,7 +264,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
-<<<<<<< HEAD
   image_picker:
     dependency: "direct main"
     description:
@@ -351,8 +336,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.2"
-=======
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
   js:
     dependency: transitive
     description:

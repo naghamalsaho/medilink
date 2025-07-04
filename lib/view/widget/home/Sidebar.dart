@@ -55,19 +55,13 @@ class Sidebar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 12,
-<<<<<<< HEAD
+
                   ),
                   decoration: BoxDecoration(
                     color: isSelected ? hoverColor : Colors.transparent,
                     borderRadius: BorderRadius.circular(10),
                   ),
-=======
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected ? hoverColor : Colors.transparent,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+
                   child: Row(
                     children: [
                       Icon(

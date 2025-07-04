@@ -1,26 +1,15 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:get/get.dart';
-import 'package:medilink/core/constants/AppColor.dart';
-import 'package:medilink/core/constants/routes.dart';
-
-=======
-import 'package:get/get_core/src/get_main.dart' show Get;
-import 'package:get/instance_manager.dart';
 import 'package:medilink/controller/auth/loginController.dart';
 import 'package:medilink/core/constants/AppColor.dart';
 import 'package:medilink/core/functions/validinput.dart';
-import 'package:medilink/view/screen/HomePage.dart';
 import 'package:medilink/view/widget/auth/CusomButtomAuth.dart';
 import 'package:medilink/view/widget/auth/Customtextformauth.dart';
-import 'package:get/get.dart';
 import 'package:medilink/view/widget/home/MainLayout.dart';
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
+import 'package:medilink/core/constants/routes.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({Key? key}) : super(key: key);
-
-  get controller => null;
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +48,10 @@ class LoginForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 15),
-
-          Text(
+          const Text(
             'Welcome!',
             style: TextStyle(
-              fontFamily: 'Cairo', // تأكد أن الخط معرف
+              fontFamily: 'Cairo',
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
@@ -93,24 +81,20 @@ class LoginForm extends StatelessWidget {
           CustomButtomAuth(
             text: "Sign In",
             icon: Icons.verified_user,
-
             onPressed: () {
               Get.offAll(() => MainLayout());
-
-              // controller.login();
+              // أو: controller.login();
             },
           ),
-<<<<<<< HEAD
-          onPressed: () {
-            Get.offNamed(AppRoute.mainLayout);
-          },
-          child: const Text('Login', style: TextStyle(fontSize: 16)),
-        ),
-      ],
-=======
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              Get.offNamed(AppRoute.mainLayout);
+            },
+            child: const Text('Login', style: TextStyle(fontSize: 16)),
+          ),
         ],
       ),
->>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
     );
   }
 }
