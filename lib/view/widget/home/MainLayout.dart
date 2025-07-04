@@ -10,6 +10,7 @@ import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/view/screen/AppointmentPage.dart';
 
 import 'package:medilink/view/screen/DashboardPage.dart';
+import 'package:medilink/view/screen/Reports/ReportsPage.dart';
 import 'package:medilink/view/screen/notification/NotificationsPage.dart';
 import 'package:medilink/view/screen/profile/ProfilePage.dart';
 import 'package:medilink/view/widget/LanguageDialog.dart';
@@ -222,7 +223,7 @@ GestureDetector(
                       case 4:
                         return const Center(child: Text("Records Page"));
                       case 5:
-                        return const Center(child: Text("Reports Page"));
+                        return ReportsPage();
                       case 30:
                         return NotificationPage();
                       case 99:

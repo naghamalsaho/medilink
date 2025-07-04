@@ -125,9 +125,9 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _StatusCard(count: 2, label: 'مواعيد مؤكدة', color: Colors.green[100]!),
-                _StatusCard(count: 1, label: 'في الانتظار', color: Colors.orange[100]!),
+                _StatusCard(count: 1, label: 'في الانتظار', color: Color(0xFFFFF3E0)),
                 _StatusCard(count: 1, label: 'مكتملة', color: Colors.blue[100]!),
-                _StatusCard(count: 1, label: 'ملغية', color: Colors.red[100]!),
+                _StatusCard(count: 1, label: 'ملغية', color:  Color(0xFFF3E5F5)),
               ],
             ),
 

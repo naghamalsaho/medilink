@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:medilink/core/constants/routes.dart';
 import 'package:medilink/view/screen/DashboardPage.dart';
+import 'package:medilink/view/screen/Reports/ReportsPage.dart';
 import 'package:medilink/view/screen/login/SplashScreen.dart';
 
 import 'package:medilink/view/screen/profile/EditProfilePage.dart';
@@ -39,5 +40,10 @@ List<GetPage<dynamic>> appPages = [
   GetPage(
     name: AppRoute.mainLayout,
     page: () => MainLayout(),
+  ),
+  
+  GetPage(
+    name: AppRoute.reports,
+    page: () => ReportsPage(),
   ),
 ];
