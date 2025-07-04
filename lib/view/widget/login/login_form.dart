@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:medilink/core/constants/AppColor.dart';
+import 'package:medilink/core/constants/routes.dart';
 
 
 class LoginForm extends StatelessWidget {
@@ -74,7 +76,9 @@ class LoginForm extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          onPressed: () {},
+          onPressed: () {
+            Get.offNamed(AppRoute.mainLayout);
+          },
           child: const Text('Login', style: TextStyle(fontSize: 16)),
         ),
       ],

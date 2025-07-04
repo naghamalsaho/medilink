@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:medilink/bindings/initialbindinds.dart';
 import 'package:medilink/controller/ThemeController.dart';
+import 'package:medilink/controller/profileController.dart';
+import 'package:medilink/core/constants/routes.dart';
 import 'package:medilink/core/localization/changelocal.dart';
 import 'package:medilink/core/localization/translation.dart';
 import 'package:medilink/core/services/MyServices.dart';
+import 'package:medilink/routes.dart';
 import 'package:medilink/view/screen/HomePage.dart';
 import 'package:medilink/core/constants/Themes.dart';
 import 'package:medilink/view/widget/home/MainLayout.dart';
@@ -23,7 +27,8 @@ void main() async {
 
   // ✅ SidebarController
   Get.put(SidebarController());
-
+  Get.put(UserController());
+WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -43,7 +48,9 @@ class MyApp extends StatelessWidget {
            translations: MyTranslation(), // 🔸 ربط الترجمة
   locale: Get.find<LocalController>().language, // 🔸 اللغة الحالية
   fallbackLocale: const Locale("en"),
-          home: MainLayout(),
+          initialRoute: AppRoute.splash,
+      initialBinding: InitialBindings(),
+     getPages: appPages,
         ));
   }
 }
