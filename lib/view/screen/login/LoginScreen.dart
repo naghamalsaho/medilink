@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:medilink/view/widget/login/login_form.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -57,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen>
                   constraints: const BoxConstraints(maxWidth: 420),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 40,
-                    vertical: 60,
+                    vertical: 30,
                   ),
                   margin: const EdgeInsets.symmetric(
                     horizontal: 20,

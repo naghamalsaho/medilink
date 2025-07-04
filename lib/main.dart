@@ -7,11 +7,6 @@ import 'package:medilink/core/constants/routes.dart';
 import 'package:medilink/core/localization/changelocal.dart';
 import 'package:medilink/core/localization/translation.dart';
 import 'package:medilink/core/services/MyServices.dart';
-import 'package:medilink/routes.dart';
-import 'package:medilink/view/screen/HomePage.dart';
-import 'package:medilink/core/constants/Themes.dart';
-import 'package:medilink/view/widget/home/MainLayout.dart';
-import 'package:medilink/view/widget/home/Sidebar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,8 +27,6 @@ WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
-
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -52,6 +45,6 @@ class MyApp extends StatelessWidget {
       initialBinding: InitialBindings(),
      getPages: appPages,
         ));
+
   }
 }
-

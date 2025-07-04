@@ -2,7 +2,7 @@ name: medilink
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -43,6 +43,8 @@ dependencies:
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
+  audioplayers: ^5.2.1
+
   flutter_test:
     sdk: flutter
 
@@ -54,13 +56,16 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
-
   uses-material-design: true
 
   assets:
     - assets/images/
+<<<<<<< HEAD
     - assets/lottie/
+=======
+    - assets/audio/splash-audio.mp3
+  #   - images/a_dot_ham.jpeg
+>>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -74,10 +79,12 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   # fonts:
-  #   - family: Schyler
+  #   - family: Cairo
   #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  #     - asset: assets/fonts/Cairo-Regular.ttf
+  #     - asset: assets/fonts/Cairo-Bold.ttf
+  #           weight: 700
+
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

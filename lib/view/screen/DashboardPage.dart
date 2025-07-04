@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:medilink/view/widget/dashbord/AppointmentListCard.dart';
 import 'package:medilink/view/widget/dashbord/NotificationRow.dart';
+<<<<<<< HEAD
 
 import 'package:medilink/view/widget/dashbord/StatCard%20.dart';
 import 'package:medilink/view/widget/dashbord/WelcomeBanner%20.dart';
 
 
+=======
+import 'package:medilink/view/widget/dashbord/StatCard%20.dart';
+import 'package:medilink/view/widget/dashbord/WelcomeBanner%20.dart';
+
+>>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
@@ -87,4 +93,8 @@ class DashboardPage extends StatelessWidget {
       ),
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 15f770e076bcf5587254b89510daaed02b8fc611

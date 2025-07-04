@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:medilink/view/screen/login/LoginScreen.dart';
+import 'package:medilink/view/widget/login/HeartbeatAudioController.dart';
 import 'package:medilink/view/widget/login/animated_logo.dart';
 import 'package:medilink/view/widget/login/app_name_text.dart';
-import 'package:medilink/view/widget/login/splash_background%20copy.dart';
-
+import 'package:audioplayers/audioplayers.dart';
+import 'package:medilink/view/widget/login/splash_background.dart'; // ← استيراد الصوت
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -22,12 +23,16 @@ class _SplashScreenState extends State<SplashScreen>
   late final Animation<double> _textFade;
   late final Animation<Offset> _textSlide;
   late final Animation<double> _fadeOut;
+  final HeartbeatAudioController _heartbeatController =
+      HeartbeatAudioController();
 
   @override
   void initState() {
     super.initState();
 
     _setupAnimations();
+    _startTimers();
+    _heartbeatController.start(); // ← تشغيل الصوت
     _startTimers();
   }
 
@@ -64,12 +69,12 @@ class _SplashScreenState extends State<SplashScreen>
       _textController.forward();
     });
 
-    Future.delayed(const Duration(milliseconds: 3500), () {
-      _fadeOutController.forward().then((_) {
-        Navigator.of(
-          context,
-        ).pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
-      });
+    Future.delayed(const Duration(milliseconds: 5000), () async {
+      await _fadeOutController.forward();
+      await _heartbeatController.stop(); // ← إيقاف الصوت
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
     });
   }
 
