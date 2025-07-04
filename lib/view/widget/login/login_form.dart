@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart' show Get;
+import 'package:get/instance_manager.dart';
 import 'package:medilink/controller/auth/loginController.dart';
 import 'package:medilink/core/constants/AppColor.dart';
 import 'package:medilink/core/functions/validinput.dart';
+import 'package:medilink/view/screen/SideBarElements/HomePage.dart';
 import 'package:medilink/view/widget/auth/CusomButtomAuth.dart';
 import 'package:medilink/view/widget/auth/Customtextformauth.dart';
+import 'package:get/get.dart';
 import 'package:medilink/view/widget/home/MainLayout.dart';
-import 'package:medilink/core/constants/routes.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({Key? key}) : super(key: key);
+
+  get controller => null;
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +52,11 @@ class LoginForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 15),
-          const Text(
+
+          Text(
             'Welcome!',
             style: TextStyle(
-              fontFamily: 'Cairo',
+              fontFamily: 'Cairo', // تأكد أن الخط معرف
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
@@ -81,17 +86,12 @@ class LoginForm extends StatelessWidget {
           CustomButtomAuth(
             text: "Sign In",
             icon: Icons.verified_user,
+
             onPressed: () {
               Get.offAll(() => MainLayout());
-              // أو: controller.login();
+
+              // controller.login();
             },
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              Get.offNamed(AppRoute.mainLayout);
-            },
-            child: const Text('Login', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),

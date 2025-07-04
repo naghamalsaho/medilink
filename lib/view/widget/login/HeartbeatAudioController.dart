@@ -16,5 +16,4 @@ class HeartbeatAudioController {
   void dispose() {
     _player.dispose();
   }
-
 }

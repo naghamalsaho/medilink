@@ -11,11 +11,12 @@ import 'package:medilink/view/screen/AppointmentPage.dart';
 
 import 'package:medilink/view/screen/DashboardPage.dart';
 import 'package:medilink/view/screen/Reports/ReportsPage.dart';
+import 'package:medilink/view/screen/SideBarElements/DoctorsPage.dart';
+import 'package:medilink/view/screen/SideBarElements/PatientsPage.dart';
 import 'package:medilink/view/screen/notification/NotificationsPage.dart';
 import 'package:medilink/view/screen/profile/ProfilePage.dart';
 import 'package:medilink/view/widget/LanguageDialog.dart';
 import 'package:medilink/view/widget/home/Sidebar.dart';
-
 
 import 'package:medilink/view/widget/login/PulsingLogo.dart';
 
@@ -35,7 +36,6 @@ class MainLayout extends StatelessWidget {
       backgroundColor: const Color(0xFFF5F6F8),
       body: Column(
         children: [
-
           // الشريط العلوي الثابت
           Container(
             height: 60,
@@ -44,9 +44,7 @@ class MainLayout extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-
                 // شعار واسم التطبيق
-
                 Row(
                   children: [
                     PulsingHeart(),
@@ -62,7 +60,6 @@ class MainLayout extends StatelessWidget {
                     ),
                   ],
                 ),
-
 
                 // الإعدادات والإشعارات والحساب
                 Row(
@@ -87,10 +84,8 @@ class MainLayout extends StatelessWidget {
                         }
                       },
                       itemBuilder:
-
                           (_) => [
                             PopupMenuItem(
-
                               value: 'theme',
                               child: Row(
                                 children: [
@@ -100,7 +95,6 @@ class MainLayout extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
-
                                     'تبديل الوضع',
 
                                     style: TextStyle(
@@ -114,14 +108,12 @@ class MainLayout extends StatelessWidget {
                             const PopupMenuDivider(),
 
                             PopupMenuItem(
-
                               value: 'language_dialog',
                               child: Row(
                                 children: [
                                   Icon(Icons.language, color: Colors.blue[800]),
                                   const SizedBox(width: 10),
                                   Text(
-
                                     'اللغة',
 
                                     style: TextStyle(
@@ -136,7 +128,6 @@ class MainLayout extends StatelessWidget {
                     ),
                     const SizedBox(width: 10),
 
-
                     IconButton(
                       icon: Icon(Icons.notifications_none, color: iconColor),
                       tooltip: 'Notifications',
@@ -145,64 +136,86 @@ class MainLayout extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
 
-
                     // عرض صورة واسم المستخدم
                     // عرض صورة واسم المستخدم
-GestureDetector(
-  onTap: () => sidebarController.selectedIndex.value = 99,
-  child: Obx(() {
-    final hasImage = userController.profileImageBytes.value != null ||
-        (!kIsWeb && userController.profileImagePath.value.isNotEmpty);
+                    GestureDetector(
+                      onTap: () => sidebarController.selectedIndex.value = 99,
+                      child: Obx(() {
+                        final hasImage =
+                            userController.profileImageBytes.value != null ||
+                            (!kIsWeb &&
+                                userController
+                                    .profileImagePath
+                                    .value
+                                    .isNotEmpty);
 
-    return Row(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              userController.userName.value,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-            ),
-            Text(
-              userController.userRole.value,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        ),
-        const SizedBox(width: 8),
-        ClipOval(
-          child: SizedBox(
-            width: 36,
-            height: 36,
-            child: hasImage
-                ? Image(
-                    image: userController.profileImageBytes.value != null
-                        ? MemoryImage(userController.profileImageBytes.value!)
-                        : FileImage(File(userController.profileImagePath.value)) as ImageProvider,
-                    fit: BoxFit.cover,
-                  )
-                : Lottie.asset(
-                    'assets/lottie/Animationprofile.json',
-                    fit: BoxFit.contain,
-                  ),
-          ),
-        ),
-      ],
-    );
-  }),
-),
-
-
+                        return Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  userController.userName.value,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  userController.userRole.value,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 8),
+                            ClipOval(
+                              child: SizedBox(
+                                width: 36,
+                                height: 36,
+                                child:
+                                    hasImage
+                                        ? Image(
+                                          image:
+                                              userController
+                                                          .profileImageBytes
+                                                          .value !=
+                                                      null
+                                                  ? MemoryImage(
+                                                    userController
+                                                        .profileImageBytes
+                                                        .value!,
+                                                  )
+                                                  : FileImage(
+                                                        File(
+                                                          userController
+                                                              .profileImagePath
+                                                              .value,
+                                                        ),
+                                                      )
+                                                      as ImageProvider,
+                                          fit: BoxFit.cover,
+                                        )
+                                        : Lottie.asset(
+                                          'assets/lottie/Animationprofile.json',
+                                          fit: BoxFit.contain,
+                                        ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
 
-
           // المحتوى مع الشريط الجانبي
-
           Expanded(
             child: Row(
               children: [
@@ -211,18 +224,16 @@ GestureDetector(
                   child: Obx(() {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
-
                         return const DashboardPage();
                       case 1:
-                        return  AppointmentsPage();
+                        return AppointmentsPage();
 
                       case 2:
-                        return const Center(child: Text("Patients Page"));
+                        return PatientsPage();
                       case 3:
-                        return const Center(child: Text("Doctors Page"));
+                        return DoctorsPage();
+
                       case 4:
-                        return const Center(child: Text("Records Page"));
-                      case 5:
                         return ReportsPage();
                       case 30:
                         return NotificationPage();

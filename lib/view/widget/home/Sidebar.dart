@@ -14,7 +14,6 @@ class Sidebar extends StatelessWidget {
     {'icon': Icons.event_note_outlined, 'label': 'Appointments'},
     {'icon': Icons.people_outline, 'label': 'Patients'},
     {'icon': Icons.local_hospital_outlined, 'label': 'Doctors'},
-    {'icon': Icons.description_outlined, 'label': 'Records'},
     {'icon': Icons.pie_chart_outline, 'label': 'Reports'},
   ];
 
@@ -55,7 +54,6 @@ class Sidebar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 12,
-
                   ),
                   decoration: BoxDecoration(
                     color: isSelected ? hoverColor : Colors.transparent,

@@ -60,5 +60,4 @@ class _PulsingHeartState extends State<PulsingHeart>
       ),
     );
   }
-
 }

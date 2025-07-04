@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:medilink/view/widget/NewAppointmentDialog.dart'; // لـ DateFormat
+import 'package:medilink/view/widget/NewAppointmentDialog.dart';
+import 'package:medilink/view/widget/appointmentHeader.dart'; // لـ DateFormat
 // افترض أنك عرفت الألوان في AppColor
 
 class AppointmentsPage extends StatefulWidget {
@@ -10,28 +11,34 @@ class AppointmentsPage extends StatefulWidget {
 
 class _AppointmentsPageState extends State<AppointmentsPage> {
   DateTime selectedDate = DateTime.now();
-  String selectedStatus = 'جميع الحالات';
-  final statuses = ['جميع الحالات', 'مؤكد', 'في الانتظار', 'مكتمل', 'ملغي'];
+  String selectedStatus = 'All status';
+  final statuses = [
+    'All status',
+    'confirmed',
+    'Waiting',
+    'Complete',
+    'Cancelled',
+  ];
   final searchController = TextEditingController();
 
   // مثال بيانات
   final appointments = [
     {
       'time': '09:00',
-      'name': 'أحمد محمد علي',
-      'doctor': 'د. سامي الأحمد',
-      'specialty': 'كشف دوري',
-      'duration': '30 دقيقة',
-      'status': 'مؤكد',
+      'name': 'Ahmad ali ',
+      'doctor': 'D. sami ',
+      'specialty': 'Periodic report',
+      'duration': '30 minute',
+      'status': 'confirmed',
       'color': Color(0xFFD4F7DC),
     },
     {
       'time': '09:30',
-      'name': 'فاطمة سعد الغامدي',
-      'doctor': 'د. ليلى حسن',
-      'specialty': 'متابعة نتائج التحاليل',
-      'duration': '30 دقيقة',
-      'status': 'في الانتظار',
+      'name': 'Asmaa mom',
+      'doctor': 'D. sami',
+      'specialty': 'Monitoring the test results',
+      'duration': '30 minute',
+      'status': 'Waiting',
       'color': Color(0xFFFFF2CC),
     },
     // المزيد...
@@ -40,32 +47,23 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('إدارة المواعيد', style: TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        actions: [
-          TextButton.icon(
-  icon: const Icon(Icons.add, color: Colors.white),
-  label: const Text('إضافة موعد جديد', style: TextStyle(color: Colors.white)),
-  onPressed: () {
-    showDialog(
-      context: context,
-      builder: (_) => const NewAppointmentDialog(),
-    );
-  },
-)
-
-        ],
-      ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
+            Appointmentheader(),
+            SizedBox(height: 16),
+
             // فلاتر التاريخ والبحث والحالة
             Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 12,
+                ),
                 child: Row(
                   children: [
                     // التاريخ
@@ -93,9 +91,13 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                     // الحالة
                     DropdownButton<String>(
                       value: selectedStatus,
-                      items: statuses
-                          .map((s) => DropdownMenuItem(child: Text(s), value: s))
-                          .toList(),
+                      items:
+                          statuses
+                              .map(
+                                (s) =>
+                                    DropdownMenuItem(child: Text(s), value: s),
+                              )
+                              .toList(),
                       onChanged: (v) => setState(() => selectedStatus = v!),
                     ),
                     const SizedBox(width: 16),
@@ -106,7 +108,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                         controller: searchController,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.search),
-                          hintText: 'البحث بالاسم، الطبيب، أو السبب...',
+                          hintText: 'Search by name, doctor or condition.....',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -124,10 +126,26 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _StatusCard(count: 2, label: 'مواعيد مؤكدة', color: Colors.green[100]!),
-                _StatusCard(count: 1, label: 'في الانتظار', color: Color(0xFFFFF3E0)),
-                _StatusCard(count: 1, label: 'مكتملة', color: Colors.blue[100]!),
-                _StatusCard(count: 1, label: 'ملغية', color:  Color(0xFFF3E5F5)),
+                _StatusCard(
+                  count: 2,
+                  label: 'confirmed',
+                  color: Colors.green[100]!,
+                ),
+                _StatusCard(
+                  count: 1,
+                  label: 'Waiting',
+                  color: Color(0xFFFFF3E0),
+                ),
+                _StatusCard(
+                  count: 1,
+                  label: 'Complete',
+                  color: Colors.blue[100]!,
+                ),
+                _StatusCard(
+                  count: 1,
+                  label: 'Cancelled',
+                  color: Color(0xFFF3E5F5),
+                ),
               ],
             ),
 
@@ -135,8 +153,10 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
             // عنوان التاريخ الهجري/الميلادي
             Align(
               alignment: Alignment.centerRight,
-              child: Text('مواعيد يوم ${DateFormat('yyyy/MM/dd').format(selectedDate)} هـ',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text(
+                'Day schedules${DateFormat('yyyy/MM/dd').format(selectedDate)} هـ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
 
             const SizedBox(height: 8),
@@ -150,7 +170,8 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                   return Card(
                     color: ap['color'] as Color,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(12),
                       child: Row(
@@ -162,8 +183,10 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Text(ap['time'] as String,
-                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            child: Text(
+                              ap['time'] as String,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ),
 
                           const SizedBox(width: 16),
@@ -172,14 +195,19 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(ap['name'] as String,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Text(
+                                  ap['name'] as String,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                                 Text(ap['doctor'] as String),
-                                Text(ap['specialty'] as String,
-                                    style: TextStyle(color: Colors.blue)),
-                                Text('المدة: ${ap['duration']}',
-                                    style: TextStyle(color: Colors.grey)),
+                                Text(
+                                  ap['specialty'] as String,
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                                Text(
+                                  'المدة: ${ap['duration']}',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
                               ],
                             ),
                           ),
@@ -188,12 +216,13 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                           Column(
                             children: [
                               Icon(
-                                ap['status'] == 'مؤكد'
+                                ap['status'] == 'confirmed'
                                     ? Icons.check_circle
                                     : Icons.hourglass_empty,
-                                color: ap['status'] == 'مؤكد'
-                                    ? Colors.green
-                                    : Colors.orange,
+                                color:
+                                    ap['status'] == 'confirmed'
+                                        ? Colors.green
+                                        : Colors.orange,
                               ),
                               Text(ap['status'] as String),
                             ],
@@ -204,16 +233,22 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                           Column(
                             children: [
                               IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () {}),
+                                icon: Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {},
+                              ),
                               IconButton(
-                                  icon: Icon(Icons.edit, color: Colors.orange),
-                                  onPressed: () {}),
+                                icon: Icon(Icons.edit, color: Colors.orange),
+                                onPressed: () {},
+                              ),
                               IconButton(
-                                  icon: Icon(Icons.visibility, color: Colors.blue),
-                                  onPressed: () {}),
+                                icon: Icon(
+                                  Icons.visibility,
+                                  color: Colors.blue,
+                                ),
+                                onPressed: () {},
+                              ),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -232,20 +267,25 @@ class _StatusCard extends StatelessWidget {
   final int count;
   final String label;
   final Color color;
-  const _StatusCard(
-      {required this.count, required this.label, required this.color});
+  const _StatusCard({
+    required this.count,
+    required this.label,
+    required this.color,
+  });
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Card(
         color: color,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(
             children: [
-              Text('$count', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                '$count',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 4),
               Text(label, textAlign: TextAlign.center),
             ],
