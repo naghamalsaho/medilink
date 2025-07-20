@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart' show Get;
 import 'package:get/instance_manager.dart';
 import 'package:medilink/controller/auth/loginController.dart';
+import 'package:medilink/core/class/statusrequest.dart';
 import 'package:medilink/core/constants/AppColor.dart';
 import 'package:medilink/core/functions/validinput.dart';
 import 'package:medilink/view/screen/SideBarElements/HomePage.dart';
@@ -17,7 +18,7 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    loginControllerImp controller = Get.put(loginControllerImp());
+    LoginControllerImp controller = Get.put(LoginControllerImp());
     return Form(
       key: controller.formstate,
       child: Column(
@@ -69,7 +70,7 @@ class LoginForm extends StatelessWidget {
             },
             iconData: Icons.email_outlined,
             labeltext: "Enter Your Email",
-            mycontroller: controller.email,
+            mycontroller: controller.loginController,
             type: "email",
           ),
           const SizedBox(height: 16),
@@ -79,7 +80,7 @@ class LoginForm extends StatelessWidget {
             },
             iconData: Icons.lock_outlined,
             labeltext: "Enter Your Password",
-            mycontroller: controller.password,
+            mycontroller: controller.passwordController,
             type: "password",
           ),
           const SizedBox(height: 24),
@@ -88,9 +89,9 @@ class LoginForm extends StatelessWidget {
             icon: Icons.verified_user,
 
             onPressed: () {
-              Get.offAll(() => MainLayout());
-
-              // controller.login();
+              if (controller.statusRequest != StatusRequest.loading) {
+                controller.login();
+              }
             },
           ),
         ],

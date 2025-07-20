@@ -11,39 +11,18 @@ import 'package:medilink/view/screen/AppointmentPage.dart';
 import 'package:medilink/view/widget/home/MainLayout.dart';
 
 /// List of all app pages
-List<GetPage<dynamic>> appPages = [  
+List<GetPage<dynamic>> appPages = [
   GetPage(
-    name: AppRoute.splash,
+    name: AppRoute.mainLayout,
     page: () => const SplashScreen(),
     middlewares: [],
   ),
-  GetPage(
-    name: AppRoute.dashboard,
-    page: () => const DashboardPage(),
-  ),
-  GetPage(
-    name: AppRoute.notifications,
-    page: () => NotificationPage(),
-  ),
-  GetPage(
-    name: AppRoute.profile,
-    page: () => ProfilePage(),
-  ),
-  GetPage(
-    name: AppRoute.editProfile,
-    page: () => const EditProfilePage(),
-  ),
-  GetPage(
-    name: AppRoute.appointments,
-    page: () => AppointmentsPage(),
-  ),
-  GetPage(
-    name: AppRoute.mainLayout,
-    page: () => MainLayout(),
-  ),
-  
-  GetPage(
-    name: AppRoute.reports,
-    page: () => ReportsPage(),
-  ),
+  GetPage(name: AppRoute.dashboard, page: () => const DashboardPage()),
+  GetPage(name: AppRoute.notifications, page: () => NotificationPage()),
+  GetPage(name: AppRoute.profile, page: () => ProfilePage()),
+  GetPage(name: AppRoute.editProfile, page: () => const EditProfilePage()),
+  GetPage(name: AppRoute.appointments, page: () => AppointmentsPage()),
+  GetPage(name: AppRoute.mainLayout, page: () => MainLayout()),
+
+  GetPage(name: AppRoute.reports, page: () => ReportsPage()),
 ];

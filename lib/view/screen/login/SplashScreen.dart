@@ -23,8 +23,8 @@ class _SplashScreenState extends State<SplashScreen>
   late final Animation<double> _textFade;
   late final Animation<Offset> _textSlide;
   late final Animation<double> _fadeOut;
-  final HeartbeatAudioController _heartbeatController =
-      HeartbeatAudioController();
+  // final HeartbeatAudioController _heartbeatController =
+  //     HeartbeatAudioController();
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _setupAnimations();
     _startTimers();
-    _heartbeatController.start(); // ← تشغيل الصوت
+    // _heartbeatController.start(); // ← تشغيل الصوت
     _startTimers();
   }
 
@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     Future.delayed(const Duration(milliseconds: 5000), () async {
       await _fadeOutController.forward();
-      await _heartbeatController.stop(); // ← إيقاف الصوت
+      // await _heartbeatController.stop(); // ← إيقاف الصوت
       Navigator.of(
         context,
       ).pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));

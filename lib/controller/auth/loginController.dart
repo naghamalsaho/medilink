@@ -1,61 +1,80 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medilink/view/screen/HomePage.dart' as AppRoute;
+import 'package:medilink/core/class/handlingdataview.dart';
+import 'package:medilink/core/class/statusrequest.dart';
+import 'package:medilink/core/functions/handlingdatacontroller.dart';
+import 'package:medilink/data/datasourse/remot/auth/login.dart';
+import 'package:medilink/view/widget/home/MainLayout.dart' as AppRoute;
 
 abstract class LoginController extends GetxController {
   login();
   goToHomePage();
 }
 
-class loginControllerImp extends LoginController {
-  final emailController = TextEditingController();
+class LoginControllerImp extends LoginController {
+  // Controllers
+  final loginController =
+      TextEditingController(); // login: could be email or phone
   final passwordController = TextEditingController();
+
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
-  late TextEditingController email;
-  late TextEditingController password;
+  StatusRequest statusRequest = StatusRequest.none;
+  LoginData loginData = LoginData(Get.find());
+  List data = [];
 
   @override
-  login() {
-    var formdata = formstate.currentState;
-    if (formdata!.validate()) {
-      print("Valid");
-    } else {
-      print("Not Valid");
-    }
-    if (email == 'admin@medilink.com' && password == '123456') {
-      Get.to(() => AppRoute.HomePage()); // نجاح → انتقل إلى الصفحة الرئيسية
-    } else {
-      Get.snackbar(
-        'Login Failed',
-        'Email or password is incorrect',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
-    }
-  }
+  Future<void> login() async {
+    if (formstate.currentState!.validate()) {
+      statusRequest = StatusRequest.loading;
+      update();
 
-  @override
-  goToHomePage() {
-    Get.toNamed(AppRoute.HomePage as String);
+      try {
+        final response = await loginData.postData(
+          loginController.text,
+          passwordController.text,
+        );
+
+        print(
+          "RESPONSE TYPE: ${response.runtimeType}",
+        ); // للتأكد من نوع البيانات
+        print("FULL RESPONSE: $response");
+
+        if (response['success'] == true) {
+          // الانتقال المباشر للصفحة التالية
+          Get.offAll(
+            () => AppRoute.MainLayout(),
+          ); // استبدل HomePage بصفحتك الفعلية
+        } else {
+          Get.defaultDialog(
+            title: "خطأ",
+            middleText: response['message'] ?? "بيانات الدخول غير صحيحة",
+          );
+        }
+      } catch (e) {
+        print("CATCHED ERROR: $e");
+        Get.defaultDialog(title: "خطأ", middleText: "تعذر الاتصال بالسيرفر");
+      } finally {
+        statusRequest = StatusRequest.none;
+        update();
+      }
+    }
   }
 
   @override
   void onInit() {
-    email = TextEditingController();
-    password = TextEditingController();
-
     super.onInit();
   }
 
   @override
   void onClose() {
-    void dispose() {
-      email.dispose();
-      password.dispose();
-      super.dispose();
-    }
+    loginController.dispose();
+    passwordController.dispose();
+    super.onClose();
+  }
+
+  @override
+  goToHomePage() {
+    // للانتقال للصفحة الرئيسية بعد تسجيل الدخول
+    Get.to(() => AppRoute.MainLayout());
   }
 }
