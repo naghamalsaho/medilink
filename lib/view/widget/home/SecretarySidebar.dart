@@ -6,7 +6,7 @@ class SidebarController extends GetxController {
   RxInt selectedIndex = 0.obs;
 }
 
-class Sidebar extends StatelessWidget {
+class SecretarySidebar extends StatelessWidget {
   final SidebarController sidebarController = Get.put(SidebarController());
 
   final List<Map<String, dynamic>> menuItems = [
@@ -18,7 +18,7 @@ class Sidebar extends StatelessWidget {
   ];
 
   final Color sidebarBg = const Color(0xFFF7F8FA);
-  final Color selectedColor = Color(0xFF007BFF); // Blue
+  final Color selectedColor = Colors.blue; // Blue
   final Color hoverColor = Color(0xFFEAF2FF);
 
   @override
@@ -28,9 +28,7 @@ class Sidebar extends StatelessWidget {
         width: 250,
         decoration: BoxDecoration(
           color: sidebarBg,
-          border: Border(
-            right: BorderSide(color: Colors.grey.shade300, width: 1),
-          ),
+          border: Border(right: BorderSide(color: Colors.blue, width: 1)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +62,7 @@ class Sidebar extends StatelessWidget {
                     children: [
                       Icon(
                         item['icon'],
-                        color: isSelected ? selectedColor : Colors.grey[600],
+                        color: isSelected ? selectedColor : Colors.blue,
                         size: 22,
                       ),
                       const SizedBox(width: 16),

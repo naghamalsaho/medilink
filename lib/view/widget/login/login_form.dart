@@ -5,11 +5,9 @@ import 'package:medilink/controller/auth/loginController.dart';
 import 'package:medilink/core/class/statusrequest.dart';
 import 'package:medilink/core/constants/AppColor.dart';
 import 'package:medilink/core/functions/validinput.dart';
-import 'package:medilink/view/screen/SideBarElements/HomePage.dart';
+import 'package:get/get.dart';
 import 'package:medilink/view/widget/auth/CusomButtomAuth.dart';
 import 'package:medilink/view/widget/auth/Customtextformauth.dart';
-import 'package:get/get.dart';
-import 'package:medilink/view/widget/home/MainLayout.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({Key? key}) : super(key: key);

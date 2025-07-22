@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:medilink/view/widget/NewAppointmentDialog.dart';
-import 'package:medilink/view/widget/PatientsPage/AddPatientDialog.dart';
 
 class Appointmentheader extends StatelessWidget {
   const Appointmentheader({super.key});

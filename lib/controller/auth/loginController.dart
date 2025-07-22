@@ -4,7 +4,9 @@ import 'package:medilink/core/class/handlingdataview.dart';
 import 'package:medilink/core/class/statusrequest.dart';
 import 'package:medilink/core/functions/handlingdatacontroller.dart';
 import 'package:medilink/data/datasourse/remot/auth/login.dart';
-import 'package:medilink/view/widget/home/MainLayout.dart' as AppRoute;
+import 'package:medilink/view/SecretaryScreens/HomePage.dart';
+import 'package:medilink/view/widget/home/MainHealth.dart';
+import 'package:medilink/view/widget/home/MainSecretary.dart' as AppRoute;
 
 abstract class LoginController extends GetxController {
   login();
@@ -33,23 +35,36 @@ class LoginControllerImp extends LoginController {
           loginController.text,
           passwordController.text,
         );
-
-        print(
-          "RESPONSE TYPE: ${response.runtimeType}",
-        ); // للتأكد من نوع البيانات
-        print("FULL RESPONSE: $response");
-
         if (response['success'] == true) {
-          // الانتقال المباشر للصفحة التالية
-          Get.offAll(
-            () => AppRoute.MainLayout(),
-          ); // استبدل HomePage بصفحتك الفعلية
+          final role = response['data']['role'];
+          switch (role) {
+            case 'secretary':
+              Get.offAll(() => AppRoute.MainSecretary()); // واجهة وزارة الصحة
+              break;
+            case 'super_admin':
+              Get.offAll(() => MainHealth()); // واجهة المستشفى
+              break;
+            default:
+              Get.offAll(() => HomePage()); // واجهة افتراضية
+          }
         } else {
           Get.defaultDialog(
             title: "خطأ",
             middleText: response['message'] ?? "بيانات الدخول غير صحيحة",
           );
         }
+
+        print(
+          "RESPONSE TYPE: ${response.runtimeType}",
+        ); // للتأكد من نوع البيانات
+        print("FULL RESPONSE: $response");
+
+        // if (response['success'] == true) {
+        //   // الانتقال المباشر للصفحة التالية
+        //   Get.offAll(
+        //     () => AppRoute.MainLayout(),
+        //   ); // استبدل HomePage بصفحتك الفعلية
+        // }
       } catch (e) {
         print("CATCHED ERROR: $e");
         Get.defaultDialog(title: "خطأ", middleText: "تعذر الاتصال بالسيرفر");
@@ -75,6 +90,6 @@ class LoginControllerImp extends LoginController {
   @override
   goToHomePage() {
     // للانتقال للصفحة الرئيسية بعد تسجيل الدخول
-    Get.to(() => AppRoute.MainLayout());
+    Get.to(() => AppRoute.MainSecretary());
   }
 }

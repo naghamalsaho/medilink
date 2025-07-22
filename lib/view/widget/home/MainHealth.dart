@@ -7,21 +7,21 @@ import 'package:lottie/lottie.dart';
 
 import 'package:medilink/controller/profileController.dart';
 import 'package:medilink/controller/ThemeController.dart';
-import 'package:medilink/view/screen/AppointmentPage.dart';
-
-import 'package:medilink/view/screen/DashboardPage.dart';
-import 'package:medilink/view/screen/Reports/ReportsPage.dart';
-import 'package:medilink/view/screen/SideBarElements/DoctorsPage.dart';
-import 'package:medilink/view/screen/SideBarElements/PatientsPage.dart';
-import 'package:medilink/view/screen/notification/NotificationsPage.dart';
-import 'package:medilink/view/screen/profile/ProfilePage.dart';
+import 'package:medilink/view/HealthScreens/HealthDashboardPage.dart';
+import 'package:medilink/view/HealthScreens/HealthSidebar.dart';
+import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
+import 'package:medilink/view/SecretaryScreens/DashboardPage.dart';
+import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
+import 'package:medilink/view/SecretaryScreens/SideBarElements/DoctorsPage.dart';
+import 'package:medilink/view/SecretaryScreens/SideBarElements/PatientsPage.dart';
+import 'package:medilink/view/SecretaryScreens/notification/NotificationsPage.dart';
+import 'package:medilink/view/SecretaryScreens/profile/ProfilePage.dart';
 import 'package:medilink/view/widget/LanguageDialog.dart';
-import 'package:medilink/view/widget/home/Sidebar.dart';
-
+import 'package:medilink/view/widget/home/SecretarySidebar.dart';
 import 'package:medilink/view/widget/login/PulsingLogo.dart';
 
-class MainLayout extends StatelessWidget {
-  MainLayout({Key? key}) : super(key: key);
+class MainHealth extends StatelessWidget {
+  MainHealth({Key? key}) : super(key: key);
 
   final SidebarController sidebarController = Get.find<SidebarController>();
   final ThemeController themeController = Get.find<ThemeController>();
@@ -30,7 +30,7 @@ class MainLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = themeController.themeMode.value == ThemeMode.dark;
-    final iconColor = isDark ? Colors.blue[200] : Colors.grey[700];
+    final iconColor = isDark ? Color(0xFF1E7F5C) : Colors.grey[700];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
@@ -68,7 +68,7 @@ class MainLayout extends StatelessWidget {
                     PopupMenuButton<String>(
                       icon: Icon(Icons.settings, color: iconColor),
                       tooltip: 'Settings',
-                      color: Colors.blue.shade50.withOpacity(0.95),
+                      color: Color(0xFF1E7F5C).withOpacity(0.95),
 
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -91,7 +91,7 @@ class MainLayout extends StatelessWidget {
                                 children: [
                                   Icon(
                                     isDark ? Icons.light_mode : Icons.dark_mode,
-                                    color: Colors.blue[800],
+                                    color: Color(0xFF1E7F5C),
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
@@ -99,7 +99,7 @@ class MainLayout extends StatelessWidget {
 
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.blue[900],
+                                      color: Color(0xFF1E7F5C),
                                     ),
                                   ),
                                 ],
@@ -111,14 +111,17 @@ class MainLayout extends StatelessWidget {
                               value: 'language_dialog',
                               child: Row(
                                 children: [
-                                  Icon(Icons.language, color: Colors.blue[800]),
+                                  Icon(
+                                    Icons.language,
+                                    color: Color(0xFF1E7F5C),
+                                  ),
                                   const SizedBox(width: 10),
                                   Text(
                                     'اللغة',
 
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.blue[900],
+                                      color: Color(0xFF1E7F5C),
                                     ),
                                   ),
                                 ],
@@ -219,19 +222,19 @@ class MainLayout extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Sidebar(),
+                HealthSidebar(),
                 Expanded(
                   child: Obx(() {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
-                        return const DashboardPage();
-                      case 1:
-                        return AppointmentsPage();
+                        return const HealthDashboardPage();
+                      // case 1:
+                      //   return MedicalCenters();
 
-                      case 2:
-                        return PatientsPage();
-                      case 3:
-                        return DoctorsPage();
+                      // case 2:
+                      //   return CenterManagers();
+                      // case 3:
+                      //   return Powers();
 
                       case 4:
                         return ReportsPage();

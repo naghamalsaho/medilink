@@ -23,7 +23,7 @@ class StatsCard extends StatelessWidget {
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
-        width: 259,
+        width: 287,
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [

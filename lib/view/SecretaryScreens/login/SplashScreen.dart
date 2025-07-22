@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medilink/view/screen/login/LoginScreen.dart';
+import 'package:medilink/view/SecretaryScreens/login/LoginScreen.dart';
 import 'package:medilink/view/widget/login/HeartbeatAudioController.dart';
 import 'package:medilink/view/widget/login/animated_logo.dart';
 import 'package:medilink/view/widget/login/app_name_text.dart';

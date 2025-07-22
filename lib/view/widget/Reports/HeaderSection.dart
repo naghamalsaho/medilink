@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:medilink/view/widget/Reports/FilterDropdown.dart';
 
 class HeaderSection extends StatelessWidget {
   const HeaderSection({Key? key}) : super(key: key);
@@ -11,13 +10,20 @@ class HeaderSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('التقارير والإحصائيات', style: theme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          'التقارير والإحصائيات',
+          style: theme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 4),
-        Text('تحليل شامل لأداء المركز الطبي', style: theme.titleMedium?.copyWith(color: Colors.grey[600])),
+        Text(
+          'تحليل شامل لأداء المركز الطبي',
+          style: theme.titleMedium?.copyWith(color: Colors.grey[600]),
+        ),
       ],
     );
   }
 }
+
 class FilterSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -40,7 +46,7 @@ class FilterSection extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: OutlinedButton.icon(
                 onPressed: () {},
-                icon:  Icon(Icons.calendar_today_outlined),
+                icon: Icon(Icons.calendar_today_outlined),
                 label: Text(DateFormat('MM/dd/yyyy').format(DateTime.now())),
               ),
             ),
@@ -51,12 +57,13 @@ class FilterSection extends StatelessWidget {
           // 3) Status filter dropdown
           DropdownButton<String>(
             value: 'نظرة عامة',
-            items: ['نظرة عامة', 'متابعة', 'نجاح']
-                .map((label) => DropdownMenuItem(
-                      value: label,
-                      child: Text(label),
-                    ))
-                .toList(),
+            items:
+                ['نظرة عامة', 'متابعة', 'نجاح']
+                    .map(
+                      (label) =>
+                          DropdownMenuItem(value: label, child: Text(label)),
+                    )
+                    .toList(),
             onChanged: (_) {},
           ),
 
@@ -73,7 +80,10 @@ class FilterSection extends StatelessWidget {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 12,
+                ),
               ),
               onSubmitted: (query) {
                 // TODO: wire up your search logic

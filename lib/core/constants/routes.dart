@@ -5,7 +5,9 @@ abstract class AppRoute {
   static const splash = '/splash';
 
   // Main Layout & Dashboard
-  static const mainLayout = '/';
+  static const MainSecretary = '/';
+  static const MainHealth = '/';
+
   static const dashboard = '/dashboard';
 
   // Notifications & Profile
@@ -14,10 +16,9 @@ abstract class AppRoute {
   static const editProfile = '/profile/edit';
 
   // Settings & Language
-  
 
   // Other pages (add more as needed)
- static const appointments = '/appointments';
+  static const appointments = '/appointments';
   static const patients = '/patients';
   static const doctors = '/doctors';
   static const records = '/records';

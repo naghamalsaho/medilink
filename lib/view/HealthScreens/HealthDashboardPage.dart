@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:medilink/view/HealthScreens/HealthNotificationRow.dart';
+import 'package:medilink/view/HealthScreens/HealthWelcomeBanner%20.dart';
+import 'package:medilink/view/HealthScreens/MedicalCentersCard.dart';
 import 'package:medilink/view/widget/dashbord/AppointmentListCard.dart';
 import 'package:medilink/view/widget/dashbord/NotificationRow.dart';
 
 import 'package:medilink/view/widget/dashbord/StatCard%20.dart';
 import 'package:medilink/view/widget/dashbord/WelcomeBanner%20.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class HealthDashboardPage extends StatelessWidget {
+  const HealthDashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,39 +21,39 @@ class DashboardPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const WelcomeBanner(), // ✅ الترحيب العلوي
+            const HealthWelcomeBanner(), // ✅ الترحيب العلوي
             const SizedBox(height: 20),
 
             // ✅ كروت الإحصائيات
             Center(
               child: Wrap(
-                spacing: 16,
-                runSpacing: 16,
+                spacing: 20,
+                // runSpacing: 16,
                 children: const [
                   StatsCard(
-                    title: "Pending Appointments",
-                    value: "4",
+                    title: "Total medical centers",
+                    value: "40",
                     badge: "2-",
                     icon: Icons.access_time,
-                    color: Colors.orange,
+                    color: Colors.blue,
                   ),
                   StatsCard(
-                    title: "New Files",
-                    value: "8",
+                    title: "Active centers",
+                    value: "38",
                     badge: "3+",
                     icon: Icons.description_outlined,
-                    color: Colors.purple,
+                    color: Color(0xFF1E7F5C),
                   ),
                   StatsCard(
-                    title: "Today's Appointments",
-                    value: "23",
+                    title: "Total doctors",
+                    value: "2,800",
                     badge: "5+",
                     icon: Icons.calendar_today_outlined,
                     color: Colors.green,
                   ),
                   StatsCard(
                     title: "Total Patients",
-                    value: "1,248",
+                    value: "45,692",
                     badge: "12%",
                     icon: Icons.groups_outlined,
                     color: Colors.blue,
@@ -70,15 +73,15 @@ class DashboardPage extends StatelessWidget {
                   flex: 1,
                   child: Column(
                     children: [
-                      ImportantNotifications(),
+                      HealthImportantNotifications(),
                       SizedBox(height: 20),
                       // WeeklyStats(),
                     ],
                   ),
                 ),
-                SizedBox(width: 20),
+                SizedBox(width: 5),
                 // ➡️ مواعيد اليوم
-                Expanded(flex: 2, child: AppointmentsList()),
+                Expanded(flex: 2, child: MedicalCentersList()),
               ],
             ),
           ],
