@@ -15,6 +15,7 @@ abstract class LoginController extends GetxController {
 
 class LoginControllerImp extends LoginController {
   // Controllers
+  String? selectedRole;
   final loginController =
       TextEditingController(); // login: could be email or phone
   final passwordController = TextEditingController();
@@ -34,6 +35,7 @@ class LoginControllerImp extends LoginController {
         final response = await loginData.postData(
           loginController.text,
           passwordController.text,
+          selectedRole ?? "",
         );
         if (response['success'] == true) {
           final role = response['data']['role'];

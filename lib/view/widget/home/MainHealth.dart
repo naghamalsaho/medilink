@@ -9,6 +9,7 @@ import 'package:medilink/controller/profileController.dart';
 import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/view/HealthScreens/HealthDashboardPage.dart';
 import 'package:medilink/view/HealthScreens/HealthSidebar.dart';
+import 'package:medilink/view/HealthScreens/MedicalCenters.dart';
 import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
 import 'package:medilink/view/SecretaryScreens/DashboardPage.dart';
 import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
@@ -228,8 +229,8 @@ class MainHealth extends StatelessWidget {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
                         return const HealthDashboardPage();
-                      // case 1:
-                      //   return MedicalCenters();
+                      case 1:
+                        return MedicalCenters();
 
                       // case 2:
                       //   return CenterManagers();

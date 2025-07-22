@@ -61,7 +61,36 @@ class LoginForm extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
+
           const SizedBox(height: 48),
+          DropdownButtonFormField<String>(
+            value: controller.selectedRole,
+            decoration: InputDecoration(
+              labelText: 'Select Role',
+              filled: true,
+              fillColor: Colors.grey[100],
+              prefixIcon: const Icon(Icons.security_outlined),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            items:
+                [
+                  {'label': 'secretary', 'value': 'secretary'},
+                  {'label': 'super_admin', 'value': 'super_admin'},
+                  {'label': 'manager', 'value': 'manager'},
+                ].map((roleMap) {
+                  return DropdownMenuItem(
+                    value: roleMap['value'],
+                    child: Text(roleMap['label']!),
+                  );
+                }).toList(),
+            onChanged: (val) {
+              controller.selectedRole = val!;
+            },
+          ),
+          const SizedBox(height: 16),
+
           Customtextformauth(
             valid: (val) {
               return validInput(val!, 5, 100, "email");
@@ -81,6 +110,8 @@ class LoginForm extends StatelessWidget {
             mycontroller: controller.passwordController,
             type: "password",
           ),
+
+          /// 🔽 Dropdown لاختيار الرول
           const SizedBox(height: 24),
           CustomButtomAuth(
             text: "Sign In",

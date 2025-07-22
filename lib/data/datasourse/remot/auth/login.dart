@@ -5,11 +5,16 @@ class LoginData {
   final Crud crud;
   LoginData(this.crud);
 
-  Future<Map<String, dynamic>> postData(String login, String password) async {
+  Future<Map<String, dynamic>> postData(
+    String login,
+    String password,
+    String role,
+  ) async {
     return await crud.postData(AppLink.logIn, {
       "login": login,
       "password": password,
-      "role": "secretary", // تأكد من تطابق القيمة مع ما يطلبه السيرفر
+      // "role": "secretary", // تأكد من تطابق القيمة مع ما يطلبه السيرفر
+      "role": role,
     });
   }
 }
