@@ -17,6 +17,6 @@ class AppColor {
   static const Color accent = Colors.tealAccent;
   static const Color textDark = Color(0xFF333333);
   static const Color bgLight = Color(0xFFF5F5F5);
-  static const Color greenw= Color.fromARGB(255, 151, 242, 174);
-   static const Color purplw= Color.fromARGB(255, 241, 204, 237);
+  static const Color greenw = Color.fromARGB(255, 151, 242, 174);
+  static const Color purplw = Color.fromARGB(255, 241, 204, 237);
 }

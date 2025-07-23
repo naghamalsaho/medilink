@@ -23,8 +23,8 @@ class StatsCard extends StatelessWidget {
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
-        width: 259,
-        padding: const EdgeInsets.all(4),
+        width: 287,
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Row(
@@ -65,5 +65,4 @@ class StatsCard extends StatelessWidget {
       ),
     );
   }
-
 }

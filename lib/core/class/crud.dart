@@ -10,10 +10,10 @@ import 'package:medilink/core/services/MyServices.dart';
 
 import 'dart:io';
 import 'package:path/path.dart';
+
 class Crud {
   late MyServices myServices;
   late Map<String, String> headers;
-
   Crud() {
     myServices = Get.find<MyServices>();
     _initHeaders(); // ✅ أنشئ headers داخل constructor بعد ضمان جاهزية box
@@ -21,10 +21,7 @@ class Crud {
 
   void _initHeaders() {
     final lang = myServices.box.read("lang") ?? "en";
-    headers = {
-      "Accept": "application/json",
-      "Accept-Language": lang,
-    };
+    headers = {"Accept": "application/json", "Accept-Language": lang};
 
     String? token = myServices.box.read("token");
     if (token != null && token.isNotEmpty) {
@@ -39,42 +36,26 @@ class Crud {
     }
   }
 
-  Future<Either<StatusRequest, Map>> postData(String linkurl, data) async {
+  Future<Map<String, dynamic>> postData(
+    String linkurl,
+    Map<String, dynamic> data,
+  ) async {
     try {
-      //if (await checkInternet()) {
-      print("sssssssssss");
-      Token();
-      var response = await http.post(
+      final response = await http.post(
         Uri.parse(linkurl),
-        headers: headers,
-        body: data,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(data),
       );
-      print("response $response");
 
-      print(response.statusCode);
+      print("RAW RESPONSE: ${response.body}"); // للتأكد من البيانات الخام
 
-      if (response.statusCode == 200 ||
-          response.statusCode == 201 ||
-          response.statusCode == 401 ||
-          response.statusCode == 404 ||
-                    response.statusCode == 403 ||
-
-          response.statusCode == 400 ||
-          response.statusCode == 422 ||
-          response.statusCode == 500) {
-        Map responsebody = jsonDecode(response.body);
-        print("CRUUUUUUUUUUUUUUUUuuuuuuD $responsebody .....");
-
-        return Right(responsebody);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body); // إرجاع الـ Map مباشرة
       } else {
-        return const Left(StatusRequest.serverfailure);
+        return {"success": false, "message": "فشل في الاتصال"};
       }
-      // } else {
-      //   print("StatusRequest.offlinefailure");
-      //   return const Left(StatusRequest.offlinefailure);
-      // }
-    } catch (_) {
-      return const Left(StatusRequest.serverfailure);
+    } catch (e) {
+      return {"success": false, "message": "حدث خطأ: $e"};
     }
   }
 
@@ -90,6 +71,9 @@ class Crud {
       Map responsebody = jsonDecode(response.body);
 
       //print(responsebody);
+      print("STATUS CODE = ${response.statusCode}");
+      print("BODY = ${response.body}");
+
       print('=======${response}');
       return Right(responsebody);
     } else {
@@ -101,21 +85,24 @@ class Crud {
   }
 
   Future<Either<StatusRequest, Map>> postFileAndData(
-      String linkUrl, Map data, String? filename, File? file) async {
+    String linkUrl,
+    Map data,
+    String? filename,
+    File? file,
+  ) async {
     Token();
 
-    var request = http.MultipartRequest(
-      'Post',
-      Uri.parse(
-        linkUrl,
-      ),
-    );
+    var request = http.MultipartRequest('Post', Uri.parse(linkUrl));
     request.headers.addAll(headers);
     if (file != null) {
       int fileLength = await file.length();
       var streamData = http.ByteStream(file.openRead());
-      var multiFile = http.MultipartFile(filename!, streamData, fileLength,
-          filename: basename(file.path));
+      var multiFile = http.MultipartFile(
+        filename!,
+        streamData,
+        fileLength,
+        filename: basename(file.path),
+      );
       request.files.add(multiFile);
     }
 
@@ -146,20 +133,20 @@ class Crud {
     }
   }
 
-  Future<Either<StatusRequest, Map>> postMutipleImagesAndData(String linkurl,
-      Map data, String name, images, String? fileName, files) async {
+  Future<Either<StatusRequest, Map>> postMutipleImagesAndData(
+    String linkurl,
+    Map data,
+    String name,
+    images,
+    String? fileName,
+    files,
+  ) async {
     Token();
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse(
-        linkurl,
-      ),
-    );
+    var request = http.MultipartRequest('POST', Uri.parse(linkurl));
 
     request.headers.addAll(headers);
     for (int i = 0; i < files.length; i++) {
-
-     request.files.add(
+      request.files.add(
         http.MultipartFile(
           '$fileName[$i]',
           http.ByteStream(files[i].openRead()),
@@ -233,10 +220,7 @@ class Crud {
   Future<Either<StatusRequest, Map>> deleteData(String linkUrl) async {
     //  try {
     Token();
-    var response = await http.delete(
-      Uri.parse(linkUrl),
-      headers: headers,
-    );
+    var response = await http.delete(Uri.parse(linkUrl), headers: headers);
     print(response.statusCode);
 
     if (response.statusCode == 200 ||

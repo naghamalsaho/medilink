@@ -71,5 +71,4 @@ class DashboardHeaderSection extends StatelessWidget {
       ],
     );
   }
-
 }
