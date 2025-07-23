@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:medilink/core/class/handlingdataview.dart';
 import 'package:medilink/core/class/statusrequest.dart';
 import 'package:medilink/core/functions/handlingdatacontroller.dart';
+import 'package:medilink/core/services/MyServices.dart';
 import 'package:medilink/data/datasourse/remot/auth/login.dart';
 import 'package:medilink/view/SecretaryScreens/HomePage.dart';
 import 'package:medilink/view/widget/home/MainHealth.dart';
@@ -38,6 +39,15 @@ class LoginControllerImp extends LoginController {
           selectedRole ?? "",
         );
         if (response['success'] == true) {
+          final data = response['data'];
+          final box = Get.find<MyServices>().box;
+
+          box.write("token", data['access_token']);
+          box.write("refresh_token", data['refresh_token']);
+          box.write("token_type", data['token_type']);
+          box.write("role", data['role']);
+          print("=== TOKEN STORED === ${box.read('token')}");
+
           final role = response['data']['role'];
           switch (role) {
             case 'secretary':

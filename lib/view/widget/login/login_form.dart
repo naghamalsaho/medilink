@@ -74,6 +74,12 @@ class LoginForm extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Select Role';
+              }
+              return null;
+            },
             items:
                 [
                   {'label': 'secretary', 'value': 'secretary'},

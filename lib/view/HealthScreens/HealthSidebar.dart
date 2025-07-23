@@ -7,9 +7,8 @@ class HealthSidebarController extends GetxController {
 }
 
 class HealthSidebar extends StatelessWidget {
-  final HealthSidebarController sidebarController = Get.put(
-    HealthSidebarController(),
-  );
+  final HealthSidebarController sidebarController =
+      Get.find<HealthSidebarController>();
 
   final List<Map<String, dynamic>> menuItems = [
     {'icon': Icons.home_outlined, 'label': 'Dashboard'},
