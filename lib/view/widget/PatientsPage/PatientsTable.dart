@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:medilink/controller/patients_controller.dart';
 import 'patient_row.dart';
 
 class PatientsTable extends StatelessWidget {
@@ -6,48 +8,39 @@ class PatientsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Column(
-            children: const [
-              TableHeader(),
-              Divider(),
-              PatientRow(
-                name: "Ahmed Mohamed Ali",
-                email: "ahmed@email.com",
-                phone: "05012345678",
-                age: "35",
-                condition: "Diabetes",
-                lastVisit: "2024-01-15",
-                status: "Active",
-              ),
-              PatientRow(
-                name: "Fatima Saad",
-                email: "fatima@email.com",
-                phone: "05098765432",
-                age: "28",
-                condition: "Blood Pressure",
-                lastVisit: "2024-01-20",
-                status: "Active",
-              ),
-              PatientRow(
-                name: "Mohamed Khaled",
-                email: "mohammed@email.com",
-                phone: "0505555555",
-                age: "42",
-                condition: "Heart Disease",
-                lastVisit: "2024-01-10",
-                status: "Follow-up",
-              ),
-            ],
+    return GetBuilder<PatientsController>(
+      init: PatientsController(),
+      builder: (controller) {
+        if (controller.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return Center(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              children: [
+                const TableHeader(),
+                const Divider(),
+                ...controller.patients.map(
+                  (patient) => PatientRow(
+                    name: patient.name,
+                    email: patient.email,
+                    phone: patient.phone,
+                    age: patient.age,
+                    condition: patient.condition,
+                    lastVisit: patient.lastVisit,
+                    status: patient.status,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -8,8 +8,6 @@ import 'package:lottie/lottie.dart';
 import 'package:medilink/controller/profileController.dart';
 import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/view/HealthScreens/HealthDashboardPage.dart';
-import 'package:medilink/view/HealthScreens/HealthSidebar.dart';
-import 'package:medilink/view/HealthScreens/MedicalCenters.dart';
 import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
 import 'package:medilink/view/SecretaryScreens/DashboardPage.dart';
 import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
@@ -223,19 +221,19 @@ class MainHealth extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                HealthSidebar(),
+                SecretarySidebar(),
                 Expanded(
                   child: Obx(() {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
                         return const HealthDashboardPage();
                       case 1:
-                        return MedicalCenters();
+                        return AppointmentsPage();
 
-                      // case 2:
-                      //   return CenterManagers();
-                      // case 3:
-                      //   return Powers();
+                      case 2:
+                        return PatientsPage();
+                      case 3:
+                        return DoctorsPage();
 
                       case 4:
                         return ReportsPage();
