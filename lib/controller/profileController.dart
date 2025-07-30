@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
+import 'dart:io';
+import '../models/profile-model.dart';
+import '../api_link.dart';
 class UserController extends GetxController {
   final box = GetStorage();
 Uint8List? tempImageBytes;
@@ -76,5 +78,31 @@ String? tempImagePath;
       box.write('profileImageBase64', b64);
       profileImageBytes.value = imageBytes;
     }
+  }
+}
+class ProfileRepositoryImpl implements ProfileRepository {
+  final ApiService apiService;
+
+  ProfileRepositoryImpl(this.apiService);
+
+  @override
+  Future<Map<String, dynamic>> updateProfile({
+    required String fullName,
+    required String email,
+    required String phone,
+    required String address,
+    File? imageFile,
+  }) async {
+    return apiService.putWithFile(
+      endpoint: '/secretary/profile',
+      data: {
+        'full_name': fullName,
+        'email': email,
+        'phone': phone,
+        'address': address,
+      },
+      fileField: 'image',
+      file: imageFile,
+    );
   }
 }
