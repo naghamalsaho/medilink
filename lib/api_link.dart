@@ -5,4 +5,7 @@ class AppLink {
 
   //======================================Auth==================================//
   static const String logIn = "$server/api/login";
+
+  // ================= Patients =================
+  static const String patients = "$server/api/secretary/patients";
 }

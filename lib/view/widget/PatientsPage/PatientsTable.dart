@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medilink/controller/patients_controller.dart';
+import 'package:medilink/controller/PatientsController.dart';
+import 'package:medilink/core/class/statusrequest.dart';
 import 'patient_row.dart';
 
 class PatientsTable extends StatelessWidget {
@@ -11,33 +12,35 @@ class PatientsTable extends StatelessWidget {
     return GetBuilder<PatientsController>(
       init: PatientsController(),
       builder: (controller) {
-        if (controller.isLoading) {
+        if (controller.statusRequest == StatusRequest.loading) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        return Center(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              children: [
-                const TableHeader(),
-                const Divider(),
-                ...controller.patients.map(
-                  (patient) => PatientRow(
-                    name: patient.name,
-                    email: patient.email,
-                    phone: patient.phone,
-                    age: patient.age,
-                    condition: patient.condition,
-                    lastVisit: patient.lastVisit,
-                    status: patient.status,
-                  ),
+        if (controller.statusRequest == StatusRequest.failure) {
+          return const Center(child: Text("فشل تحميل البيانات"));
+        }
+
+        if (controller.patients.isEmpty) {
+          return const Center(child: Text("لا يوجد مرضى"));
+        }
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              const TableHeader(),
+              const Divider(),
+              ...controller.patients.map(
+                (patient) => PatientRow(
+                  name: patient.fullName,
+                  email: patient.email,
+                  phone: patient.phone,
+                  age: patient.age,
+                  condition: patient.condition ?? "-",
+                  lastVisit: patient.lastVisit ?? "-",
+                  status: patient.status ?? "N/A",
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
