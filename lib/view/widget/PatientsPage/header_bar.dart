@@ -8,9 +8,11 @@ class HeaderBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Text(
-          "Patients Management",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        Expanded(
+          child: const Text(
+            "Patients Management",
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
         ),
         const Spacer(),
         SizedBox(width: 300),
