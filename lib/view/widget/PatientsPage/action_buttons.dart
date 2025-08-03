@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:medilink/view/widget/PatientsPage/EditPatientDialog.dart';
-import 'package:medilink/view/widget/PatientsPage/PatientDetailsDialog%20.dart';
 
 class ActionButtons extends StatelessWidget {
-  final String name, email, phone, age, gender, status, condition, lastVisit;
+  final String name, email, phone, age, status, condition, lastVisit;
+  final int patientId; // أضفنا هذا فقط
 
   const ActionButtons({
     super.key,
@@ -13,56 +15,30 @@ class ActionButtons extends StatelessWidget {
     required this.age,
     required this.status,
     required this.condition,
-    required this.gender,
     required this.lastVisit,
+    required this.patientId, // أضفنا هذا فقط
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.visibility, color: Colors.blue),
-              tooltip: 'View Details',
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder:
-                      (context) => PatientDetailsDialog(
-                        name: name,
-                        email: email,
-                        phone: phone,
-                        age: age,
-                        condition: condition,
-                        lastVisit: lastVisit,
-                        status: status,
-                      ),
-                );
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.edit, color: Colors.orange),
-              tooltip: 'Edit Patient',
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder:
-                      (context) => EditPatientDialog(
-                        name: name,
-                        email: email,
-                        phone: phone,
-                        age: age,
-                        condition: condition,
-                        lastVisit: lastVisit,
-                        status: status,
-                      ),
-                );
-              },
-            ),
-          ],
+        IconButton(
+          icon: const Icon(Icons.edit, color: Colors.orange),
+          onPressed: () {
+            Get.dialog(
+              EditPatientDialog(
+                name: name,
+                email: email,
+                phone: phone,
+                age: age,
+                lastVisit: lastVisit,
+                status: status,
+                condition: condition,
+                patientId: patientId, // أضفنا هذا فقط
+              ),
+            );
+          },
         ),
       ],
     );

@@ -38,6 +38,7 @@ class PatientsTable extends StatelessWidget {
                   condition: patient.condition ?? "-",
                   lastVisit: patient.lastVisit ?? "-",
                   status: patient.status ?? "N/A",
+                  patientId: patient.id, // هذا السطر الجديد فقط!
                 ),
               ),
             ],

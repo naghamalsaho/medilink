@@ -59,6 +59,47 @@ class Crud {
     }
   }
 
+  //==============================================
+  // دالة مساعدة إذا أردتِ استخدام Response مباشرة
+  Future<Response> postRequest(
+    String linkurl,
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      headers['Content-Type'] = 'application/json';
+      final response = await http.post(
+        Uri.parse(linkurl),
+        headers: headers,
+        body: jsonEncode(data),
+      );
+
+      return Response(statusCode: response.statusCode, body: response.body);
+    } catch (e) {
+      return Response(statusCode: 500, statusText: e.toString());
+    }
+  } //==============================================
+
+  Future<http.Response> putData(String url, Map<String, dynamic> data) async {
+    try {
+      Token(); // ضيفي التوكن عالهيدرز
+      headers['Content-Type'] = 'application/json';
+      final response = await http.put(
+        Uri.parse(url),
+        headers: headers, // ✅ بدل من {"Content-Type": ...}
+        body: jsonEncode(data),
+      );
+
+      print("🔵 PUT Request to $url");
+      print("🟢 Response Status: ${response.statusCode}");
+      print("📦 Response Body: ${response.body}");
+
+      return response;
+    } catch (e) {
+      print("❌ PUT Error: $e");
+      return http.Response('{"success": false, "message": "Error: $e"}', 500);
+    }
+  }
+
   Future<Either<StatusRequest, Map>> getData(String linkurl) async {
     Token();
     // if (await checkInternet()) {
