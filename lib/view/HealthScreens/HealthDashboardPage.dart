@@ -36,6 +36,7 @@ class HealthDashboardPage extends StatelessWidget {
                     badge: "2-",
                     icon: Icons.access_time,
                     color: Colors.blue,
+                    token: '',
                   ),
                   StatsCard(
                     title: "Active centers",
@@ -43,6 +44,7 @@ class HealthDashboardPage extends StatelessWidget {
                     badge: "3+",
                     icon: Icons.description_outlined,
                     color: Color(0xFF1E7F5C),
+                    token: '',
                   ),
                   StatsCard(
                     title: "Total doctors",
@@ -50,6 +52,7 @@ class HealthDashboardPage extends StatelessWidget {
                     badge: "5+",
                     icon: Icons.calendar_today_outlined,
                     color: Colors.green,
+                    token: '',
                   ),
                   StatsCard(
                     title: "Total Patients",
@@ -57,6 +60,7 @@ class HealthDashboardPage extends StatelessWidget {
                     badge: "12%",
                     icon: Icons.groups_outlined,
                     color: Colors.blue,
+                    token: '',
                   ),
                 ],
               ),

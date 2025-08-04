@@ -8,6 +8,7 @@ import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
 import 'package:medilink/view/SecretaryScreens/DashboardPage.dart';
 import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
+import 'package:medilink/view/SecretaryScreens/SideBarElements/DashboardPage.dart';
 import 'package:medilink/view/SecretaryScreens/SideBarElements/DoctorsPage.dart';
 import 'package:medilink/view/SecretaryScreens/SideBarElements/PatientsPage.dart';
 import 'package:medilink/view/SecretaryScreens/notification/NotificationsPage.dart';

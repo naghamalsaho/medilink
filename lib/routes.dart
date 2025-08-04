@@ -3,6 +3,7 @@ import 'package:medilink/core/constants/routes.dart';
 import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
 import 'package:medilink/view/SecretaryScreens/DashboardPage.dart';
 import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
+import 'package:medilink/view/SecretaryScreens/SideBarElements/DashboardPage.dart';
 import 'package:medilink/view/SecretaryScreens/login/SplashScreen.dart';
 import 'package:medilink/view/SecretaryScreens/notification/NotificationsPage.dart';
 import 'package:medilink/view/SecretaryScreens/profile/EditProfilePage.dart';

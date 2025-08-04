@@ -15,6 +15,7 @@ class StatsCard extends StatelessWidget {
     required this.badge,
     required this.icon,
     required this.color,
+    required String token,
   }) : super(key: key);
 
   @override

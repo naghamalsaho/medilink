@@ -5,8 +5,11 @@ import 'package:medilink/api_link.dart';
 import 'package:medilink/core/class/statusrequest.dart';
 import 'package:medilink/data/datasourse/remot/PatientsData%20.dart';
 import 'package:medilink/models/patient_model.dart';
+import 'package:medilink/core/class/crud.dart';
 
 class PatientsController extends GetxController {
+  Crud crud = Crud(); // ✅ هيك صار عندك متغير crud معرف
+
   List<PatientModel> patients = [];
   StatusRequest statusRequest = StatusRequest.none;
 
@@ -52,6 +55,7 @@ class PatientsController extends GetxController {
     );
   }
 
+  //===========================================================================
   Future<void> updatePatient(int id, Map<String, dynamic> data) async {
     final url = AppLink.updatePatient(id);
 
@@ -89,5 +93,34 @@ class PatientsController extends GetxController {
       statusRequest = StatusRequest.success;
       update();
     }
+  }
+
+  //===========================================================================
+  Future<void> searchPatients(String query) async {
+    statusRequest = StatusRequest.loading;
+    update();
+
+    var response = await crud.getData(AppLink.searchPatients(query));
+
+    response.fold(
+      (failure) {
+        print("❌ Error: $failure");
+        statusRequest = StatusRequest.serverfailure;
+      },
+      (res) {
+        print("✅ Search Response: $res");
+        if (res['success'] == true) {
+          patients =
+              (res['data'] as List)
+                  .map((e) => PatientModel.fromJson(e))
+                  .toList();
+          statusRequest = StatusRequest.success;
+        } else {
+          statusRequest = StatusRequest.failure;
+        }
+      },
+    );
+
+    update();
   }
 }

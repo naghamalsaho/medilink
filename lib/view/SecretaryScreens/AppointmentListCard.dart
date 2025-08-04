@@ -1,31 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AppointmentsList extends StatelessWidget {
-  const AppointmentsList({super.key});
+  final List<dynamic> appointments;
+
+  const AppointmentsList({Key? key, required this.appointments})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final items = [
-      [
-        "Confirmed",
-        "09:30",
-        "Ahmad Mohammad",
-        "Dr. Sami Ahmad – General Check",
-      ],
-      ["Pending", "10:15", "Fatima Saad", "Dr. Leila Hasan – Follow-up"],
-      [
-        "Completed",
-        "11:00",
-        "Mohammad Khaled",
-        "Dr. Omar Hussein – Consultation",
-      ],
-      [
-        "Confirmed",
-        "11:45",
-        "Aisha Ahmad",
-        "Dr. Hiba Abdullah – Routine Check",
-      ],
-    ];
+    if (appointments.isEmpty) {
+      return const Center(child: Text("لا يوجد مواعيد اليوم"));
+    }
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -39,18 +24,18 @@ class AppointmentsList extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 16),
-            ...items.map((item) => _buildItem(item)).toList(),
+            ...appointments.map((item) => _buildItem(item)).toList(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildItem(List<String> data) {
-    final status = data[0];
-    final time = data[1];
-    final name = data[2];
-    final desc = data[3];
+  Widget _buildItem(dynamic data) {
+    final status = data['status'] ?? "Pending";
+    final time = data['time'] ?? "غير محدد";
+    final name = data['patient_name'] ?? "بدون اسم";
+    final desc = data['description'] ?? "لا يوجد وصف";
 
     final color =
         status == "Confirmed"
@@ -84,11 +69,9 @@ class AppointmentsList extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 20),
-
           const Icon(Icons.person_outline, color: Colors.grey),
         ],
       ),
     );
   }
-
 }
