@@ -20,17 +20,12 @@ class StatusBadge extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 3,
-      ), // ⬅️ صغّرنا البادينغ
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(20),
       ),
-      constraints: const BoxConstraints(
-        minWidth: 50,
-      ), // ⬅️ خلي العرض ثابت أو بحد أدنى
+      constraints: const BoxConstraints(minWidth: 50),
       alignment: Alignment.center,
       child: Text(
         status,

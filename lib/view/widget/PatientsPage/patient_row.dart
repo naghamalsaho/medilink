@@ -26,11 +26,10 @@ class PatientRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
-          crossAxisAlignment:
-              CrossAxisAlignment.center, // لضبط المحاذاة عمودياً
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              width: 200, // بدل Expanded: عمود الاسم والإيميل
+              width: 200,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -46,20 +45,20 @@ class PatientRow extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 85), // مسافة بين الاسم والإيميل وعمود العمر
+            SizedBox(width: 85),
             SizedBox(width: 80, child: Text("$age years")),
-            SizedBox(width: 60), // مسافة بين العمر وعمود الهاتف
+            SizedBox(width: 60),
             SizedBox(
               width: 155,
               child: Row(
                 children: [const Icon(Icons.phone, size: 16), Text(" $phone")],
               ),
             ),
-            SizedBox(width: 20), // مسافة بين الهاتف والـ condition
+            SizedBox(width: 20),
             SizedBox(width: 100, child: Text(condition)),
-            SizedBox(width: 80), // مسافة بين condition و lastVisit
+            SizedBox(width: 80),
             SizedBox(width: 100, child: Text(lastVisit)),
-            SizedBox(width: 40), // مسافة بين lastVisit و status
+            SizedBox(width: 40),
             SizedBox(width: 80, child: StatusBadge(status: status)),
             const SizedBox(width: 70),
             SizedBox(

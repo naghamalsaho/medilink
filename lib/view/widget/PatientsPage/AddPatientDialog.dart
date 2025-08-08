@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:medilink/controller/AddPatientController.dart';
 
 class AddPatientDialog extends StatelessWidget {
-  const AddPatientDialog({super.key});
+  AddPatientDialog({super.key});
+
+  final AddPatientController controller = Get.put(AddPatientController());
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController ageController = TextEditingController();
-    final TextEditingController phoneController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController addressController = TextEditingController();
-    String gender = 'Male';
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
@@ -28,11 +25,11 @@ class AddPatientDialog extends StatelessWidget {
               const SizedBox(height: 20),
 
               // الاسم
-              const Text("Full name of the patientEnter the patient's name"),
+              const Text("Full name of the patient"),
               const SizedBox(height: 6),
               TextField(
                 decoration: _inputDecoration("Enter the patient's name"),
-                controller: nameController,
+                controller: controller.nameController,
               ),
 
               const SizedBox(height: 16),
@@ -45,22 +42,25 @@ class AddPatientDialog extends StatelessWidget {
                       children: [
                         const Text("Gender"),
                         const SizedBox(height: 6),
-                        DropdownButtonFormField<String>(
-                          value: gender,
-                          items: const [
-                            DropdownMenuItem(
-                              value: "Male",
-                              child: Text("Male"),
-                            ),
-                            DropdownMenuItem(
-                              value: "Female",
-                              child: Text("Female"),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            if (value != null) gender = value;
-                          },
-                          decoration: _inputDecoration("Gender"),
+                        Obx(
+                          () => DropdownButtonFormField<String>(
+                            value: controller.gender.value,
+                            items: const [
+                              DropdownMenuItem(
+                                value: "Male",
+                                child: Text("Male"),
+                              ),
+                              DropdownMenuItem(
+                                value: "Female",
+                                child: Text("Female"),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              if (value != null)
+                                controller.gender.value = value;
+                            },
+                            decoration: _inputDecoration("Gender"),
+                          ),
                         ),
                       ],
                     ),
@@ -76,7 +76,7 @@ class AddPatientDialog extends StatelessWidget {
                         const SizedBox(height: 6),
                         TextField(
                           decoration: _inputDecoration("Age"),
-                          controller: ageController,
+                          controller: controller.ageController,
                           keyboardType: TextInputType.number,
                         ),
                       ],
@@ -90,7 +90,7 @@ class AddPatientDialog extends StatelessWidget {
               const SizedBox(height: 6),
               TextField(
                 decoration: _inputDecoration("09xxxxxxxx"),
-                controller: phoneController,
+                controller: controller.phoneController,
                 keyboardType: TextInputType.phone,
               ),
 
@@ -99,7 +99,7 @@ class AddPatientDialog extends StatelessWidget {
               const SizedBox(height: 6),
               TextField(
                 decoration: _inputDecoration("example@email.com"),
-                controller: emailController,
+                controller: controller.emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
 
@@ -108,7 +108,7 @@ class AddPatientDialog extends StatelessWidget {
               const SizedBox(height: 6),
               TextField(
                 decoration: _inputDecoration("Enter the full address"),
-                controller: addressController,
+                controller: controller.addressController,
                 maxLines: 3,
               ),
 
@@ -121,15 +121,32 @@ class AddPatientDialog extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                     child: const Text("cancel"),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // TODO: تنفيذ الإضافة الفعلية
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2D5FFF),
+
+                  Obx(
+                    () => ElevatedButton(
+                      onPressed:
+                          controller.isLoading.value
+                              ? null
+                              : () {
+                                print("🔵 Save button pressed");
+
+                                controller.addPatient();
+                              },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2D5FFF),
+                      ),
+                      child:
+                          controller.isLoading.value
+                              ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Text("Save"),
                     ),
-                    child: const Text("Save"),
                   ),
                 ],
               ),

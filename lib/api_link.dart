@@ -17,4 +17,6 @@ class AppLink {
   static const String dashboard = "$server/api/secretary/dashboard-stats?";
   static const String todaysAppointments =
       "$server/api/secretary/appointments/today";
+  static String deletePatient(int patientId) =>
+      "$server/api/secretary/patients/$patientId";
 }

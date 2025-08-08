@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:medilink/api_link.dart';
 import 'package:medilink/core/class/statusrequest.dart';
@@ -8,10 +7,11 @@ import 'package:medilink/models/patient_model.dart';
 import 'package:medilink/core/class/crud.dart';
 
 class PatientsController extends GetxController {
-  Crud crud = Crud(); // ✅ هيك صار عندك متغير crud معرف
+  Crud crud = Crud();
 
-  List<PatientModel> patients = [];
+  RxList<PatientModel> patients = <PatientModel>[].obs;
   StatusRequest statusRequest = StatusRequest.none;
+  var isLoading = false.obs;
 
   final PatientsData patientsData = PatientsData(Get.find());
 
@@ -35,32 +35,27 @@ class PatientsController extends GetxController {
       },
       (res) {
         print("✅ Response: $res");
-        // استبدل هذا السطر:
-        // statusRequest = handlingData(res as Response);
-        // بهذا:
+
         statusRequest = StatusRequest.success;
 
         if (res['success'] == true) {
-          patients =
+          patients.value =
               (res['data'] as List)
                   .map((e) => PatientModel.fromJson(e))
                   .toList();
-          print("Patients List: $patients");
+          print("Patients List: ${patients.length}");
         } else {
           statusRequest = StatusRequest.failure;
         }
         update();
-        // 1. انقل دالة updatePatient خارج getPatients
       },
     );
   }
 
   //===========================================================================
   Future<void> updatePatient(int id, Map<String, dynamic> data) async {
-    final url = AppLink.updatePatient(id);
-
-    print("🔵 بدء تعديل المريض ID: $id");
-    print("📤 البيانات المرسلة: $data");
+    print(" بدء تعديل المريض ID: $id");
+    print(" البيانات المرسلة: $data");
 
     statusRequest = StatusRequest.loading;
     update();
@@ -71,16 +66,14 @@ class PatientsController extends GetxController {
       if (response.statusCode == 200) {
         final res = jsonDecode(response.body);
         if (res['success'] == true) {
-          print("✅ تم التعديل بنجاح: ${res['data']}");
+          print(" تم التعديل بنجاح: ${res['data']}");
 
-          // تحديث القائمة المحلية
           final updatedPatient = PatientModel.fromJson(res['data']);
           final index = patients.indexWhere((p) => p.id == id);
           if (index != -1) patients[index] = updatedPatient;
 
           Get.snackbar("نجاح", "تم تعديل بيانات المريض");
-          update();
-          Get.back(); // إغلاق نافذة التعديل
+          Get.back();
         } else {
           Get.snackbar("فشل", res['message'] ?? "فشل غير معروف");
         }
@@ -110,7 +103,7 @@ class PatientsController extends GetxController {
       (res) {
         print("✅ Search Response: $res");
         if (res['success'] == true) {
-          patients =
+          patients.value =
               (res['data'] as List)
                   .map((e) => PatientModel.fromJson(e))
                   .toList();
@@ -122,5 +115,35 @@ class PatientsController extends GetxController {
     );
 
     update();
+  }
+
+  //===========================================================================
+  // ✅ دالة لإضافة مريض جديد محلياً بعد الإضافة من السيرفر
+  Future<void> deletePatient(int id) async {
+    statusRequest = StatusRequest.loading;
+    update();
+
+    final url = AppLink.deletePatient(id);
+    final result = await crud.deleteData(url);
+
+    result.fold(
+      (failure) {
+        Get.snackbar("خطأ", "فشل حذف المريض");
+        statusRequest = StatusRequest.failure;
+        update();
+      },
+      (res) {
+        if (res['success'] == true) {
+          patients.removeWhere((p) => p.id == id);
+          Get.snackbar("نجاح", "تم حذف المريض بنجاح");
+          statusRequest = StatusRequest.success;
+          update();
+        } else {
+          Get.snackbar("خطأ", res['message'] ?? "فشل حذف المريض");
+          statusRequest = StatusRequest.failure;
+          update();
+        }
+      },
+    );
   }
 }

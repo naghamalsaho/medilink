@@ -18,21 +18,17 @@ class HeaderBar extends StatelessWidget {
         SizedBox(width: 300),
         const SizedBox(width: 12),
 
-        //   ElevatedButton.icon(
-        //     onPressed: () {
-        //       showDialog(
-        //         context: context,
-        //         builder: (_) => const AddPatientDialog(),
-        //       );
-        //     },
-        //     icon: const Icon(Icons.add),
-        //     label: const Text("Add New Patient"),
-        //     style: ElevatedButton.styleFrom(
-        //       backgroundColor: Colors.blue,
-        //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        //     ),
-
-        //  ),
+        ElevatedButton.icon(
+          onPressed: () {
+            showDialog(context: context, builder: (_) => AddPatientDialog());
+          },
+          icon: const Icon(Icons.add),
+          label: const Text("Add New Patient"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          ),
+        ),
       ],
     );
   }

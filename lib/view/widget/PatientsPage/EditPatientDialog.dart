@@ -74,7 +74,7 @@ class _EditPatientDialogState extends State<EditPatientDialog> {
                             "Inactive",
                           ].contains(widget.status)
                           ? widget.status
-                          : "Follow-up", // fallback للقيمة الافتراضية                  decoration: const InputDecoration(labelText: "Status"),
+                          : "Active", // للقيمة الافتراضية                  decoration: const InputDecoration(labelText: "Status"),
                   items:
                       ["Active", "Follow-up", "Inactive"]
                           .map(
@@ -86,7 +86,6 @@ class _EditPatientDialogState extends State<EditPatientDialog> {
                           .toList(),
                   onChanged: (newValue) {
                     setState(() {
-                      // خزني القيمة الجديدة
                       selectedStatus = newValue!;
                     });
                   },

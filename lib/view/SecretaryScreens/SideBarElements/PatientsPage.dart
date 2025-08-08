@@ -1,4 +1,3 @@
-// main PatientsPage class
 import 'package:flutter/material.dart';
 import 'package:medilink/view/widget/PatientsPage/PatientsTable.dart';
 import 'package:medilink/view/widget/PatientsPage/filter_bar.dart';
