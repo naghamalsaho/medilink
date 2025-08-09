@@ -4,88 +4,85 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:medilink/api_link.dart';
 import 'package:medilink/controller/PatientsController.dart';
+import 'package:medilink/core/class/statusrequest.dart';
 import 'package:medilink/core/services/MyServices.dart';
 import 'package:medilink/models/patient_model.dart';
 
 class AddPatientController extends GetxController {
   // حقول تحكم النصوص
   var nameController = TextEditingController();
-  var ageController = TextEditingController();
+  var birthDateController = TextEditingController();
   var phoneController = TextEditingController();
   var emailController = TextEditingController();
   var addressController = TextEditingController();
+
   var gender = 'Male'.obs;
   var isLoading = false.obs;
 
-  // دالة الإضافة
-  Future<void> addPatient() async {
-    if (nameController.text.isEmpty || ageController.text.isEmpty) {
-      Get.snackbar('خطأ', 'الاسم والعمر مطلوبان');
-      return;
-    }
+  late String token;
+  StatusRequest statusRequest = StatusRequest.none;
 
+  @override
+  void onInit() {
+    super.onInit();
+    token = Get.find<MyServices>().sharedPreferences.getString("token") ?? "";
+  }
+
+  Future<void> addPatient() async {
     isLoading.value = true;
-    final box = Get.find<MyServices>().box;
-    final token = box.read("token"); // ⚠️ مو AppLink.token
-    var url = Uri.parse(AppLink.patients);
-    final body = {
-      "name": nameController.text,
-      "age": int.tryParse(ageController.text) ?? 0,
-      "gender": gender.value,
-      "phone": phoneController.text,
-      "email": emailController.text,
-      "address": addressController.text,
-      "status": "Active",
+    statusRequest = StatusRequest.loading;
+    update();
+
+    var headers = {
+      'Authorization':
+          'Bearer uj8b7iZ164ZSMxiyQmPnW04odaij0gNCxj8sjr1kf01f0552',
+      'Accept': 'application/json',
+      'Content-Type': 'multipart/form-data',
     };
 
-    print("🔁 Sending request to: $url");
-    print("📤 Request body: $body");
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('https://medical.doctorme.site/api/secretary/patients'),
+    );
+
+    request.headers.addAll(headers);
+
+    request.fields['full_name'] = nameController.text;
+    request.fields['email'] = emailController.text;
+    request.fields['phone'] = phoneController.text;
+    request.fields['birthdate'] = birthDateController.text;
+    request.fields['gender'] = gender.value.toLowerCase();
+    request.fields['address'] = addressController.text;
 
     try {
-      var response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode(body),
-      );
+      var response = await request.send();
+      var responseBody = await response.stream.bytesToString();
 
-      print("🔵 STATUS: ${response.statusCode}");
-      print("🟢 BODY: ${response.body}");
+      print('Status code: ${response.statusCode}');
+      print('Response body: $responseBody');
 
-      final res = jsonDecode(response.body);
+      var jsonData = jsonDecode(responseBody);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (res['success'] == true) {
-          Get.back();
-          Get.snackbar('نجاح', 'تمت إضافة المريض بنجاح');
+      if (response.statusCode == 201 && jsonData['success'] == true) {
+        Get.snackbar('نجاح', jsonData['message'] ?? 'تمت إضافة المريض بنجاح');
+        statusRequest = StatusRequest.success;
 
-          /// ✅ إنشاء PatientModel جديد مباشرة
-          final patient = PatientModel(
-            id: res['data']['user_id'],
-            fullName: nameController.text,
-            email: emailController.text,
-            phone: phoneController.text,
-            age: ageController.text,
-            status: "Active",
-          );
+        final patientsController = Get.find<PatientsController>();
+        await patientsController
+            .getPatients(); // جلب قائمة المرضى مجدداً بعد الإضافة
 
-          /// ✅ إضافة للمصفوفة مباشرة بدون getPatients()
-          final patientsController = Get.find<PatientsController>();
-          patientsController.patients.insert(0, patient);
-          patientsController.update();
-        } else {
-          Get.snackbar('خطأ', res['message'] ?? 'فشلت العملية');
-        }
+        Get.back();
       } else {
-        Get.snackbar('خطأ', res['message'] ?? 'فشلت الإضافة');
+        Get.snackbar('خطأ', jsonData['message'] ?? 'فشل الإضافة');
+        statusRequest = StatusRequest.failure;
       }
     } catch (e) {
-      print("❌ Exception: $e");
-      Get.snackbar('استثناء', e.toString());
+      print('Error during addPatient request: $e');
+      Get.snackbar('خطأ', 'حدث خطأ أثناء إرسال البيانات');
+      statusRequest = StatusRequest.failure;
     } finally {
       isLoading.value = false;
+      update();
     }
   }
 }

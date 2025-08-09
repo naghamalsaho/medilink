@@ -12,7 +12,6 @@ class PatientsController extends GetxController {
   RxList<PatientModel> patients = <PatientModel>[].obs;
   StatusRequest statusRequest = StatusRequest.none;
   var isLoading = false.obs;
-
   final PatientsData patientsData = PatientsData(Get.find());
 
   @override
@@ -119,31 +118,7 @@ class PatientsController extends GetxController {
 
   //===========================================================================
   // ✅ دالة لإضافة مريض جديد محلياً بعد الإضافة من السيرفر
-  Future<void> deletePatient(int id) async {
-    statusRequest = StatusRequest.loading;
-    update();
-
-    final url = AppLink.deletePatient(id);
-    final result = await crud.deleteData(url);
-
-    result.fold(
-      (failure) {
-        Get.snackbar("خطأ", "فشل حذف المريض");
-        statusRequest = StatusRequest.failure;
-        update();
-      },
-      (res) {
-        if (res['success'] == true) {
-          patients.removeWhere((p) => p.id == id);
-          Get.snackbar("نجاح", "تم حذف المريض بنجاح");
-          statusRequest = StatusRequest.success;
-          update();
-        } else {
-          Get.snackbar("خطأ", res['message'] ?? "فشل حذف المريض");
-          statusRequest = StatusRequest.failure;
-          update();
-        }
-      },
-    );
+  void addPatientLocally(PatientModel patient) {
+    patients.insert(0, patient);
   }
 }

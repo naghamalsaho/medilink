@@ -60,7 +60,6 @@ class Crud {
   }
 
   //==============================================
-  // دالة مساعدة إذا أردتِ استخدام Response مباشرة
   Future<Response> postRequest(
     String linkurl,
     Map<String, dynamic> data,

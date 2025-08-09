@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:medilink/controller/AddPatientController.dart';
+import 'package:medilink/controller/PatientsController.dart';
 
 class AddPatientDialog extends StatelessWidget {
   AddPatientDialog({super.key});
@@ -76,7 +77,7 @@ class AddPatientDialog extends StatelessWidget {
                         const SizedBox(height: 6),
                         TextField(
                           decoration: _inputDecoration("Age"),
-                          controller: controller.ageController,
+                          controller: controller.birthDateController,
                           keyboardType: TextInputType.number,
                         ),
                       ],
@@ -118,7 +119,11 @@ class AddPatientDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      if (!controller.isLoading.value) {
+                        Navigator.pop(context);
+                      }
+                    },
                     child: const Text("cancel"),
                   ),
 
@@ -127,11 +132,11 @@ class AddPatientDialog extends StatelessWidget {
                       onPressed:
                           controller.isLoading.value
                               ? null
-                              : () {
+                              : () async {
                                 print("🔵 Save button pressed");
-
-                                controller.addPatient();
+                                await controller.addPatient();
                               },
+
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2D5FFF),
                       ),
