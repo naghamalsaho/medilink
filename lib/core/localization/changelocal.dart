@@ -18,7 +18,7 @@ class LocalController extends GetxController {
   void onInit() {
     super.onInit();
 
-    // قراءة اللغة المحفوظة أو اللغة الحالية للجهاز
+    
     String? boxLanguage = myServices.box.read("lang");
     if (boxLanguage == "ar") {
       language = const Locale("ar");
@@ -28,7 +28,7 @@ class LocalController extends GetxController {
       language = Locale(Get.deviceLocale?.languageCode ?? "en");
     }
 
-    // حفظ اللغة الحالية إذا لم تكن محفوظة مسبقًا
+  
     myServices.box.write("lang", language!.languageCode);
     Get.updateLocale(language!);
   }

@@ -4,6 +4,6 @@ loading ,
 success ,
 failure ,
 serverfailure ,
-offlinefailure  ,
+offlinefailure, offlineFail  ,
 
 }

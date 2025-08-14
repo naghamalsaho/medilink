@@ -18,7 +18,7 @@ class LoginControllerImp extends LoginController {
   // Controllers
   String? selectedRole;
   final loginController =
-      TextEditingController(); // login: could be email or phone
+      TextEditingController(); 
   final passwordController = TextEditingController();
 
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
@@ -51,35 +51,36 @@ class LoginControllerImp extends LoginController {
           final role = response['data']['role'];
           switch (role) {
             case 'secretary':
-              Get.offAll(() => AppRoute.MainSecretary()); // واجهة وزارة الصحة
+              Get.offAll(() => AppRoute.MainSecretary()); 
               break;
             case 'super_admin':
-              Get.offAll(() => MainHealth()); // واجهة المستشفى
+              Get.offAll(() => MainHealth()); 
               break;
             default:
-              Get.offAll(() => HomePage()); // واجهة افتراضية
+              Get.offAll(() => HomePage()); 
           }
         } else {
           Get.defaultDialog(
             title: "خطأ",
-            middleText: response['message'] ?? "بيانات الدخول غير صحيحة",
+            middleText: response['message'] ?? "The login information is incorrect.",
           );
         }
 
         print(
           "RESPONSE TYPE: ${response.runtimeType}",
-        ); // للتأكد من نوع البيانات
+        ); 
         print("FULL RESPONSE: $response");
 
         // if (response['success'] == true) {
-        //   // الانتقال المباشر للصفحة التالية
+        
         //   Get.offAll(
         //     () => AppRoute.MainLayout(),
-        //   ); // استبدل HomePage بصفحتك الفعلية
+        //   ); 
         // }
       } catch (e) {
         print("CATCHED ERROR: $e");
-        Get.defaultDialog(title: "خطأ", middleText: "تعذر الاتصال بالسيرفر");
+        Get.defaultDialog(title: "error", middleText: "Unable to connect to server"
+);
       } finally {
         statusRequest = StatusRequest.none;
         update();

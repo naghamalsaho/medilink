@@ -9,12 +9,12 @@ class BestDoctorsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          children: [Text('أفضل الأطباء أداءً', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)), const Spacer(), const Text('عرض الكل', style: TextStyle(color: Colors.blue))],
+          children: [Text('Top Performing Doctors', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)), const Spacer(), const Text('عرض الكل', style: TextStyle(color: Colors.blue))],
         ),
         const SizedBox(height: 16),
-        const DoctorRow(rank: 1, name: 'د. سامي الأحمد', rating: '4.8/5', count: 89),
+        const DoctorRow(rank: 1, name: 'Dr. Sami Al-Ahmad', rating: '4.8/5', count: 89),
         const SizedBox(height: 8),
-        const DoctorRow(rank: 2, name: 'د. ليلى حسن', rating: '4.9/5', count: 76),
+        const DoctorRow(rank: 2, name: 'Dr. Laila Hassan', rating: '4.9/5', count: 76),
       ],
     );
   }
@@ -48,7 +48,7 @@ class DoctorRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(name, style: const TextStyle(fontWeight: FontWeight.w600)),
-            Text('$count موعد', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            Text('$count appointment', style: const TextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
         const Spacer(),

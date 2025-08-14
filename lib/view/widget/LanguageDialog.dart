@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:medilink/core/localization/changelocal.dart'; // تأكد أنك استوردت هذا
+import 'package:medilink/core/localization/changelocal.dart'; 
 
 class LanguageDialog extends StatelessWidget {
   const LanguageDialog({Key? key}) : super(key: key);

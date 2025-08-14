@@ -33,9 +33,9 @@ class StatisticsGrid extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: const [
-        StatisticsCard(title: 'معدل الحضور', value: '93.2%', footer: '+2.1% من الشهر الماضي', icon: Icons.show_chart, color: Colors.purple),
-        StatisticsCard(title: 'إجمالي المواعيد', value: '367', footer: '342 مكتمل', icon: Icons.calendar_today, color: Colors.green),
-        StatisticsCard(title: 'إجمالي المرضى', value: '1,248', footer: '+52 مريض جديد', icon: Icons.people, color: Colors.blue),
+        StatisticsCard(title: 'Attendance rate', value: '93.2%', footer: '+2.1% From last month', icon: Icons.show_chart, color: Colors.purple),
+        StatisticsCard(title: 'Total Appointments', value: '367', footer: '342 complete', icon: Icons.calendar_today, color: Colors.green),
+        StatisticsCard(title: 'Total patients', value: '1,248', footer: '+52 New patient', icon: Icons.people, color: Colors.blue),
       ],
     );
   }

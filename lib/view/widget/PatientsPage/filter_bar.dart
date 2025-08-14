@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:medilink/controller/PatientsController.dart';
 
 class FilterBar extends StatelessWidget {
   const FilterBar({super.key});
@@ -23,18 +26,17 @@ class FilterBar extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: TextField(
+            onChanged: (value) {
+              Get.find<PatientsController>().searchPatients(value);
+            },
             decoration: InputDecoration(
-              hintText: 'Search by name, phone or condition...',
+              hintText: 'Search by name, phone or ststus...',
               prefixIcon: Icon(Icons.search),
               filled: true,
               fillColor: Colors.white,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide.none,
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 0,
-                horizontal: 8,
               ),
             ),
           ),

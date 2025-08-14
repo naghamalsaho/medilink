@@ -11,12 +11,12 @@ class HeaderSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'التقارير والإحصائيات',
+          ' reports and statisics',
           style: theme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Text(
-          'تحليل شامل لأداء المركز الطبي',
+          '   comprehensive analysis for the medical center perfomance ',
           style: theme.titleMedium?.copyWith(color: Colors.grey[600]),
         ),
       ],
@@ -31,16 +31,16 @@ class FilterSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         children: [
-          // 1) Export button
+         
           ElevatedButton.icon(
             onPressed: () {},
             icon: const Icon(Icons.download_rounded),
-            label: const Text("تصدير التقرير"),
+            label: const Text(" Export report"),
           ),
 
           const SizedBox(width: 16),
 
-          // 2) Date picker
+         
           Expanded(
             child: Align(
               alignment: Alignment.centerLeft,
@@ -54,11 +54,10 @@ class FilterSection extends StatelessWidget {
 
           const SizedBox(width: 16),
 
-          // 3) Status filter dropdown
           DropdownButton<String>(
-            value: 'نظرة عامة',
+            value: 'General overvirw ',
             items:
-                ['نظرة عامة', 'متابعة', 'نجاح']
+                ['General overvirw ', 'follow', 'successful']
                     .map(
                       (label) =>
                           DropdownMenuItem(value: label, child: Text(label)),
@@ -67,15 +66,15 @@ class FilterSection extends StatelessWidget {
             onChanged: (_) {},
           ),
 
-          // 4) Spacer pushes search to right
+          
           const Spacer(),
 
-          // 5) Search field
+         
           SizedBox(
             width: 250,
             child: TextField(
               decoration: InputDecoration(
-                hintText: 'بحث بالاسم، مريض، موعد أو ملف...',
+                hintText: '     Search by patient name, appointment oe file...',
                 prefixIcon: const Icon(Icons.search_outlined),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),

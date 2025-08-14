@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppointmentsList extends StatelessWidget {
-  const AppointmentsList({super.key});
+  const AppointmentsList({super.key, required patientName, required time});
 
   @override
   Widget build(BuildContext context) {
@@ -90,5 +90,4 @@ class AppointmentsList extends StatelessWidget {
       ),
     );
   }
-
 }

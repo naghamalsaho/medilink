@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:medilink/view/widget/DoctorsPage/AddDoctorDialog.dart';
 import 'package:medilink/view/widget/DoctorsPage/DoctorCard.dart';
+import 'package:medilink/view/widget/DoctorsPage/DoctorCard2.dart';
 import 'package:medilink/view/widget/DoctorsPage/DoctorHeader.dart';
 
 class MedicalCenters extends StatelessWidget {
@@ -30,7 +31,7 @@ class MedicalCenters extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              const DoctorCard(
+              const DoctorCard2(
                 name: 'D.sami',
                 specialty: 'General Medicine',
                 qualifications:
@@ -44,7 +45,7 @@ class MedicalCenters extends StatelessWidget {
                 appointments: 89,
                 isActive: true,
               ),
-              const DoctorCard(
+              const DoctorCard2(
                 name: 'D.sami',
                 specialty: 'General Medicine',
                 qualifications:
@@ -59,7 +60,7 @@ class MedicalCenters extends StatelessWidget {
                 isActive: true,
               ),
               SizedBox(height: 14),
-              const DoctorCard(
+              const DoctorCard2(
                 name: 'D.sami',
                 specialty: 'General Medicine',
                 qualifications:

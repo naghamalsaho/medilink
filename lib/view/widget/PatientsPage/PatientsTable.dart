@@ -17,11 +17,11 @@ class PatientsTable extends StatelessWidget {
         }
 
         if (controller.statusRequest == StatusRequest.failure) {
-          return const Center(child: Text("فشل تحميل البيانات"));
+          return const Center(child: Text("Failed to load data"));
         }
 
         if (controller.patients.isEmpty) {
-          return const Center(child: Text("لا يوجد مرضى"));
+          return const Center(child: Text("No patients"));
         }
 
         return SingleChildScrollView(
@@ -37,7 +37,8 @@ class PatientsTable extends StatelessWidget {
                   age: patient.age,
                   condition: patient.condition ?? "-",
                   lastVisit: patient.lastVisit ?? "-",
-                  status: patient.status ?? "N/A",
+                  status: patient.status ?? "Active",
+                  patientId: patient.id, // هذا السطر الجديد فقط!
                 ),
               ),
             ],

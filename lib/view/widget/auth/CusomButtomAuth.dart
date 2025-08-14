@@ -3,7 +3,7 @@ import 'package:medilink/core/constants/AppColor.dart';
 
 class CustomButtomAuth extends StatelessWidget {
   final String text;
-  final IconData? icon; // ← أضفنا هذا السطر
+  final IconData? icon; 
 
   final void Function()? onPressed;
 
@@ -17,8 +17,8 @@ class CustomButtomAuth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity, // ياخد عرض الشاشة بالكامل
-      height: 50, // نفس ارتفاع الحقول
+      width: double.infinity, 
+      height: 50, 
       child: ElevatedButton(
         onPressed: onPressed,
 

@@ -22,7 +22,7 @@ class PatientModel {
   factory PatientModel.fromJson(Map<String, dynamic> json) {
     return PatientModel(
       id: json['id'],
-      fullName: json['full_name'], // ✅ مش name
+      fullName: json['full_name'], 
       email: json['email'],
       phone: json['phone'],
       age: json['age'].toString(),

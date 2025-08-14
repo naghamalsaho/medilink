@@ -10,9 +10,9 @@ class PerformanceSummarySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 👉 هنا أضفنا العنوان
+        
         Text(
-          'ملخص الأداء',
+          ' performance summary',
           style: theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
@@ -21,7 +21,7 @@ class PerformanceSummarySection extends StatelessWidget {
             Expanded(
               child: SummaryCard(
                 value: '95%',
-                title: 'رضا المرضى',
+                title: 'patient satisfaction ',
                 backgroundColor: Color(0xFFE3F2FD),
                 valueColor: Color(0xFF1E88E5),
               ),
@@ -30,7 +30,7 @@ class PerformanceSummarySection extends StatelessWidget {
             Expanded(
               child: SummaryCard(
                 value: 'min 12',
-                title: 'متوسط وقت الانتظار',
+                title: 'average waiting time ',
                 backgroundColor: Color(0xFFE8F5E9),
                 valueColor: Color(0xFF43A047),
               ),
@@ -39,7 +39,7 @@ class PerformanceSummarySection extends StatelessWidget {
             Expanded(
               child: SummaryCard(
                 value: '4.7/5',
-                title: 'تقييم الخدمة',
+                title: ' service evaluation',
                 backgroundColor: Color(0xFFF3E5F5),
                 valueColor: Color(0xFF8E24AA),
               ),
@@ -48,7 +48,7 @@ class PerformanceSummarySection extends StatelessWidget {
             Expanded(
               child: SummaryCard(
                 value: '24/7',
-                title: 'ساعات العمل',
+                title: ' working hours',
                 backgroundColor: Color(0xFFFFF3E0),
                 valueColor: Color(0xFFF4511E),
               ),

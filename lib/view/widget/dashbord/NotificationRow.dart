@@ -64,4 +64,3 @@ class ImportantNotifications extends StatelessWidget {
   }
 
 }
-

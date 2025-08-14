@@ -1,149 +1,85 @@
-// 📁 DoctorsPage.dart
+
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:medilink/controller/doctors_controller.dart';
+
+import 'package:medilink/core/class/handlingdataview.dart';
+import 'package:medilink/core/services/MyServices.dart';
 import 'package:medilink/view/widget/DoctorsPage/AddDoctorDialog.dart';
 import 'package:medilink/view/widget/DoctorsPage/DoctorCard.dart';
 import 'package:medilink/view/widget/DoctorsPage/DoctorHeader.dart';
-
 class DoctorsPage extends StatelessWidget {
-  const DoctorsPage({super.key});
+  const DoctorsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final DoctorController ctrl = Get.put(DoctorController());
+       
     return Scaffold(
       backgroundColor: const Color(0xffF5F7FA),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              DoctorHeadr(),
-              SizedBox(height: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+        
+           // const DoctorHeadr(),
 
-              // _buildStatsRow(),
-              // const SizedBox(height: 24),
-              _buildFilters(),
-              const SizedBox(height: 24),
-              const Text(
-                'List of doctors',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              const SizedBox(height: 12),
+            const SizedBox(height: 16),
 
-              const DoctorCard(
-                name: 'D.sami',
-                specialty: 'General Medicine',
-                qualifications:
-                    'Bachelors in Medicine and Surgery, Masters in General Medicine',
-                experience: '15 years',
-                phone: '0012345678',
-                email: 'sami.ahmad@clinic.com',
-                address: 'Syria,Homs',
-                schedule: 'Sunday - Thursday, 8:00 AM - 4:00 PM.',
-                patients: 245,
-                appointments: 89,
-                isActive: true,
-              ),
-              const DoctorCard(
-                name: 'D.sami',
-                specialty: 'General Medicine',
-                qualifications:
-                    'Bachelors in Medicine and Surgery, Masters in General Medicine',
-                experience: '15 years',
-                phone: '0012345678',
-                email: 'sami.ahmad@clinic.com',
-                address: 'Syria,Homs',
-                schedule: 'Sunday - Thursday, 8:00 AM - 4:00 PM.',
-                patients: 245,
-                appointments: 89,
-                isActive: true,
-              ),
-              SizedBox(height: 14),
-              const DoctorCard(
-                name: 'D.sami',
-                specialty: 'General Medicine',
-                qualifications:
-                    'Bachelors in Medicine and Surgery, Masters in General Medicine',
-                experience: '15 years',
-                phone: '0012345678',
-                email: 'sami.ahmad@clinic.com',
-                address: 'Syria,Homs',
-                schedule: 'Sunday - Thursday, 8:00 AM - 4:00 PM.',
-                patients: 245,
-                appointments: 89,
-                isActive: true,
-              ),
-              // بإمكانك تكرار DoctorCard أو استخدام ListView.builder
-            ],
-          ),
+        
+            const _FiltersSection(),
+
+            const SizedBox(height: 24),
+            const Text(
+              'List of doctors',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 12),
+
+      
+            Expanded(
+              child: Obx(() {
+                return HandlingDataView(
+                  statusRequest: ctrl.status.value,
+                  widget: ListView.builder(
+                    itemCount: ctrl.doctors.length,
+                    itemBuilder: (ctx, idx) {
+                      final d = ctrl.doctors[idx];
+                      return DoctorCard(
+                        id:d.id,
+                        name: d.fullName,
+                        specialty: d.specialty ?? '—',
+                        qualifications: d.aboutMe ?? '—',
+                        experience: '${d.yearsOfExperience ?? 0} years',
+                        phone: d.email,     
+                        email: d.email,
+                        address: d.address ?? '—',
+                        schedule: d.workingHours.join(', '),
+                        patients: d.totalPatients,
+                        appointments: d.totalAppointments,
+                        isActive: true,     
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildHeader(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Doctors Management',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 4),
-            Text(
-              'Management and monitoring of doctors data and specialties, ',
-              style: TextStyle(fontSize: 14, color: Colors.black54),
-            ),
-          ],
-        ),
-        ElevatedButton.icon(
-          onPressed:
-              () => showDialog(
-                context: context,
-                builder: (_) => const AddDoctorDialog(),
-              ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          icon: const Icon(Icons.add),
-          label: const Text('Add a new doctor'),
-        ),
-      ],
-    );
-  }
+class _FiltersSection extends StatelessWidget {
+  const _FiltersSection();
 
-  // Widget _buildStatsRow() {
-  //   // return Row(
-  //   //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //   //   children: const [
-  //   //     StatCard(label: 'إجمالي الأطباء', value: '4', color: Colors.blue),
-  //   //     StatCard(label: 'أطباء نشطين', value: '3', color: Colors.green),
-  //   //     StatCard(label: 'إجمالي المرضى', value: '788', color: Colors.purple),
-  //   //     StatCard(label: 'إجمالي المواعيد', value: '287', color: Colors.orange),
-  //   //   ],
-  //   // );
-  // }
-
-  Widget _buildFilters() {
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
-        // ElevatedButton.icon(
-        //   onPressed: () {},
-        //   icon: const Icon(Icons.filter_alt_outlined),
-        //   label: const Text('فلترة متقدمة'),
-        //   style: ElevatedButton.styleFrom(
-        //     backgroundColor: Colors.grey.shade200,
-        //     foregroundColor: Colors.black87,
-        //   ),
-        // ),
-        // const SizedBox(width: 16),
         DropdownButton<String>(
           value: 'all specialties',
           items: const [
@@ -157,22 +93,31 @@ class DoctorsPage extends StatelessWidget {
             ),
             DropdownMenuItem(value: 'Surgery', child: Text('Surgery')),
           ],
-          onChanged: (value) {},
+          onChanged: (_) {},
         ),
         const SizedBox(width: 16),
-        Expanded(
-          child: TextField(
-            decoration: InputDecoration(
-              hintText:
-                  'Searching for a doctor by name, specialty, or phone number...',
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ),
+        const Expanded(child: _SearchField()),
       ],
+    );
+  }
+}
+
+class _SearchField extends StatelessWidget {
+  const _SearchField();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      decoration: InputDecoration(
+        hintText:
+            'Searching for a doctor by name, specialty, or phone number...',
+        prefixIcon: const Icon(Icons.search),
+        border:
+            OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      onChanged: (val) {
+         Get.find<DoctorController>().searchDoctors(val);
+      },
     );
   }
 }

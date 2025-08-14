@@ -23,7 +23,7 @@ class MainHealth extends StatelessWidget {
 
   final SidebarController sidebarController = Get.find<SidebarController>();
   final ThemeController themeController = Get.find<ThemeController>();
-  final UserController userController = Get.find<UserController>();
+  final ProfileController userController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class MainHealth extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
-                                    'تبديل الوضع',
+                                    ' change mode',
 
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
@@ -115,7 +115,7 @@ class MainHealth extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
-                                    'اللغة',
+                                    'language',
 
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
@@ -137,79 +137,52 @@ class MainHealth extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
 
-                    // عرض صورة واسم المستخدم
-                    // عرض صورة واسم المستخدم
-                    GestureDetector(
-                      onTap: () => sidebarController.selectedIndex.value = 99,
-                      child: Obx(() {
-                        final hasImage =
-                            userController.profileImageBytes.value != null ||
-                            (!kIsWeb &&
-                                userController
-                                    .profileImagePath
-                                    .value
-                                    .isNotEmpty);
-
-                        return Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  userController.userName.value,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                Text(
-                                  userController.userRole.value,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(width: 8),
-                            ClipOval(
-                              child: SizedBox(
-                                width: 36,
-                                height: 36,
-                                child:
-                                    hasImage
-                                        ? Image(
-                                          image:
-                                              userController
-                                                          .profileImageBytes
-                                                          .value !=
-                                                      null
-                                                  ? MemoryImage(
-                                                    userController
-                                                        .profileImageBytes
-                                                        .value!,
-                                                  )
-                                                  : FileImage(
-                                                        File(
-                                                          userController
-                                                              .profileImagePath
-                                                              .value,
-                                                        ),
-                                                      )
-                                                      as ImageProvider,
-                                          fit: BoxFit.cover,
-                                        )
-                                        : Lottie.asset(
-                                          'assets/lottie/Animationprofile.json',
-                                          fit: BoxFit.contain,
-                                        ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-                    ),
+                   
+                   GestureDetector(
+  onTap: () => sidebarController.selectedIndex.value = 99,
+  child: Obx(() {
+    return Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              userController.name.value, // استخدم name بدلاً من userName
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
+            Text(
+              userController.role.value, // استخدم role بدلاً من userRole
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(width: 8),
+        ClipOval(
+          child: SizedBox(
+            width: 36,
+            height: 36,
+            child: userController.profileImageBytes.value != null
+                ? Image.memory(
+                    userController.profileImageBytes.value!,
+                    fit: BoxFit.cover,
+                  )
+                : Lottie.asset(
+                    'assets/lottie/Animationprofile.json',
+                    fit: BoxFit.contain,
+                  ),
+          ),
+        ),
+      ],
+    );
+  }),
+)
                   ],
                 ),
               ],

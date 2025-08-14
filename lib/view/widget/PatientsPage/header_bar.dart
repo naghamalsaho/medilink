@@ -17,12 +17,10 @@ class HeaderBar extends StatelessWidget {
         const Spacer(),
         SizedBox(width: 300),
         const SizedBox(width: 12),
+
         ElevatedButton.icon(
           onPressed: () {
-            showDialog(
-              context: context,
-              builder: (_) => const AddPatientDialog(),
-            );
+            showDialog(context: context, builder: (_) => AddPatientDialog());
           },
           icon: const Icon(Icons.add),
           label: const Text("Add New Patient"),

@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:medilink/api_link.dart';
 import 'package:medilink/controller/profileController.dart';
 import 'package:medilink/core/functions/validinput.dart';
 import 'package:medilink/view/widget/auth/Customtextformauth.dart';
+import 'package:medilink/view/widget/profile/PhotoSection.dart';
 import 'package:medilink/view/widget/profile/SectionTitle.dart';
 import 'package:medilink/view/widget/profile/card.dart';
 
@@ -18,7 +20,7 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  final UserController userController = Get.find<UserController>();
+  final ProfileController userController = Get.find<ProfileController>();
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController nameController;
@@ -29,107 +31,48 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController hospitalController;
 
   Uint8List? imageBytes;
-Uint8List? tempImageBytes;    // هذا للاحتفاظ بالبايتات مؤقتًا
+Uint8List? tempImageBytes;    
   String?    tempImagePath; 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: userController.userName.value);
-    roleController = TextEditingController(text: userController.userRole.value);
-    emailController = TextEditingController(text: userController.userEmail.value);
-    phoneController = TextEditingController(text: userController.userPhone.value);
-    addressController = TextEditingController(text: userController.userAddress.value);
-    hospitalController = TextEditingController(text: userController.userHospital.value);
+    nameController = TextEditingController(text: userController.name.value);
+    roleController = TextEditingController(text: userController.role.value);
+    emailController = TextEditingController(text: userController.email.value);
+    phoneController = TextEditingController(text: userController.phone.value);
+    addressController = TextEditingController(text: userController.address.value);
+    hospitalController = TextEditingController(text: userController.hospital.value);
   }
 
-  Future<void> pickImage() async {
-     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+ Future<void> pickImage() async {
+  final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
   if (picked != null) {
+    
+    await userController.changePhoto(picked);
+    
     final bytes = await picked.readAsBytes();
     setState(() {
       tempImageBytes = bytes;
-      tempImagePath  = picked.path;
     });
-      userController.profileImageBytes.value = bytes;
-      if (!kIsWeb) userController.profileImagePath.value = picked.path;
-    }
   }
-
-  void saveProfile() {
-  if (!_formKey.currentState!.validate()) return;
-  userController.updateProfile(
-    name:             nameController.text,
-    role:             roleController.text,
-    email:            emailController.text,
-    phone:            phoneController.text,
-    address:          addressController.text,
-    hospital:         hospitalController.text,
-    responsibilities: userController.userResponsibilities.value,
-    imagePath:        tempImagePath ?? userController.profileImagePath.value,
-    imageBytes:       tempImageBytes,
-  );
-  Get.back();
 }
 
 
 
-  Widget _buildPhotoSection() {
-    return ReusableCard(
-      margin: const EdgeInsets.symmetric(vertical: 16),
-      padding: const EdgeInsets.all(16),
-      borderRadius: 16,
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                 child: Obx(() {
-  if (tempImageBytes != null) {
-    return Image.memory(tempImageBytes!, fit: BoxFit.cover);
-  }
-  if (userController.profileImageBytes.value != null) {
-    return Image.memory(userController.profileImageBytes.value!, fit: BoxFit.cover);
-  }
-  if (!kIsWeb && userController.profileImagePath.value.isNotEmpty) {
-    return Image.file(File(userController.profileImagePath.value), fit: BoxFit.cover);
-  }
-  return Lottie.asset('assets/lottie/Animationprofile.json', fit: BoxFit.cover);
-}),
+void saveProfile() {
+  if (!_formKey.currentState!.validate()) return;
+  
+  userController.name.value = nameController.text;
+  userController.role.value = roleController.text;
+  userController.email.value = emailController.text;
+  userController.phone.value = phoneController.text;
+  userController.address.value = addressController.text;
+  userController.hospital.value = hospitalController.text;
+  
+  userController.saveProfile();
+}
 
 
-                ),
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: GestureDetector(
-                  onTap: pickImage,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
-                    ),
-                    child: const Icon(Icons.camera_alt, size: 20, color: Colors.blue),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          const SectionTitle('الصورة الشخصية'),
-          const SizedBox(height: 4),
-          const SectionSubtitle(
-              'اضغط على الأيقونة لتغيير صورتك الشخصية. يُفضل استخدام صورة واضحة ومهنية.'),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +88,10 @@ Uint8List? tempImageBytes;    // هذا للاحتفاظ بالبايتات مؤ
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildPhotoSection(),
+                   PhotoSection(
+            tempImageBytes: tempImageBytes,
+            onPickImage: pickImage,
+          ),
                   const SizedBox(height: 16),
                   LayoutBuilder(builder: (ctx, constraints) {
                     final itemWidth = (constraints.maxWidth - 16) / 2;
@@ -225,7 +171,7 @@ SizedBox(
     ),
   ),
 ),
-// ... بقية الحقول بنفس النمط
+
                       ],
                     );
                   }),

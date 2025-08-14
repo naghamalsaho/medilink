@@ -1,14 +1,7 @@
 // 📁 components/doctor_card.dart
-
-
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:medilink/controller/doctors_controller.dart';
-import 'package:medilink/view/widget/DoctorsPage/DoctorDetailPage.dart';
-import 'package:medilink/view/widget/DoctorsPage/appointmentdoctordialog.dart';
 
-class DoctorCard extends StatelessWidget {
-   final int id;
+class DoctorCard2 extends StatelessWidget {
   final String name;
   final String specialty;
   final String qualifications;
@@ -21,9 +14,8 @@ class DoctorCard extends StatelessWidget {
   final int appointments;
   final bool isActive;
 
-  const DoctorCard({
+  const DoctorCard2({
     super.key,
-     required this.id, 
     required this.name,
     required this.specialty,
     required this.qualifications,
@@ -39,7 +31,6 @@ class DoctorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     final ctrl = Get.find<DoctorController>();
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -69,32 +60,18 @@ class DoctorCard extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.calendar_today, color: Colors.green),
-  onPressed: () async {
-    final ctrl = Get.find<DoctorController>();
-    try {
-      await ctrl.loadDoctorAppointments(id); // تستخدم اللي عطيتني
-      Get.dialog(AppointmentListDialog(doctorId: id));
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch appointments: $e');
-    }
-  },
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () {},
                       ),
-                     
+                      IconButton(
+                        icon: const Icon(Icons.edit_outlined),
+                        onPressed: () {},
+                      ),
 
-                     IconButton(
-  icon: const Icon(Icons.visibility, color: Colors.blue),
-  onPressed: () async {
-   
-   await ctrl.loadDoctorById(id);
-
-    if (ctrl.selectedDoctor.value != null) {
-      Get.to(() => const DoctorDetailPage());
-    } else {
-      Get.snackbar('Error', 'Unable to load doctor details');
-    }
-  },
-),
+                      IconButton(
+                        icon: const Icon(Icons.visibility_outlined),
+                        onPressed: () {},
+                      ),
                     ],
                   ),
                   SizedBox(height: 12),

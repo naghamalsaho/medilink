@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:medilink/controller/PatientsController.dart';
 
 class EditPatientDialog extends StatefulWidget {
-  final String name, email, phone, age, lastVisit, status;
+  final String name, email, phone, age, lastVisit, status, condition;
+  final int patientId;
 
   const EditPatientDialog({
     super.key,
@@ -11,7 +14,8 @@ class EditPatientDialog extends StatefulWidget {
     required this.age,
     required this.lastVisit,
     required this.status,
-    required String condition,
+    required this.condition,
+    required this.patientId,
   });
 
   @override
@@ -24,6 +28,7 @@ class _EditPatientDialogState extends State<EditPatientDialog> {
   late TextEditingController phoneController;
   late TextEditingController ageController;
   late TextEditingController lastVisitController;
+  late TextEditingController conditionController;
   late String selectedStatus;
 
   final _formKey = GlobalKey<FormState>();
@@ -36,6 +41,7 @@ class _EditPatientDialogState extends State<EditPatientDialog> {
     phoneController = TextEditingController(text: widget.phone);
     ageController = TextEditingController(text: widget.age);
     lastVisitController = TextEditingController(text: widget.lastVisit);
+    conditionController = TextEditingController(text: widget.condition);
     selectedStatus = widget.status;
   }
 
@@ -59,21 +65,28 @@ class _EditPatientDialogState extends State<EditPatientDialog> {
                 _buildTextField("Phone", phoneController),
                 _buildTextField("Age", ageController),
                 _buildTextField("Last Visit", lastVisitController),
+                _buildTextField("Condition", conditionController),
                 DropdownButtonFormField<String>(
-                  value: selectedStatus,
-                  decoration: const InputDecoration(labelText: "Status"),
+                  value:
+                      [
+                            "Active",
+                            "Follow-up",
+                            "Inactive",
+                          ].contains(widget.status)
+                          ? widget.status
+                          : "Active", // للقيمة الافتراضية                  decoration: const InputDecoration(labelText: "Status"),
                   items:
-                      ['Active', 'Follow-up', 'Inactive']
+                      ["Active", "Follow-up", "Inactive"]
                           .map(
-                            (status) => DropdownMenuItem(
-                              value: status,
-                              child: Text(status),
+                            (value) => DropdownMenuItem(
+                              value: value,
+                              child: Text(value),
                             ),
                           )
                           .toList(),
-                  onChanged: (value) {
+                  onChanged: (newValue) {
                     setState(() {
-                      selectedStatus = value!;
+                      selectedStatus = newValue!;
                     });
                   },
                 ),
@@ -83,18 +96,20 @@ class _EditPatientDialogState extends State<EditPatientDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text("Cancel"),
-        ),
+        TextButton(onPressed: () => Get.back(), child: const Text("Cancel")),
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             if (_formKey.currentState!.validate()) {
-              // TODO: Send updated data to backend here
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Patient updated successfully")),
-              );
+              final controller = Get.find<PatientsController>();
+              await controller.updatePatient(widget.patientId, {
+                'full_name': nameController.text,
+                'email': emailController.text,
+                'phone': phoneController.text,
+                'age': int.tryParse(ageController.text) ?? 0,
+                'last_visit': lastVisitController.text,
+                'status': selectedStatus,
+                'condition': conditionController.text,
+              });
             }
           },
           child: const Text("Save"),
@@ -121,8 +136,9 @@ class _EditPatientDialogState extends State<EditPatientDialog> {
 
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) return 'Email is required';
-    if (!RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$').hasMatch(value))
+    if (!RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$').hasMatch(value)) {
       return 'Invalid email format';
+    }
     return null;
   }
 }

@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
       body: Row(
         children: [
           SecretarySidebar(),
-          // أصبح بدون باراميتر
+         
           Expanded(
             child: Container(
               padding: EdgeInsets.all(24),
