@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:medilink/bindings/initialbindinds.dart';
 import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/controller/profileController.dart';
@@ -15,22 +14,17 @@ import 'package:medilink/view/widget/home/SecretarySidebar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-
   await Get.putAsync<MyServices>(() => MyServices().init());
-Get.put(Crud());
- 
+  Get.put(Crud());
+
   await Get.putAsync<ThemeController>(() => ThemeController().init());
 
-  
   Get.put(LocalController());
-
 
   Get.put(SidebarController());
   Get.put(ProfileController());
   WidgetsFlutterBinding.ensureInitialized();
-  
-  
+
   runApp(MyApp());
 }
 
@@ -46,8 +40,8 @@ class MyApp extends StatelessWidget {
         theme: Themes.customLightTheme,
         darkTheme: Themes.customDarkTheme,
         themeMode: themeController.themeMode.value,
-        translations: MyTranslation(), 
-        locale: Get.find<LocalController>().language, 
+        translations: MyTranslation(),
+        locale: Get.find<LocalController>().language,
         fallbackLocale: const Locale("en"),
         initialRoute: AppRoute.splash,
         initialBinding: InitialBindings(),

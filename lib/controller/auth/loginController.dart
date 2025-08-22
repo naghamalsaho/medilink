@@ -6,6 +6,7 @@ import 'package:medilink/core/functions/handlingdatacontroller.dart';
 import 'package:medilink/core/services/MyServices.dart';
 import 'package:medilink/data/datasourse/remot/auth/login.dart';
 import 'package:medilink/view/SecretaryScreens/HomePage.dart';
+import 'package:medilink/view/widget/home/MainAdminCenter.dart';
 import 'package:medilink/view/widget/home/MainHealth.dart';
 import 'package:medilink/view/widget/home/MainSecretary.dart' as AppRoute;
 
@@ -17,8 +18,7 @@ abstract class LoginController extends GetxController {
 class LoginControllerImp extends LoginController {
   // Controllers
   String? selectedRole;
-  final loginController =
-      TextEditingController(); 
+  final loginController = TextEditingController();
   final passwordController = TextEditingController();
 
   GlobalKey<FormState> formstate = GlobalKey<FormState>();
@@ -38,49 +38,55 @@ class LoginControllerImp extends LoginController {
           passwordController.text,
           selectedRole ?? "",
         );
-        if (response['success'] == true) {
+
+        if (response != null && response['success'] == true) {
           final data = response['data'];
           final box = Get.find<MyServices>().box;
 
+          /// حفظ التوكينات
           box.write("token", data['access_token']);
           box.write("refresh_token", data['refresh_token']);
           box.write("token_type", data['token_type']);
           box.write("role", data['role']);
-          print("=== TOKEN STORED === ${box.read('token')}");
 
-          final role = response['data']['role'];
+          /// حفظ بيانات المستخدم
+          if (data['user'] != null) {
+            box.write("user_id", data['user']['id']);
+            box.write("user_name", data['user']['name']);
+          }
+
+          print("=== TOKEN STORED === ${box.read('token')}");
+          print("=== ROLE STORED === ${box.read('role')}");
+
+          final role = data['role'];
           switch (role) {
             case 'secretary':
-              Get.offAll(() => AppRoute.MainSecretary()); 
+              Get.offAll(() => AppRoute.MainSecretary());
               break;
             case 'super_admin':
-              Get.offAll(() => MainHealth()); 
+              Get.offAll(() => MainHealth());
+              break;
+            case 'center_admin':
+              Get.offAll(() => MainAdminCenter());
               break;
             default:
-              Get.offAll(() => HomePage()); 
+              Get.offAll(() => MainAdminCenter());
           }
         } else {
           Get.defaultDialog(
             title: "خطأ",
-            middleText: response['message'] ?? "The login information is incorrect.",
+            middleText:
+                response?['message'] ?? "The login information is incorrect.",
           );
         }
 
-        print(
-          "RESPONSE TYPE: ${response.runtimeType}",
-        ); 
         print("FULL RESPONSE: $response");
-
-        // if (response['success'] == true) {
-        
-        //   Get.offAll(
-        //     () => AppRoute.MainLayout(),
-        //   ); 
-        // }
       } catch (e) {
         print("CATCHED ERROR: $e");
-        Get.defaultDialog(title: "error", middleText: "Unable to connect to server"
-);
+        Get.defaultDialog(
+          title: "خطأ",
+          middleText: "Unable to connect to server",
+        );
       } finally {
         statusRequest = StatusRequest.none;
         update();
@@ -102,7 +108,6 @@ class LoginControllerImp extends LoginController {
 
   @override
   goToHomePage() {
-    // للانتقال للصفحة الرئيسية بعد تسجيل الدخول
     Get.to(() => AppRoute.MainSecretary());
   }
 }

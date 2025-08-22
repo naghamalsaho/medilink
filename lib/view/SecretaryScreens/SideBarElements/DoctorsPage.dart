@@ -1,21 +1,19 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:medilink/controller/doctors_controller.dart';
-
 import 'package:medilink/core/class/handlingdataview.dart';
 import 'package:medilink/core/services/MyServices.dart';
 import 'package:medilink/view/widget/DoctorsPage/AddDoctorDialog.dart';
 import 'package:medilink/view/widget/DoctorsPage/DoctorCard.dart';
 import 'package:medilink/view/widget/DoctorsPage/DoctorHeader.dart';
+
 class DoctorsPage extends StatelessWidget {
   const DoctorsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final DoctorController ctrl = Get.put(DoctorController());
-       
+
     return Scaffold(
       backgroundColor: const Color(0xffF5F7FA),
       body: Padding(
@@ -23,12 +21,9 @@ class DoctorsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-        
-           // const DoctorHeadr(),
-
+            // const DoctorHeadr(),
             const SizedBox(height: 16),
 
-        
             const _FiltersSection(),
 
             const SizedBox(height: 24),
@@ -38,7 +33,6 @@ class DoctorsPage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-      
             Expanded(
               child: Obx(() {
                 return HandlingDataView(
@@ -48,18 +42,18 @@ class DoctorsPage extends StatelessWidget {
                     itemBuilder: (ctx, idx) {
                       final d = ctrl.doctors[idx];
                       return DoctorCard(
-                        id:d.id,
+                        id: d.id,
                         name: d.fullName,
                         specialty: d.specialty ?? '—',
                         qualifications: d.aboutMe ?? '—',
                         experience: '${d.yearsOfExperience ?? 0} years',
-                        phone: d.email,     
+                        phone: d.email,
                         email: d.email,
                         address: d.address ?? '—',
                         schedule: d.workingHours.join(', '),
                         patients: d.totalPatients,
                         appointments: d.totalAppointments,
-                        isActive: true,     
+                        isActive: true,
                       );
                     },
                   ),
@@ -112,11 +106,10 @@ class _SearchField extends StatelessWidget {
         hintText:
             'Searching for a doctor by name, specialty, or phone number...',
         prefixIcon: const Icon(Icons.search),
-        border:
-            OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
       onChanged: (val) {
-         Get.find<DoctorController>().searchDoctors(val);
+        Get.find<DoctorController>().searchDoctors(val);
       },
     );
   }

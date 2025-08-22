@@ -83,8 +83,8 @@ class LoginForm extends StatelessWidget {
             items:
                 [
                   {'label': 'secretary', 'value': 'secretary'},
+                  {'label': 'admin', 'value': 'admin'},
                   {'label': 'super_admin', 'value': 'super_admin'},
-                  {'label': 'manager', 'value': 'manager'},
                 ].map((roleMap) {
                   return DropdownMenuItem(
                     value: roleMap['value'],

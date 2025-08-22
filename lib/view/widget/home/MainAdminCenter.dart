@@ -1,40 +1,40 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+// main_admin_center.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+
 import 'package:medilink/controller/profileController.dart';
 import 'package:medilink/controller/ThemeController.dart';
+import 'package:medilink/view/AdminCenterScreens/AdminDashbord/AdminSidbar.dart';
+import 'package:medilink/view/AdminCenterScreens/AdminDoctors/AdminDoctorsPage.dart';
+import 'package:medilink/view/AdminCenterScreens/AdminSecretariesPage.dart';
+import 'package:medilink/view/AdminCenterScreens/SideBarElements/AdminDashbord.dart';
 import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
-
 import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
-import 'package:medilink/view/SecretaryScreens/SideBarElements/DashboardPage.dart';
-import 'package:medilink/view/SecretaryScreens/SideBarElements/DoctorsPage.dart';
-import 'package:medilink/view/SecretaryScreens/SideBarElements/PatientsPage.dart';
 import 'package:medilink/view/SecretaryScreens/notification/NotificationsPage.dart';
-import 'package:medilink/view/SecretaryScreens/profile/EditProfilePage.dart';
 import 'package:medilink/view/SecretaryScreens/profile/ProfilePage.dart';
 import 'package:medilink/view/widget/LanguageDialog.dart';
-import 'package:medilink/view/widget/home/SecretarySidebar.dart';
 import 'package:medilink/view/widget/login/PulsingLogo.dart';
 
-class MainSecretary extends StatelessWidget {
-  MainSecretary({Key? key}) : super(key: key);
+class MainAdminCenter extends StatelessWidget {
+  MainAdminCenter({Key? key}) : super(key: key);
 
-  final SidebarController sidebarController = Get.find<SidebarController>();
+  final AdminSidebarController sidebarController = Get.put(
+    AdminSidebarController(),
+  );
   final ThemeController themeController = Get.find<ThemeController>();
   final ProfileController userController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
     final isDark = themeController.themeMode.value == ThemeMode.dark;
-    final iconColor = isDark ? Colors.blue[200] : Colors.grey[700];
+    final iconColor = isDark ? const Color(0xFF1E7F5C) : Colors.grey[700];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
       body: Column(
         children: [
-          // الشريط العلوي الثابت
+          // 🔹 الهيدر
           Container(
             height: 60,
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -42,15 +42,14 @@ class MainSecretary extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // شعار واسم التطبيق
                 Row(
                   children: [
                     PulsingHeart(),
                     const SizedBox(width: 12),
-                    Text(
+                    const Text(
                       'MediLink',
                       style: TextStyle(
-                        fontFamily: 'Cairo', // تأكد أن الخط معرف
+                        fontFamily: 'Cairo',
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
@@ -58,16 +57,12 @@ class MainSecretary extends StatelessWidget {
                     ),
                   ],
                 ),
-
-                // الإعدادات والإشعارات والحساب
                 Row(
                   children: [
-                    // قائمة الإعدادات المنسدلة
                     PopupMenuButton<String>(
                       icon: Icon(Icons.settings, color: iconColor),
                       tooltip: 'Settings',
-                      color: Colors.blue.shade50.withOpacity(0.95),
-
+                      color: const Color(0xFF1E7F5C).withOpacity(0.95),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -89,34 +84,34 @@ class MainSecretary extends StatelessWidget {
                                 children: [
                                   Icon(
                                     isDark ? Icons.light_mode : Icons.dark_mode,
-                                    color: Colors.blue[800],
+                                    color: const Color(0xFF1E7F5C),
                                   ),
                                   const SizedBox(width: 10),
-                                  Text(
+                                  const Text(
                                     ' change mode',
-
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.blue[900],
+                                      color: Color(0xFF1E7F5C),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                             const PopupMenuDivider(),
-
                             PopupMenuItem(
                               value: 'language_dialog',
                               child: Row(
-                                children: [
-                                  Icon(Icons.language, color: Colors.blue[800]),
-                                  const SizedBox(width: 10),
+                                children: const [
+                                  Icon(
+                                    Icons.language,
+                                    color: Color(0xFF1E7F5C),
+                                  ),
+                                  SizedBox(width: 10),
                                   Text(
                                     'language',
-
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.blue[900],
+                                      color: Color(0xFF1E7F5C),
                                     ),
                                   ),
                                 ],
@@ -125,7 +120,6 @@ class MainSecretary extends StatelessWidget {
                           ],
                     ),
                     const SizedBox(width: 10),
-
                     IconButton(
                       icon: Icon(Icons.notifications_none, color: iconColor),
                       tooltip: 'Notifications',
@@ -133,7 +127,6 @@ class MainSecretary extends StatelessWidget {
                           () => sidebarController.selectedIndex.value = 30,
                     ),
                     const SizedBox(width: 8),
-
                     GestureDetector(
                       onTap: () => sidebarController.selectedIndex.value = 99,
                       child: Obx(() {
@@ -144,18 +137,14 @@ class MainSecretary extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  userController
-                                      .name
-                                      .value, // استخدم name بدلاً من userName
+                                  userController.name.value,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                   ),
                                 ),
                                 Text(
-                                  userController
-                                      .role
-                                      .value, // استخدم role بدلاً من userRole
+                                  userController.role.value,
                                   style: const TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey,
@@ -193,24 +182,22 @@ class MainSecretary extends StatelessWidget {
             ),
           ),
 
-          // المحتوى مع الشريط الجانبي
+          // ✅ السايد بار + الصفحات
           Expanded(
             child: Row(
               children: [
-                SecretarySidebar(),
+                AdminSidebar(), // Sidebar الجديد
                 Expanded(
                   child: Obx(() {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
-                        return const DashboardPage();
+                        return const AdminDashbord();
                       case 1:
-                        return AppointmentsPage();
-
+                        return AdminSecretariesPage();
                       case 2:
-                        return PatientsPage();
+                        return AdminDoctorsPage(); // الآن يفتح صح
                       case 3:
-                        return DoctorsPage();
-
+                        return AppointmentsPage();
                       case 4:
                         return ReportsPage();
                       case 30:
@@ -220,7 +207,7 @@ class MainSecretary extends StatelessWidget {
                       default:
                         return Center(
                           child: Text(
-                            'Page \${sidebarController.selectedIndex.value}',
+                            'Page ${sidebarController.selectedIndex.value}',
                             style: const TextStyle(fontSize: 24),
                           ),
                         );

@@ -1,47 +1,51 @@
+// admin_sidebar.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medilink/controller/ThemeController.dart';
 
-class SidebarController extends GetxController {
+class AdminSidebarController extends GetxController {
   RxInt selectedIndex = 0.obs;
 }
 
-class SecretarySidebar extends StatelessWidget {
-  final SidebarController sidebarController = Get.put(SidebarController());
-
-  final List<Map<String, dynamic>> menuItems = [
-    {'icon': Icons.home_outlined, 'label': 'Dashboard'},
-    {'icon': Icons.event_note_outlined, 'label': 'Appointments'},
-    {'icon': Icons.people_outline, 'label': 'Patients'},
-    {'icon': Icons.local_hospital_outlined, 'label': 'Doctors'},
-    {'icon': Icons.pie_chart_outline, 'label': 'Reports'},
-  ];
-
-  final Color sidebarBg = const Color(0xFFF7F8FA);
-  final Color selectedColor = const Color.fromARGB(255, 43, 58, 70); // Blue
-  final Color hoverColor = Color(0xFFEAF2FF);
+class AdminSidebar extends StatelessWidget {
+  const AdminSidebar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AdminSidebarController sidebarController =
+        Get.find<AdminSidebarController>();
+
+    final List<Map<String, dynamic>> menuItems = [
+      {'icon': Icons.home_outlined, 'label': 'Dashboard'},
+      {'icon': Icons.people_outline, 'label': 'Secretaries'},
+      {'icon': Icons.local_hospital_outlined, 'label': 'Doctors'},
+      {'icon': Icons.event_note_outlined, 'label': 'Appointments'},
+      {'icon': Icons.pie_chart_outline, 'label': 'Reports'},
+    ];
+
+    final Color sidebarBg = const Color(0xFFF7F8FA);
+    final Color selectedColor = Colors.blue;
+    final Color hoverColor = const Color(0xFFEAF2FF);
+
     return Obx(
       () => Container(
         width: 250,
         decoration: BoxDecoration(
           color: sidebarBg,
-          border: Border(right: BorderSide(color: Colors.blue, width: 1)),
+          border: const Border(right: BorderSide(color: Colors.blue, width: 1)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 30),
-
-            // 🔹 Menu items
             ...List.generate(menuItems.length, (index) {
               final item = menuItems[index];
               final isSelected = sidebarController.selectedIndex.value == index;
 
               return InkWell(
-                onTap: () => sidebarController.selectedIndex.value = index,
+                onTap: () {
+                  sidebarController.selectedIndex.value = index;
+                  print('Selected index: $index'); // للتأكد
+                },
                 borderRadius: BorderRadius.circular(10),
                 hoverColor: hoverColor,
                 child: Container(
@@ -57,7 +61,6 @@ class SecretarySidebar extends StatelessWidget {
                     color: isSelected ? hoverColor : Colors.transparent,
                     borderRadius: BorderRadius.circular(10),
                   ),
-
                   child: Row(
                     children: [
                       Icon(

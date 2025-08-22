@@ -10,23 +10,22 @@ import 'package:medilink/models/profile_model.dart';
 
 import '../data/datasourse/remot/ProfileDataSource.dart' show ProfileDataSource;
 
-
 class ProfileController extends GetxController {
   final _box = GetStorage();
   final _dataSource = ProfileDataSource(Get.find<Crud>());
-var profileImageBytes = Rx<Uint8List?>(null);
+  var profileImageBytes = Rx<Uint8List?>(null);
   var profileImageLoading = false.obs;
-  
+
   var status = StatusRequest.none.obs;
   var profile = Rxn<ProfileModel>();
 
-var name       = ''.obs;
-var role       = ''.obs; 
-var email      = ''.obs;
-var phone      = ''.obs;
-var address    = ''.obs;
-var hospital   = ''.obs; 
-var centerId = 0.obs;
+  var name = ''.obs;
+  var role = ''.obs;
+  var email = ''.obs;
+  var phone = ''.obs;
+  var address = ''.obs;
+  var hospital = ''.obs;
+  var centerId = 0.obs;
 
   @override
   void onInit() {
@@ -34,33 +33,28 @@ var centerId = 0.obs;
     fetchProfile();
   }
 
-  
   Future<void> fetchProfile() async {
     status.value = StatusRequest.loading;
     final res = await _dataSource.fetchProfile();
-    res.fold(
-      (err) => status.value = err,
-      (data) {
-        profile.value = data;
-        
-        name.value = data.fullName;
-        email.value    = data.email;
-        phone.value    = data.phone;
-        address.value = data.address ?? '';
-        
-        role.value = _mapRoleToArabic(data.role ?? '');
-        centerId.value = data.centerId ?? 0;
-            if (data.profilePhoto != null && data.profilePhoto!.isNotEmpty) {
-          loadProfileImage(data.profilePhoto!);
-        }
-        
-        status.value   = StatusRequest.success;
-    
-      },
-    );
+    res.fold((err) => status.value = err, (data) {
+      profile.value = data;
+
+      name.value = data.fullName;
+      email.value = data.email;
+      phone.value = data.phone;
+      address.value = data.address ?? '';
+
+      role.value = _mapRoleToArabic(data.role ?? '');
+      centerId.value = data.centerId ?? 0;
+      if (data.profilePhoto != null && data.profilePhoto!.isNotEmpty) {
+        loadProfileImage(data.profilePhoto!);
+      }
+
+      status.value = StatusRequest.success;
+    });
   }
-  
-String _mapRoleToArabic(String role) {
+
+  String _mapRoleToArabic(String role) {
     switch (role.toLowerCase()) {
       case 'secretary':
         return 'secretary';
@@ -74,41 +68,37 @@ String _mapRoleToArabic(String role) {
         return role;
     }
   }
-  
+
   Future<void> saveProfile() async {
     if (status.value == StatusRequest.loading) return;
     status.value = StatusRequest.loading;
     final res = await _dataSource.updateProfile(
       fullName: name.value,
-      email:    email.value,
-      phone:    phone.value,
-      address:  address.value,
+      email: email.value,
+      phone: phone.value,
+      address: address.value,
     );
-    res.fold(
-      (err) => status.value = err,
-      (updated) {
-        profile.value = updated;
-        status.value  = StatusRequest.success;
-        Get.back(); 
-      },
-    );
+    res.fold((err) => status.value = err, (updated) {
+      profile.value = updated;
+      status.value = StatusRequest.success;
+      Get.back();
+    });
   }
+
   Future<void> changePhoto(dynamic fileSource) async {
     status.value = StatusRequest.loading;
     final res = await _dataSource.uploadPhoto(fileSource);
-    res.fold(
-      (err) => status.value = err,
-      (photoPath) {
-        profile.value = profile.value?.copyWith(profilePhoto: photoPath);
-        loadProfileImage(photoPath); 
-        status.value = StatusRequest.success;
-      },
-    );
+    res.fold((err) => status.value = err, (photoPath) {
+      profile.value = profile.value?.copyWith(profilePhoto: photoPath);
+      loadProfileImage(photoPath);
+      status.value = StatusRequest.success;
+    });
   }
- Future<void> loadProfileImage(String imagePath) async {
+
+  Future<void> loadProfileImage(String imagePath) async {
     try {
       profileImageLoading.value = true;
-       final fullUrl = '${AppLink.serverimage}/$imagePath';
+      final fullUrl = '${AppLink.serverimage}/$imagePath';
       final bytes = await Get.find<Crud>().getImageWithToken(fullUrl);
       profileImageBytes.value = bytes;
     } catch (e) {
