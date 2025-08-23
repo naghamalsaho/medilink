@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as client;
 import 'package:medilink/api_link.dart';
 
 class AdminDoctorsController extends GetxController {
@@ -31,6 +32,30 @@ class AdminDoctorsController extends GetxController {
       Get.snackbar('Error', e.toString());
     } finally {
       isLoading.value = false;
+    }
+  }
+  //====================================================================================
+
+  Future<bool> unlinkDoctorFromCenter(int doctorId) async {
+    final url = 'https://medical.doctorme.site/api/admin/doctors/$doctorId';
+    try {
+      final response = await client.delete(
+        Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppLink.token}', // استخدم AppLink.token
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return true;
+      } else {
+        print('Error deleting doctor: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('Exception deleting doctor: $e');
+      return false;
     }
   }
 }

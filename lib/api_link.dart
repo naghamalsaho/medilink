@@ -55,4 +55,17 @@ class AppLink {
   static String updateSecretary(int id) => "$server/api/admin/secretaries/$id";
   static const String addSecretary =
       "https://medical.doctorme.site/api/admin/add-user-role";
+
+  // 🟢 ساعات العمل (إضافة / عرض / تعديل / حذف)
+  static String workingHours(int doctorId) {
+    return "$server/admin/doctors/$doctorId/working-hours";
+  }
+
+  // تعديل ساعة العمل حسب ID
+  static String updateWorkingHour(int workingHourId) =>
+      "https://medical.doctorme.site/api/admin/doctors/working-hours/$workingHourId";
+
+  // حذف ساعة العمل حسب ID
+  static String deleteWorkingHour(int workingHourId) =>
+      "$server/admin/doctors/working-hours/$workingHourId";
 }
