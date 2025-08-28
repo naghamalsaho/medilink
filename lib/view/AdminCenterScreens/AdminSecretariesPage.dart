@@ -135,56 +135,57 @@ class AdminSecretariesPage extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Filter + Search
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      hint: const Text("All Status"),
-                      items: const [
-                        DropdownMenuItem(
-                          value: "all",
-                          child: Text("All Status"),
-                        ),
-                        DropdownMenuItem(
-                          value: "active",
-                          child: Text("Active"),
-                        ),
-                        DropdownMenuItem(
-                          value: "inactive",
-                          child: Text("Inactive"),
-                        ),
-                      ],
-                      onChanged: (value) {},
+            Obx(
+              () => Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: controller.statusFilter.value,
+                        items: const [
+                          DropdownMenuItem(
+                            value: "all",
+                            child: Text("All Status"),
+                          ),
+                          DropdownMenuItem(
+                            value: "active",
+                            child: Text("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: "inactive",
+                            child: Text("Inactive"),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null)
+                            controller.statusFilter.value = value;
+                        },
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "Search secretary...",
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextField(
+                      onChanged: (val) => controller.searchQuery.value = val,
+                      decoration: InputDecoration(
+                        hintText: "Search secretary...",
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 10,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 20),
 
@@ -209,7 +210,7 @@ class AdminSecretariesPage extends StatelessWidget {
                   child: ListView(
                     children: [
                       _buildTableHeader(),
-                      ...controller.secretariesList.map((secretary) {
+                      ...controller.filteredSecretaries.map((secretary) {
                         String shift = (secretary['shift'] ?? '---').toString();
                         shift =
                             shift.isNotEmpty ? shift.capitalizeFirst! : '---';

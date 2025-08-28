@@ -74,4 +74,6 @@ class AppLink {
   static String searchDoctorCandidates(String query) =>
       "$server/api/admin/doctors/candidates?search=$query";
   static const String inviteDoctor = "$server/api/admin/doctor-invitations";
+  static String updateDoctorStatus(int doctorId) =>
+      "$server/admin/doctors/$doctorId/status"; // <-- عدّلها لمسارك الحقيقي
 }

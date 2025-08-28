@@ -17,7 +17,14 @@ class AdminDoctorsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
-      appBar: AppBar(backgroundColor: Colors.white, elevation: 1),
+      appBar: AppBar(
+        title: const Text(
+          "Doctors Management",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 1,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -25,12 +32,8 @@ class AdminDoctorsPage extends StatelessWidget {
             // 🔹 Invite + Search
             // 🔹 Title + Invite Button
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end, // لليمين
               children: [
-                const Text(
-                  "Doctors Management",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
                 ElevatedButton.icon(
                   onPressed: () {
                     Get.dialog(DoctorCandidatesDialog());
@@ -38,7 +41,7 @@ class AdminDoctorsPage extends StatelessWidget {
                   icon: const Icon(Icons.add),
                   label: const Text("Invite Doctor"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.blue, // نفس لون إضافة السكرتيريا
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
                       vertical: 14,
@@ -224,64 +227,89 @@ class AdminDoctorsPage extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.access_time,
-                                        color: Colors.orange,
-                                      ),
-                                      tooltip: "Working Hours",
-                                      onPressed: () {
-                                        final workingHoursController = Get.put(
-                                          WorkingHoursController(),
-                                        );
-                                        workingHoursController
-                                            .fetchWorkingHours(doctor['id']);
-                                        _showWorkingHoursDialog(doctor['id']);
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
-                                      ),
-                                      onPressed: () {
-                                        Get.defaultDialog(
-                                          title: "Remove Doctor",
-                                          middleText:
-                                              "Are you sure you want to remove this doctor from the center?",
-                                          textConfirm: "Yes",
-                                          textCancel: "Cancel",
-                                          confirmTextColor: Colors.white,
-                                          onConfirm: () async {
-                                            bool success = await controller
-                                                .unlinkDoctorFromCenter(
-                                                  doctor['id'],
-                                                );
-                                            if (success) {
-                                              Get.back(); // غلق الدالوج
-                                              Get.snackbar(
-                                                "Success",
-                                                "Doctor removed from center.",
-                                              );
-                                              controller
-                                                  .fetchDoctors(); // تحديث القائمة فوراً
-                                            } else {
-                                              Get.back(); // غلق الدالوج
-                                              Get.snackbar(
-                                                "Error",
-                                                "Failed to remove doctor.",
-                                              );
-                                            }
+                                // 🔹 Switch + باقي الأزرار
+                                Obx(() {
+                                  final isBusy = controller.updatingStatus
+                                      .contains(doctor['id']);
+                                  final active =
+                                      (doctor['is_active'] ?? false) == true;
+
+                                  return Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      AbsorbPointer(
+                                        absorbing: isBusy,
+                                        child: Switch.adaptive(
+                                          value: active,
+                                          onChanged: (val) {
+                                            controller.setDoctorActiveStatus(
+                                              doctor['id'],
+                                              val,
+                                            );
                                           },
-                                          onCancel: () {},
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                        ),
+                                      ),
+                                      if (isBusy)
+                                        const SizedBox(
+                                          width: 16,
+                                          height: 16,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.access_time,
+                                          color: Colors.orange,
+                                        ),
+                                        tooltip: "Working Hours",
+                                        onPressed: () {
+                                          final workingHoursController =
+                                              Get.put(WorkingHoursController());
+                                          workingHoursController
+                                              .fetchWorkingHours(doctor['id']);
+                                          _showWorkingHoursDialog(doctor['id']);
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          Get.defaultDialog(
+                                            title: "Remove Doctor",
+                                            middleText:
+                                                "Are you sure you want to remove this doctor?",
+                                            textConfirm: "Yes",
+                                            textCancel: "Cancel",
+                                            confirmTextColor: Colors.white,
+                                            onConfirm: () async {
+                                              bool success = await controller
+                                                  .unlinkDoctorFromCenter(
+                                                    doctor['id'],
+                                                  );
+                                              if (success) {
+                                                Get.back();
+                                                Get.snackbar(
+                                                  "Success",
+                                                  "Doctor removed.",
+                                                );
+                                                controller.fetchDoctors();
+                                              } else {
+                                                Get.back();
+                                                Get.snackbar(
+                                                  "Error",
+                                                  "Failed to remove doctor.",
+                                                );
+                                              }
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                }),
                               ],
                             ),
                           ],

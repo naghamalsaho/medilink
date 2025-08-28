@@ -6,6 +6,8 @@ import 'package:medilink/api_link.dart';
 class AdminSecretariesController extends GetxController {
   var secretariesList = <Map<String, dynamic>>[].obs;
   var isLoading = true.obs;
+  var searchQuery = "".obs;
+  var statusFilter = "all".obs;
 
   @override
   void onInit() {
@@ -204,5 +206,25 @@ class AdminSecretariesController extends GetxController {
     } finally {
       isLoading.value = false; // 🔹 نهاية التحميل
     }
+  }
+
+  List<Map<String, dynamic>> get filteredSecretaries {
+    final query = searchQuery.value.toLowerCase();
+
+    return secretariesList.where((sec) {
+      final matchesSearch =
+          sec['full_name'].toString().toLowerCase().contains(query) ||
+          sec['email'].toString().toLowerCase().contains(query) ||
+          sec['phone'].toString().toLowerCase().contains(query);
+
+      final matchesStatus =
+          (statusFilter.value == "all") ||
+          (statusFilter.value == "active" &&
+              (sec['is_active'] == 1 || sec['is_active'] == true)) ||
+          (statusFilter.value == "inactive" &&
+              (sec['is_active'] == 0 || sec['is_active'] == false));
+
+      return matchesSearch && matchesStatus;
+    }).toList();
   }
 }
