@@ -1,63 +1,128 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:medilink/controller/AdminRoleControllers/DoctorInviteController%20.dart';
 import 'package:medilink/controller/AdminRoleControllers/DoctorsAdminController%20.dart';
 import 'package:medilink/controller/AdminRoleControllers/WorkingHoursController%20.dart';
+import 'package:medilink/view/AdminCenterScreens/AdminDoctors/DoctorCandidatesDialog%20.dart';
 
 class AdminDoctorsPage extends StatelessWidget {
   AdminDoctorsPage({super.key});
   final AdminDoctorsController controller = Get.put(AdminDoctorsController());
+  final DoctorInviteController inviteController = Get.put(
+    DoctorInviteController(),
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
-      appBar: AppBar(
-        title: const Text(
-          'Doctors Management',
-          style: TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 1,
-      ),
+      appBar: AppBar(backgroundColor: Colors.white, elevation: 1),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             // 🔹 Invite + Search
+            // 🔹 Title + Invite Button
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                const Text(
+                  "Doctors Management",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.dialog(DoctorCandidatesDialog());
+                  },
                   icon: const Icon(Icons.add),
-                  label: const Text('Invite Doctor'),
+                  label: const Text("Invite Doctor"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF28A745),
+                    backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+                      horizontal: 20,
+                      vertical: 14,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
-                const SizedBox(width: 20),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // 🔹 Filter + Search (مثل السكرتيرات)
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: Obx(
+                      () => DropdownButton<String>(
+                        value:
+                            controller
+                                .statusFilter
+                                .value, // <- ممكن يكون null أو غير مطابق
+                        items: const [
+                          DropdownMenuItem(
+                            value: "all",
+                            child: Text("All Status"),
+                          ),
+                          DropdownMenuItem(
+                            value: "active",
+                            child: Text("Active"),
+                          ),
+                          DropdownMenuItem(
+                            value: "inactive",
+                            child: Text("Inactive"),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            controller.statusFilter.value = value;
+                            controller.filterDoctors(
+                              controller.searchQuery.value,
+                              statusFilter: value == "all" ? null : value,
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
                 Expanded(
                   child: TextField(
+                    onChanged: (value) {
+                      controller.searchQuery.value = value;
+                      controller.filterDoctors(
+                        value,
+                        statusFilter:
+                            controller.statusFilter.value == "all"
+                                ? null
+                                : controller.statusFilter.value,
+                      );
+                    },
                     decoration: InputDecoration(
-                      hintText: 'Search doctor...',
+                      hintText: "Search doctor...",
                       prefixIcon: const Icon(Icons.search),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 0,
-                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
                       ),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 10,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
                   ),
                 ),
@@ -77,9 +142,9 @@ class AdminDoctorsPage extends StatelessWidget {
                 }
 
                 return ListView.builder(
-                  itemCount: controller.doctorsList.length,
+                  itemCount: controller.filteredDoctorsList.length,
                   itemBuilder: (context, index) {
-                    final doctor = controller.doctorsList[index];
+                    final doctor = controller.filteredDoctorsList[index];
                     final user = doctor['user'];
                     final center = doctor['center'];
                     bool isActive = doctor['is_active'] ?? false;
@@ -233,7 +298,6 @@ class AdminDoctorsPage extends StatelessWidget {
     );
   }
 
-  // 🔹 دالة لحذف الطبيب بشكل آمن
   void _deleteDoctor(int doctorId) async {
     bool success = await controller.unlinkDoctorFromCenter(doctorId);
     if (success) {
@@ -273,15 +337,16 @@ class AdminDoctorsPage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (workingHoursController.workingHours.isEmpty) {
-          return const Text("No working hours found");
-        }
-
         return SizedBox(
           height: 400,
           width: 600,
           child: Column(
             children: [
+              if (workingHoursController.workingHours.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text("No working hours found"),
+                ),
               Expanded(
                 child: ListView.builder(
                   itemCount: workingHoursController.workingHours.length,
@@ -311,10 +376,6 @@ class AdminDoctorsPage extends StatelessWidget {
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
-                              final workingHoursController =
-                                  Get.find<WorkingHoursController>();
-
-                              // Confirmation dialog
                               Get.defaultDialog(
                                 title: "Delete Confirmation",
                                 middleText:
@@ -329,7 +390,6 @@ class AdminDoctorsPage extends StatelessWidget {
                                   );
                                   Get.back();
                                 },
-                                onCancel: () {},
                               );
                             },
                           ),
