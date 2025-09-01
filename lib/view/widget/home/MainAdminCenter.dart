@@ -8,6 +8,7 @@ import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/view/AdminCenterScreens/AdminDashbord/AdminSidbar.dart';
 import 'package:medilink/view/AdminCenterScreens/AdminDoctors/AdminDoctorsPage.dart';
 import 'package:medilink/view/AdminCenterScreens/AdminSecretariesPage.dart';
+import 'package:medilink/view/AdminCenterScreens/Services.dart/ServicesPage%20.dart';
 import 'package:medilink/view/AdminCenterScreens/SideBarElements/AdminDashbord.dart';
 import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
 import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
@@ -200,6 +201,9 @@ class MainAdminCenter extends StatelessWidget {
                         return AppointmentsPage();
                       case 4:
                         return ReportsPage();
+                      case 5:
+                        return ServicesPage();
+
                       case 30:
                         return NotificationPage();
                       case 99:

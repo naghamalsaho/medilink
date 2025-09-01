@@ -1,48 +1,54 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+// 📌 MainHealth.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-
 import 'package:medilink/controller/profileController.dart';
 import 'package:medilink/controller/ThemeController.dart';
-import 'package:medilink/view/HealthScreens/HealthDashboardPage.dart';
-import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
-import 'package:medilink/view/SecretaryScreens/DashboardPage.dart';
-import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
-import 'package:medilink/view/SecretaryScreens/SideBarElements/DoctorsPage.dart';
-import 'package:medilink/view/SecretaryScreens/SideBarElements/PatientsPage.dart';
-import 'package:medilink/view/SecretaryScreens/notification/NotificationsPage.dart';
-import 'package:medilink/view/SecretaryScreens/profile/ProfilePage.dart';
+import 'package:medilink/view/SuperAdminScreens/CenterAdmins/CenterAdminsPage%20.dart';
+import 'package:medilink/view/SuperAdminScreens/HealthSidebar.dart';
+import 'package:medilink/view/SuperAdminScreens/Dashbord/SuperAdminDashboardPage%20.dart';
+import 'package:medilink/view/SuperAdminScreens/SuperAdminCenters/SuperAdminCentersPage%20.dart';
+import 'package:medilink/view/SuperAdminScreens/SuperAdminPendingDoctorsPage%20.dart';
 import 'package:medilink/view/widget/LanguageDialog.dart';
-import 'package:medilink/view/widget/home/SecretarySidebar.dart';
 import 'package:medilink/view/widget/login/PulsingLogo.dart';
 
 class MainHealth extends StatelessWidget {
   MainHealth({Key? key}) : super(key: key);
 
-  final SidebarController sidebarController = Get.find<SidebarController>();
+  final HealthSidebarController sidebarController = Get.put(
+    HealthSidebarController(),
+  );
   final ThemeController themeController = Get.find<ThemeController>();
   final ProfileController userController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
     final isDark = themeController.themeMode.value == ThemeMode.dark;
-    final iconColor = isDark ? Color(0xFF1E7F5C) : Colors.grey[700];
+    final iconColor =
+        isDark ? const Color.fromARGB(255, 95, 210, 225) : Colors.grey[700];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
       body: Column(
         children: [
-          // الشريط العلوي الثابت
+          // 🔹 الشريط العلوي
           Container(
             height: 60,
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            color: Colors.white,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.15),
+                  offset: const Offset(0, 2),
+                  blurRadius: 6,
+                ),
+              ],
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // شعار واسم التطبيق
+                // شعار
                 Row(
                   children: [
                     PulsingHeart(),
@@ -50,8 +56,8 @@ class MainHealth extends StatelessWidget {
                     Text(
                       'MediLink',
                       style: TextStyle(
-                        fontFamily: 'Cairo', // تأكد أن الخط معرف
-                        fontSize: 30,
+                        fontFamily: 'Cairo',
+                        fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
@@ -59,15 +65,18 @@ class MainHealth extends StatelessWidget {
                   ],
                 ),
 
-                // الإعدادات والإشعارات والحساب
+                // إعدادات + نوتيفيكشن + حساب
                 Row(
                   children: [
-                    // قائمة الإعدادات المنسدلة
                     PopupMenuButton<String>(
                       icon: Icon(Icons.settings, color: iconColor),
                       tooltip: 'Settings',
-                      color: Color(0xFF1E7F5C).withOpacity(0.95),
-
+                      color: const Color.fromARGB(
+                        255,
+                        127,
+                        222,
+                        234,
+                      ).withOpacity(0.95),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -89,12 +98,11 @@ class MainHealth extends StatelessWidget {
                                 children: [
                                   Icon(
                                     isDark ? Icons.light_mode : Icons.dark_mode,
-                                    color: Color(0xFF1E7F5C),
+                                    color: const Color(0xFF00ACC1),
                                   ),
                                   const SizedBox(width: 10),
-                                  Text(
-                                    ' change mode',
-
+                                  const Text(
+                                    ' Change Mode',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       color: Color(0xFF1E7F5C),
@@ -104,22 +112,20 @@ class MainHealth extends StatelessWidget {
                               ),
                             ),
                             const PopupMenuDivider(),
-
                             PopupMenuItem(
                               value: 'language_dialog',
                               child: Row(
-                                children: [
+                                children: const [
                                   Icon(
                                     Icons.language,
-                                    color: Color(0xFF1E7F5C),
+                                    color: Color(0xFF00ACC1),
                                   ),
-                                  const SizedBox(width: 10),
+                                  SizedBox(width: 10),
                                   Text(
-                                    'language',
-
+                                    'Language',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      color: Color(0xFF1E7F5C),
+                                      color: Color(0xFF00ACC1),
                                     ),
                                   ),
                                 ],
@@ -132,91 +138,95 @@ class MainHealth extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.notifications_none, color: iconColor),
                       tooltip: 'Notifications',
-                      onPressed:
-                          () => sidebarController.selectedIndex.value = 30,
+                      onPressed: () {},
                     ),
                     const SizedBox(width: 8),
 
-                   
-                   GestureDetector(
-  onTap: () => sidebarController.selectedIndex.value = 99,
-  child: Obx(() {
-    return Row(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              userController.name.value, // استخدم name بدلاً من userName
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-              ),
-            ),
-            Text(
-              userController.role.value, // استخدم role بدلاً من userRole
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(width: 8),
-        ClipOval(
-          child: SizedBox(
-            width: 36,
-            height: 36,
-            child: userController.profileImageBytes.value != null
-                ? Image.memory(
-                    userController.profileImageBytes.value!,
-                    fit: BoxFit.cover,
-                  )
-                : Lottie.asset(
-                    'assets/lottie/Animationprofile.json',
-                    fit: BoxFit.contain,
-                  ),
-          ),
-        ),
-      ],
-    );
-  }),
-)
+                    GestureDetector(
+                      onTap: () => sidebarController.selectedIndex.value = 999,
+                      child: Obx(() {
+                        return Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  userController.name.value,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  userController.role.value,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 8),
+                            ClipOval(
+                              child: SizedBox(
+                                width: 36,
+                                height: 36,
+                                child:
+                                    userController.profileImageBytes.value !=
+                                            null
+                                        ? Image.memory(
+                                          userController
+                                              .profileImageBytes
+                                              .value!,
+                                          fit: BoxFit.cover,
+                                        )
+                                        : Lottie.asset(
+                                          'assets/lottie/Animationprofile.json',
+                                          fit: BoxFit.contain,
+                                        ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
 
-          // المحتوى مع الشريط الجانبي
+          // 🔹 المحتوى مع السايد بار
           Expanded(
             child: Row(
               children: [
-                SecretarySidebar(),
+                HealthSidebar(),
                 Expanded(
                   child: Obx(() {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
-                        return const HealthDashboardPage();
+                        return SuperAdminDashboardPage();
                       case 1:
-                        return AppointmentsPage();
-
+                        return SuperAdminPendingDoctorsPage();
                       case 2:
-                        return PatientsPage();
+                        return SuperAdminCentersPage();
                       case 3:
-                        return DoctorsPage();
-
+                        return CenterAdminsPage();
                       case 4:
-                        return ReportsPage();
-                      case 30:
-                        return NotificationPage();
-                      case 99:
-                        return ProfilePage();
+                        return Center(child: Text("👥 Users Management"));
+                      case 5:
+                        return Center(child: Text("📜 Licenses"));
+                      case 6:
+                        return Center(child: Text("📑 Reports"));
+                      // case 7:
+                      //   return Center(child: Text("➕ Register Center Admin"));
+                      case 999:
+                        return Center(child: Text("🙍 Profile Page"));
                       default:
                         return Center(
                           child: Text(
-                            'Page \${sidebarController.selectedIndex.value}',
+                            'Page ${sidebarController.selectedIndex.value}',
                             style: const TextStyle(fontSize: 24),
                           ),
                         );

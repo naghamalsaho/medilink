@@ -23,7 +23,7 @@ class AdminDoctorsController extends GetxController {
       isLoading.value = true;
       var response = await http.get(
         Uri.parse(AppLink.doctorsApi),
-        headers: {'Authorization': 'Bearer ${AppLink.token}'},
+        headers: {'Authorization': 'Bearer ${AppLink.adminToken}'},
       );
 
       if (response.statusCode == 200) {
@@ -44,7 +44,8 @@ class AdminDoctorsController extends GetxController {
   void filterDoctors(String query, {String? statusFilter}) {
     final lowerQuery = query.toLowerCase().trim();
 
-    filteredDoctorsList.value =
+    // نعمل نسخة جديدة للقائمة المعروضة
+    final filtered =
         doctorsList.where((doctor) {
           final user = doctor['user'] ?? {};
           final fullName = (user['full_name'] ?? '').toString().toLowerCase();
@@ -65,6 +66,8 @@ class AdminDoctorsController extends GetxController {
 
           return matchesQuery && matchesStatus;
         }).toList();
+
+    filteredDoctorsList.value = filtered;
   }
   //====================================================================================
 
@@ -75,7 +78,8 @@ class AdminDoctorsController extends GetxController {
         Uri.parse(url),
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'Bearer ${AppLink.token}', // استخدم AppLink.token
+          'Authorization':
+              'Bearer ${AppLink.adminToken}', // استخدم AppLink.token
         },
       );
 
@@ -129,7 +133,7 @@ class AdminDoctorsController extends GetxController {
           "https://medical.doctorme.site/api/admin/doctors/$doctorId/status",
         ),
         headers: {
-          'Authorization': 'Bearer ${AppLink.token}',
+          'Authorization': 'Bearer ${AppLink.adminToken}',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
@@ -139,11 +143,19 @@ class AdminDoctorsController extends GetxController {
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body);
         final updated = data['data']['is_active'];
+
         final idx = doctorsList.indexWhere((d) => d['id'] == doctorId);
         if (idx != -1) {
           doctorsList[idx]['is_active'] = updated;
           doctorsList.refresh();
         }
+
+        // نعيد تطبيق الفلترة الحالية بعد تحديث الحالة
+        filterDoctors(
+          searchQuery.value,
+          statusFilter: statusFilter.value == "all" ? null : statusFilter.value,
+        );
+
         return true;
       }
       return false;

@@ -20,6 +20,10 @@ class AdminSidebar extends StatelessWidget {
       {'icon': Icons.local_hospital_outlined, 'label': 'Doctors'},
       {'icon': Icons.event_note_outlined, 'label': 'Appointments'},
       {'icon': Icons.pie_chart_outline, 'label': 'Reports'},
+      {
+        'icon': Icons.miscellaneous_services_outlined,
+        'label': 'Services',
+      }, // جديد
     ];
 
     final Color sidebarBg = const Color(0xFFF7F8FA);
@@ -44,7 +48,7 @@ class AdminSidebar extends StatelessWidget {
               return InkWell(
                 onTap: () {
                   sidebarController.selectedIndex.value = index;
-                  print('Selected index: $index'); // للتأكد
+                  print('Selected index: $index');
                 },
                 borderRadius: BorderRadius.circular(10),
                 hoverColor: hoverColor,

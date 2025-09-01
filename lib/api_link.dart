@@ -1,12 +1,21 @@
 class AppLink {
+  // ================= Base URLs =================
   static const String serverimage = "http://192.168.139.152:8000";
   static const String server =
       "https://cors-anywhere.herokuapp.com/https://medical.doctorme.site";
 
-  //======================================Auth==================================//
+  // ================= Auth =================
   static const String logIn = "$server/api/login";
 
-  // ================= Patients =================
+  // ================= Tokens =================
+  static const String secretaryToken =
+      "uj8b7iZ164ZSMxiyQmPnW04odaij0gNCxj8sjr1kf01f0552";
+  static const String adminToken =
+      'upBrSSBCocYeUMaHtvpK9opS36lkrWPZHo5puXj91ef07fe6';
+  static const String superAdminToken =
+      "1558|SLznH1gNd8blaguwjwygqNZDjLR4n42XkGcUqnTn6705e4de";
+
+  // ================= Secretary Endpoints =================
   static const String patients = "$server/api/secretary/patients";
   static String deletePatient(int patientId) =>
       "$server/api/secretary/patients/$patientId";
@@ -39,41 +48,68 @@ class AppLink {
       "$server/api/secretary/appointment-requests/$id/reject";
   static const String delete = "$server/api/secretary/appointments";
   static const String update = "$server/api/secretary/appointments";
-
-  // ================= Dashboard =================
+  // Dashboard
   static const String dashboard = "$server/api/secretary/dashboard-stats?";
   static const String todaysAppointments =
       "$server/api/secretary/appointments/today";
 
-  // Admin Endpoints
+  // ================= Admin Endpoints =================
   static const String doctorsApi = '$server/api/admin/doctors';
-  static const String token =
-      'upBrSSBCocYeUMaHtvpK9opS36lkrWPZHo5puXj91ef07fe6';
+
   static const String secretariesApi = '$server/api/admin/secretaries';
-  // رابط حذف سكرتير حسب الـ id
   static String deleteSecretary(int id) => "$server/api/admin/secretaries/$id";
   static String updateSecretary(int id) => "$server/api/admin/secretaries/$id";
-  static const String addSecretary =
-      "https://medical.doctorme.site/api/admin/add-user-role";
+  static const String addSecretary = "$server/api/admin/add-user-role";
 
-  //  ساعات العمل (إضافة / عرض / تعديل / حذف)
+  // Working hours
   static String workingHours(int doctorId) {
     return "$server/admin/doctors/$doctorId/working-hours";
   }
 
-  // تعديل ساعة العمل حسب ID
   static String updateWorkingHour(int workingHourId) =>
       "https://medical.doctorme.site/api/admin/doctors/working-hours/$workingHourId";
-
-  // حذف ساعة العمل حسب ID
   static String deleteWorkingHour(int workingHourId) =>
       "$server/admin/doctors/working-hours/$workingHourId";
+
+  // Doctor Candidates
 
   static const String doctorCandidatesApi =
       "$server/api/admin/doctors/candidates";
   static String searchDoctorCandidates(String query) =>
       "$server/api/admin/doctors/candidates?search=$query";
   static const String inviteDoctor = "$server/api/admin/doctor-invitations";
+
   static String updateDoctorStatus(int doctorId) =>
-      "$server/admin/doctors/$doctorId/status"; // <-- عدّلها لمسارك الحقيقي
+      "$server/api/admin/doctors/$doctorId/status";
+
+  // Services
+  static const String catalogServices = "$server/api/admin/services/catalog";
+  static const String centerServices = "$server/api/admin/centers/services";
+
+  // ================= Super Admin Endpoints =================
+  static const String superAdminStatistics =
+      "$server/superadmin/dashboard/statistics";
+  static const pendingDoctors =
+      "https://medical.doctorme.site/api/super-admin/doctors/pending";
+
+  static const String superAdminGetCenters = "$server/api/superadmin/centers";
+  static const String superAdminToggleCenter = "$server/api/superadmin/centers";
+  static String superAdminUpdateCenter(int id) =>
+      "$server/api/superadmin/centers/$id";
+
+  static String approveDoctor(int id) =>
+      "https://medical.doctorme.site/api/super-admin/doctors/$id/approve";
+
+  static String rejectDoctor(int id) =>
+      "https://medical.doctorme.site/api/super-admin/doctors/$id/reject";
+
+  static const String centerAdmins = "$server/superadmin/center-admins";
+  static String centerAdminById(int id) =>
+      "$server/api/superadmin/center-admins/$id";
+  static String updateCenterAdmin(int id) =>
+      "$server/api/superadmin/center-admins/$id";
+  static String toggleCenterAdminStatus(int id) =>
+      "$server/api/superadmin/center-admins/$id/toggle-status";
+  static const String registerCenterAdmin =
+      '$server/api/superadmin/register-center-admin';
 }

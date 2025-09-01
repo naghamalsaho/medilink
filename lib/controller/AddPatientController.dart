@@ -8,9 +8,7 @@ import 'package:medilink/core/class/statusrequest.dart';
 import 'package:medilink/core/services/MyServices.dart';
 import 'package:medilink/models/patient_model.dart';
 
-
 class AddPatientController extends GetxController {
- 
   var nameController = TextEditingController();
   var birthDateController = TextEditingController();
   var phoneController = TextEditingController();
@@ -19,6 +17,7 @@ class AddPatientController extends GetxController {
 
   var gender = 'Male'.obs;
   var isLoading = false.obs;
+  late int centerId;
 
   late String token;
   StatusRequest statusRequest = StatusRequest.none;
@@ -27,6 +26,8 @@ class AddPatientController extends GetxController {
   void onInit() {
     super.onInit();
     token = Get.find<MyServices>().sharedPreferences.getString("token") ?? "";
+    centerId =
+        Get.find<MyServices>().sharedPreferences.getInt("center_id") ?? 1;
   }
 
   Future<void> addPatient() async {
@@ -54,6 +55,7 @@ class AddPatientController extends GetxController {
     request.fields['birthdate'] = birthDateController.text;
     request.fields['gender'] = gender.value.toLowerCase();
     request.fields['address'] = addressController.text;
+    request.fields['center_id'] = centerId.toString(); // ⚠️ مهم جدًا
 
     try {
       var response = await request.send();
@@ -65,12 +67,14 @@ class AddPatientController extends GetxController {
       var jsonData = jsonDecode(responseBody);
 
       if (response.statusCode == 201 && jsonData['success'] == true) {
-        Get.snackbar('success', jsonData['message'] ?? 'Patient added successfully');
+        Get.snackbar(
+          'success',
+          jsonData['message'] ?? 'Patient added successfully',
+        );
         statusRequest = StatusRequest.success;
 
         final patientsController = Get.find<PatientsController>();
-        await patientsController
-            .getPatients();
+        await patientsController.getPatients();
 
         Get.back();
       } else {

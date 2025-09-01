@@ -21,7 +21,7 @@ class AdminSecretariesController extends GetxController {
       isLoading.value = true;
       var response = await http.get(
         Uri.parse(AppLink.secretariesApi),
-        headers: {'Authorization': 'Bearer ${AppLink.token}'},
+        headers: {'Authorization': 'Bearer ${AppLink.adminToken}'},
       );
 
       if (response.statusCode == 200) {
@@ -57,7 +57,7 @@ class AdminSecretariesController extends GetxController {
       final response = await http.delete(
         Uri.parse(AppLink.deleteSecretary(userId)),
         headers: {
-          'Authorization': 'Bearer ${AppLink.token}',
+          'Authorization': 'Bearer ${AppLink.adminToken}',
           'Accept': 'application/json',
         },
       );
@@ -110,7 +110,7 @@ class AdminSecretariesController extends GetxController {
       final response = await http.put(
         Uri.parse(AppLink.updateSecretary(userId)),
         headers: {
-          'Authorization': 'Bearer ${AppLink.token}',
+          'Authorization': 'Bearer ${AppLink.adminToken}',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
@@ -169,7 +169,7 @@ class AdminSecretariesController extends GetxController {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization": "Bearer ${AppLink.token}",
+          "Authorization": "Bearer ${AppLink.adminToken}",
         },
         body: jsonEncode(body),
       );
