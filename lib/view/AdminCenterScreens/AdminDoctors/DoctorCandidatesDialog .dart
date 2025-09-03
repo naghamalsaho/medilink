@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:medilink/controller/AdminRoleControllers/DoctorInviteController%20.dart';
+import 'package:medilink/view/AdminCenterScreens/AdminDoctors/DoctorDetailsDialog%20.dart';
 
 class DoctorCandidatesDialog extends StatelessWidget {
   final DoctorInviteController inviteController = Get.find();
@@ -112,27 +113,56 @@ class DoctorCandidatesDialog extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                if (!isInvited) {
-                                  bool ok = await inviteController.inviteDoctor(
-                                    userId,
-                                  );
-                                  if (ok) {
-                                    inviteController.invitedDoctors[userId] =
-                                        true;
-                                    Get.snackbar(
-                                      "Invited",
-                                      "${doctor['full_name']} has been invited!",
+                            Row(
+                              children: [
+                                // زر الدعوة
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    if (doctor["invitation_status"] == null ||
+                                        doctor["invitation_status"] == "none") {
+                                      bool success = await inviteController
+                                          .inviteDoctor(doctor);
+                                      if (success) {
+                                        doctor["invitation_status"] =
+                                            "pending"; // تحديث فورًا
+                                        inviteController.candidatesList
+                                            .refresh();
+                                      }
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        doctor["invitation_status"] == "pending"
+                                            ? Colors.orange
+                                            : doctor["invitation_status"] ==
+                                                "accepted"
+                                            ? Colors.grey
+                                            : Colors.green,
+                                  ),
+                                  child: Text(
+                                    doctor["invitation_status"] == "pending"
+                                        ? "Pending"
+                                        : doctor["invitation_status"] ==
+                                            "accepted"
+                                        ? "Accepted"
+                                        : "Invite",
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+
+                                // أيقونة التفاصيل
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.info,
+                                    color: Colors.blue,
+                                  ),
+                                  onPressed: () {
+                                    Get.dialog(
+                                      DoctorDetailsDialog(doctor: doctor),
                                     );
-                                  }
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    isInvited ? Colors.grey : Colors.green,
-                              ),
-                              child: Text(isInvited ? "Invited" : "Invite"),
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         ),

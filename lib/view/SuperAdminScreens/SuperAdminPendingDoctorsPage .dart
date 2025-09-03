@@ -43,80 +43,24 @@ class SuperAdminPendingDoctorsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // صورة الملف الشخصي
-            if (user['profile_photo'] != null && user['profile_photo'] != "")
-              Center(
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(
-                    "https://medical.doctorme.site/${user['profile_photo']}",
-                  ),
-                ),
-              ),
-            const SizedBox(height: 16),
-
-            // الاسم
             Text(
               "Full Name: ${user['full_name'] ?? "-"}",
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
 
-            // البريد و الهاتف
-            Text(
-              "Email: ${user['email'] ?? "-"}",
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              "Phone: ${user['phone'] ?? "-"}",
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-
-            // تاريخ الميلاد، الجنس، العنوان
-            Text(
-              "Birthdate: ${user['birthdate'] ?? "-"}",
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
-              "Gender: ${user['gender'] ?? "-"}",
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
-              "Address: ${user['address'] ?? "-"}",
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 12),
-
-            // عن الطبيب وسنوات الخبرة والتخصص
-            Text(
-              "About Me: ${profile['about_me'] ?? "-"}",
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              "Years of Experience: ${profile['years_of_experience'] ?? "-"}",
-              style: const TextStyle(fontSize: 16),
-            ),
             Text(
               "Specialty ID: ${profile['specialty_id'] ?? "-"}",
               style: const TextStyle(fontSize: 16),
             ),
-            Text(
-              "Appointment Duration: ${profile['appointment_duration'] ?? "-"} minutes",
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
-            // الحالة
             Text(
               "Status: ${profile['status'] ?? "-"}",
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 12),
 
-            // الشهادة
             Row(
               children: [
                 const Text(

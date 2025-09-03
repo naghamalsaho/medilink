@@ -59,6 +59,16 @@ class AppLink {
   static const String todaysAppointments =
       "$server/api/secretary/appointments/today";
 
+  // ================= Secretary Medical Files =================
+  static String medicalFiles(int patientId) =>
+      "$server/api/secretary/patients/$patientId/medical-file";
+
+  static String uploadMedicalFile(int patientId) =>
+      "$server/api/secretary/patients/$patientId/upload-medical-file";
+
+  static String deleteMedicalFile(int patientId, int fileId) =>
+      "$server/api/secretary/patients/$patientId/medical-file/$fileId";
+
   // ================= Admin Endpoints =================
   static const String doctorsApi = '$server/api/admin/doctors';
 
@@ -98,6 +108,9 @@ class AppLink {
   static const pendingDoctors =
       "https://medical.doctorme.site/api/super-admin/doctors/pending";
 
+  static String doctorCandidates(String search) =>
+      "$server/admin/doctors/candidates?search=$search";
+
   static const String superAdminGetCenters = "$server/api/superadmin/centers";
   static const String superAdminToggleCenter = "$server/api/superadmin/centers";
   static String superAdminUpdateCenter(int id) =>
@@ -118,10 +131,8 @@ class AppLink {
       "$server/api/superadmin/center-admins/$id/toggle-status";
   static const String registerCenterAdmin =
       '$server/api/superadmin/register-center-admin';
-  static const String toggleUserStatus =
-      "$server/api/superadmin/users"; // + /{id}/toggle-status
-  static const String assignUserRole =
-      "$server/api/superadmin/users"; // + /{id}/assign-role
+  static const String toggleUserStatus = "$server/api/superadmin/users";
+  static const String assignUserRole = "$server/api/superadmin/users";
 
   static const String superAdminLicenses = "$server/api/superadmin/licenses";
   static String updateLicenseStatus(int id) =>

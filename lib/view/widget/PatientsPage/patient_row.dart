@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:medilink/view/SecretaryScreens/SideBarElements/MedicalFilesDialog%20.dart';
 import 'package:medilink/view/widget/PatientsPage/action_buttons.dart';
 import 'package:medilink/view/widget/PatientsPage/status_badge.dart';
 
@@ -60,7 +61,19 @@ class PatientRow extends StatelessWidget {
             SizedBox(width: 100, child: Text(lastVisit)),
             SizedBox(width: 40),
             SizedBox(width: 80, child: StatusBadge(status: status)),
-            const SizedBox(width: 70),
+            const SizedBox(width: 20),
+            // 🌟 أيقونة ملفات المريض
+            IconButton(
+              icon: const Icon(Icons.folder, color: Colors.blue),
+              tooltip: "Medical Files",
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => MedicalFilesDialog(patientId: patientId),
+                );
+              },
+            ),
+            const SizedBox(width: 20),
             SizedBox(
               width: 110,
               child: ActionButtons(
