@@ -19,7 +19,7 @@ class SuperAdminPendingDoctorsController extends GetxController {
       var response = await http.get(
         Uri.parse(AppLink.pendingDoctors),
         headers: {
-          'Authorization': 'Bearer ${AppLink.superAdminToken}',
+          'Authorization': 'Bearer ${AppLink.token}',
           'Accept': 'application/json',
         },
       );
@@ -45,7 +45,7 @@ class SuperAdminPendingDoctorsController extends GetxController {
           "https://medical.doctorme.site/api/super-admin/doctors/$doctorId/approve",
         ),
         headers: {
-          'Authorization': 'Bearer ${AppLink.superAdminToken}',
+          'Authorization': 'Bearer ${AppLink.token}',
           'Accept': 'application/json',
         },
       );
@@ -68,7 +68,7 @@ class SuperAdminPendingDoctorsController extends GetxController {
           "https://medical.doctorme.site/api/super-admin/doctors/$doctorId/reject",
         ),
         headers: {
-          'Authorization': 'Bearer ${AppLink.superAdminToken}',
+          'Authorization': 'Bearer ${AppLink.token}',
           'Accept': 'application/json',
         },
       );

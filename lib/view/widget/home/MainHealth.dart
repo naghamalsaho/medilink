@@ -7,8 +7,11 @@ import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/view/SuperAdminScreens/CenterAdmins/CenterAdminsPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/HealthSidebar.dart';
 import 'package:medilink/view/SuperAdminScreens/Dashbord/SuperAdminDashboardPage%20.dart';
+import 'package:medilink/view/SuperAdminScreens/Licenses%20Management.dart';
+import 'package:medilink/view/SuperAdminScreens/LicensesPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/SuperAdminCenters/SuperAdminCentersPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/SuperAdminPendingDoctorsPage%20.dart';
+import 'package:medilink/view/SuperAdminScreens/SuperAdminUsersPage%20.dart';
 import 'package:medilink/view/widget/LanguageDialog.dart';
 import 'package:medilink/view/widget/login/PulsingLogo.dart';
 
@@ -214,9 +217,9 @@ class MainHealth extends StatelessWidget {
                       case 3:
                         return CenterAdminsPage();
                       case 4:
-                        return Center(child: Text("👥 Users Management"));
+                        return UsersManagementPage();
                       case 5:
-                        return Center(child: Text("📜 Licenses"));
+                        return LicensesPage();
                       case 6:
                         return Center(child: Text("📑 Reports"));
                       // case 7:

@@ -22,7 +22,7 @@ class WorkingHoursController extends GetxController {
           "${AppLink.server}/api/admin/doctors/$doctorId/working-hours",
         ),
         headers: {
-          "Authorization": "Bearer ${AppLink.adminToken}",
+          "Authorization": "Bearer ${AppLink.token}",
           'Accept': 'application/json',
         },
       );
@@ -68,7 +68,7 @@ class WorkingHoursController extends GetxController {
       final response = await http.post(
         url,
         headers: {
-          "Authorization": "Bearer ${AppLink.adminToken}",
+          "Authorization": "Bearer ${AppLink.token}",
           "Content-Type": "application/json",
           'Accept': 'application/json',
         },
@@ -126,7 +126,7 @@ class WorkingHoursController extends GetxController {
       final response = await http.put(
         url,
         headers: {
-          "Authorization": "Bearer ${AppLink.adminToken}",
+          "Authorization": "Bearer ${AppLink.token}",
           "Content-Type": "application/json",
           'Accept': 'application/json',
         },
@@ -173,7 +173,7 @@ class WorkingHoursController extends GetxController {
       final response = await http.delete(
         url,
         headers: {
-          "Authorization": "Bearer ${AppLink.adminToken}",
+          "Authorization": "Bearer ${AppLink.token}",
           "Accept": "application/json",
         },
       );

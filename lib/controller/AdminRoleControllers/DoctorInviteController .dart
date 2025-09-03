@@ -8,9 +8,6 @@ class DoctorInviteController extends GetxController {
   var candidatesList = [].obs;
   var invitedDoctors = <int, bool>{}.obs;
 
-  // 🟢 استبدلنا توكن السكرتيرة بتوكن الأدمن
-  final String token = "upBrSSBCocYeUMaHtvpK9opS36lkrWPZHo5puXj91ef07fe6";
-
   final String baseUrl =
       "https://medical.doctorme.site/api/admin/doctors/candidates";
 
@@ -27,7 +24,7 @@ class DoctorInviteController extends GetxController {
       final response = await http.get(
         Uri.parse(url),
         headers: {
-          "Authorization": "Bearer $token",
+          'Authorization': 'Bearer ${AppLink.token}',
           "Accept": "application/json",
         },
       );
@@ -69,7 +66,7 @@ class DoctorInviteController extends GetxController {
       final response = await http.post(
         Uri.parse(AppLink.inviteDoctor),
         headers: {
-          "Authorization": "Bearer $token",
+          'Authorization': 'Bearer ${AppLink.token}',
           "Accept": "application/json",
           "Content-Type": "application/json", // 🟢 لازم JSON
         },

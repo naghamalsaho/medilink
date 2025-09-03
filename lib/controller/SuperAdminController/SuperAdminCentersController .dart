@@ -20,7 +20,7 @@ class SuperAdminCentersController extends GetxController {
       var response = await http.get(
         Uri.parse(AppLink.superAdminGetCenters),
         headers: {
-          'Authorization': 'Bearer ${AppLink.superAdminToken}',
+          'Authorization': 'Bearer ${AppLink.token}',
           'Accept': 'application/json',
         },
       );
@@ -48,7 +48,7 @@ class SuperAdminCentersController extends GetxController {
       var response = await http.put(
         Uri.parse('${AppLink.superAdminToggleCenter}/$centerId/toggle-status'),
         headers: {
-          'Authorization': 'Bearer ${AppLink.superAdminToken}',
+          'Authorization': 'Bearer ${AppLink.token}',
           'Accept': 'application/json',
         },
       );
@@ -77,7 +77,7 @@ class SuperAdminCentersController extends GetxController {
       var response = await http.put(
         Uri.parse('${AppLink.superAdminToggleCenter}/$centerId'),
         headers: {
-          'Authorization': 'Bearer ${AppLink.superAdminToken}',
+          'Authorization': 'Bearer ${AppLink.token}',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -37,7 +38,7 @@ class CenterAdminsController extends GetxController {
       final response = await http.get(
         Uri.parse("https://medical.doctorme.site/api/superadmin/center-admins"),
         headers: {
-          "Authorization": "Bearer ${AppLink.superAdminToken}",
+          "Authorization": "Bearer ${AppLink.token}",
           "Accept": "application/json",
         },
       );
@@ -80,7 +81,7 @@ class CenterAdminsController extends GetxController {
       final response = await http.get(
         Uri.parse(url),
         headers: {
-          "Authorization": "Bearer ${AppLink.superAdminToken}",
+          "Authorization": "Bearer ${AppLink.token}",
           "Accept": "application/json",
         },
       );
@@ -171,7 +172,7 @@ class CenterAdminsController extends GetxController {
       final response = await http.put(
         Uri.parse(url),
         headers: {
-          "Authorization": "Bearer ${AppLink.superAdminToken}",
+          "Authorization": "Bearer ${AppLink.token}",
           "Accept": "application/json",
           "Content-Type": "application/json",
         },
@@ -294,7 +295,7 @@ class CenterAdminsController extends GetxController {
       final response = await http.put(
         Uri.parse(AppLink.toggleCenterAdminStatus(id)),
         headers: {
-          "Authorization": "Bearer ${AppLink.superAdminToken}",
+          "Authorization": "Bearer ${AppLink.token}",
           "Accept": "application/json",
         },
       );
@@ -321,41 +322,62 @@ class CenterAdminsController extends GetxController {
 
   //=============================
   Future<void> registerCenterAdmin({
-    required String name,
+    required String fullName,
     required String email,
     required String password,
     required String centerName,
-    required String licenseNumber,
-    required String fullName,
+    required String centerLocation,
     required String phone,
-    required String license,
+    required String issuedBy,
+    required String issueDate,
+    required String amount, // أضفنا المبلغ
+    Uint8List? licenseFileBytes, // للويب
+    String? licenseFileName, // اسم الملف
   }) async {
     try {
       isLoading.value = true;
 
-      var response = await http.post(
+      var request = http.MultipartRequest(
+        'POST',
         Uri.parse(AppLink.registerCenterAdmin),
-        headers: {
-          "Accept": "application/json",
-          "Authorization": "Bearer ${AppLink.superAdminToken}",
-        },
-        body: {
-          "name": name,
-          "email": email,
-          "password": password,
-          "center_name": centerName,
-          "license_number": licenseNumber,
-        },
       );
 
+      request.headers['Authorization'] = "Bearer ${AppLink.token}";
+      request.headers['Accept'] = 'application/json';
+
+      // الحقول
+      request.fields['full_name'] = fullName;
+      request.fields['email'] = email;
+      request.fields['password'] = password;
+      request.fields['center_name'] = centerName;
+      request.fields['center_location'] = centerLocation;
+      request.fields['phone'] = phone;
+      request.fields['issued_by'] = issuedBy;
+      request.fields['issue_date'] = issueDate;
+      request.fields['amount'] = amount; // 💡 ضفناها هون
+
+      // الملف (إذا موجود)
+      if (licenseFileBytes != null && licenseFileName != null) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'license_file',
+            licenseFileBytes,
+            filename: licenseFileName,
+          ),
+        );
+      }
+
+      var response = await request.send();
+      var responseBody = await http.Response.fromStream(response);
+
       print("🔵 Register status: ${response.statusCode}");
-      print("🔵 Register body: ${response.body}");
+      print("🔵 Register body: ${responseBody.body}");
 
-      var data = json.decode(response.body);
+      var data = json.decode(responseBody.body);
 
-      if (response.statusCode == 200 && data["success"] == true) {
+      if (response.statusCode == 201 && data["success"] == true) {
         Get.snackbar("Success", "Center admin registered successfully");
-        fetchCenterAdmins(); // رجع جِب المدراء بعد الإضافة
+        fetchCenterAdmins();
       } else {
         Get.snackbar(
           "Error",

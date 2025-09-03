@@ -21,20 +21,44 @@ class AdminDoctorsController extends GetxController {
   void fetchDoctors() async {
     try {
       isLoading.value = true;
+      final url = "https://medical.doctorme.site/api/admin/doctors";
+      print("🔵 FETCH DOCTORS URL: $url");
+
       var response = await http.get(
-        Uri.parse(AppLink.doctorsApi),
-        headers: {'Authorization': 'Bearer ${AppLink.adminToken}'},
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer ${AppLink.token}',
+          'Accept': 'application/json',
+        },
       );
+
+      print("🔵 Doctors API Status: ${response.statusCode}");
+      print("🔵 Doctors API Body: ${response.body}");
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        doctorsList.value = List<Map<String, dynamic>>.from(data['data']);
-        filteredDoctorsList.value = doctorsList; // بعد التحميل عرض الكل
+        if (data['success'] == true && data['data'] != null) {
+          doctorsList.value = List<Map<String, dynamic>>.from(data['data']);
+          filteredDoctorsList.value = doctorsList; // عرض الكل بعد التحميل
+          print(
+            "✅ Doctors fetched successfully: ${doctorsList.length} doctors",
+          );
+        } else {
+          print("❌ Doctors data not found or success false");
+        }
+      } else if (response.statusCode == 401) {
+        print("❌ Unauthenticated! Check the token");
+        Get.snackbar("Error", "Unauthenticated. Please check your token.");
       } else {
-        Get.snackbar('Error', 'Failed to fetch doctors');
+        print("❌ Failed to fetch doctors. Status: ${response.statusCode}");
+        Get.snackbar(
+          "Error",
+          "Failed to fetch doctors. Status: ${response.statusCode}",
+        );
       }
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      print("❌ Exception fetching doctors: $e");
+      Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -78,8 +102,7 @@ class AdminDoctorsController extends GetxController {
         Uri.parse(url),
         headers: {
           'Accept': 'application/json',
-          'Authorization':
-              'Bearer ${AppLink.adminToken}', // استخدم AppLink.token
+          'Authorization': 'Bearer ${AppLink.token}',
         },
       );
 
@@ -133,7 +156,7 @@ class AdminDoctorsController extends GetxController {
           "https://medical.doctorme.site/api/admin/doctors/$doctorId/status",
         ),
         headers: {
-          'Authorization': 'Bearer ${AppLink.adminToken}',
+          'Authorization': 'Bearer ${AppLink.token}',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },

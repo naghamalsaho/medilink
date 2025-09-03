@@ -26,7 +26,7 @@ class SuperAdminDashboardController extends GetxController {
           "https://medical.doctorme.site/api/superadmin/dashboard/statistics",
         ),
         headers: {
-          "Authorization": "Bearer ${AppLink.superAdminToken}",
+          "Authorization": "Bearer ${AppLink.token}",
           "Accept": "application/json",
         },
       );

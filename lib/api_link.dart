@@ -1,3 +1,7 @@
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:medilink/core/services/MyServices.dart';
+
 class AppLink {
   // ================= Base URLs =================
   static const String serverimage = "http://192.168.139.152:8000";
@@ -8,12 +12,14 @@ class AppLink {
   static const String logIn = "$server/api/login";
 
   // ================= Tokens =================
-  static const String secretaryToken =
-      "uj8b7iZ164ZSMxiyQmPnW04odaij0gNCxj8sjr1kf01f0552";
-  static const String adminToken =
-      'upBrSSBCocYeUMaHtvpK9opS36lkrWPZHo5puXj91ef07fe6';
-  static const String superAdminToken =
-      "1558|SLznH1gNd8blaguwjwygqNZDjLR4n42XkGcUqnTn6705e4de";
+  static String get token => Get.find<MyServices>().box.read("token") ?? "";
+
+  // static const String secretaryToken =
+  //     "235|XBNTPLXo4ikK84PgqZZq3oeonkxtAhdW1UEaYyl3952ff102";
+  // static const String adminToken =
+  //     "2|86R9fr5lgjetWThLzA9cV3VzhnFPG2VnzACwx0bQ7202a532";
+  // static const String superAdminToken =
+  //     "2|86R9fr5lgjetWThLzA9cV3VzhnFPG2VnzACwx0bQ7202a532";
 
   // ================= Secretary Endpoints =================
   static const String patients = "$server/api/secretary/patients";
@@ -112,4 +118,12 @@ class AppLink {
       "$server/api/superadmin/center-admins/$id/toggle-status";
   static const String registerCenterAdmin =
       '$server/api/superadmin/register-center-admin';
+  static const String toggleUserStatus =
+      "$server/api/superadmin/users"; // + /{id}/toggle-status
+  static const String assignUserRole =
+      "$server/api/superadmin/users"; // + /{id}/assign-role
+
+  static const String superAdminLicenses = "$server/api/superadmin/licenses";
+  static String updateLicenseStatus(int id) =>
+      "$server/api/superadmin/licenses/$id/status";
 }

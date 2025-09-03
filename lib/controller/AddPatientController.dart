@@ -36,8 +36,8 @@ class AddPatientController extends GetxController {
     update();
 
     var headers = {
-      'Authorization':
-          'Bearer uj8b7iZ164ZSMxiyQmPnW04odaij0gNCxj8sjr1kf01f0552',
+      'Authorization': 'Bearer ${AppLink.token}',
+
       'Accept': 'application/json',
       'Content-Type': 'multipart/form-data',
     };

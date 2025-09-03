@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:medilink/controller/SuperAdminController/CenterAdminsController%20.dart';
@@ -162,80 +165,235 @@ class CenterAdminsPage extends StatelessWidget {
   }
 
   void _showRegisterAdminDialog(BuildContext context) {
-    final TextEditingController nameController = TextEditingController();
+    final TextEditingController fullNameController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController phoneController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController centerNameController = TextEditingController();
-    final TextEditingController licenseController = TextEditingController();
+    final TextEditingController centerLocationController =
+        TextEditingController();
+    final TextEditingController issuedByController = TextEditingController();
+    final TextEditingController issueDateController = TextEditingController();
+    final TextEditingController amountController =
+        TextEditingController(); // 🔹 جديد
+
+    // 🔹 بدل ما نخزن path صار نخزن bytes + اسم الملف (يدعم الويب)
+    Rx<Uint8List?> licenseFileBytes = Rx<Uint8List?>(null);
+    RxString licenseFileName = "".obs;
+
+    RxBool obscurePassword = true.obs; // 🔹 للتحكم بإظهار/إخفاء الباسورد
 
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        insetPadding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Register Center Admin",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              _buildTextField("Full Name", nameController),
-              const SizedBox(height: 12),
-              _buildTextField("Email", emailController),
-              const SizedBox(height: 12),
-              _buildTextField("Phone", phoneController),
-              const SizedBox(height: 12),
-              _buildTextField("Password", passwordController, isPassword: true),
-              const SizedBox(height: 12),
-              _buildTextField("Center Name", centerNameController),
-              const SizedBox(height: 12),
-              _buildTextField("License Number", licenseController),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Get.back(),
-                    child: const Text(
-                      "Cancel",
-                      style: TextStyle(color: Colors.grey),
-                    ),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Register Center Admin",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
-                  const SizedBox(width: 12),
-                  ElevatedButton(
-                    onPressed: () {
-                      controller.registerCenterAdmin(
-                        name: nameController.text,
-                        email: emailController.text,
-                        phone: phoneController.text,
-                        password: passwordController.text,
-                        centerName: centerNameController.text,
-                        license: licenseController.text,
-                        licenseNumber: '',
-                        fullName: '',
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 20,
+                ),
+                const SizedBox(height: 20),
+
+                // 🔹 Full Name + Email
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTextField("Full Name", fullNameController),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(child: _buildTextField("Email", emailController)),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // 🔹 Phone + Password
+                Row(
+                  children: [
+                    Expanded(child: _buildTextField("Phone", phoneController)),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Obx(
+                        () => TextField(
+                          controller: passwordController,
+                          obscureText: obscurePassword.value,
+                          decoration: InputDecoration(
+                            labelText: "Password",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                obscurePassword.value
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                obscurePassword.value = !obscurePassword.value;
+                              },
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    child: const Text("Register"),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // 🔹 Center Name + Center Location
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTextField(
+                        "Center Name",
+                        centerNameController,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildTextField(
+                        "Center Location",
+                        centerLocationController,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // 🔹 Issued By + Issue Date (مع تقويم)
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTextField("Issued By", issuedByController),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextField(
+                        controller: issueDateController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: "Issue Date",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          suffixIcon: const Icon(Icons.calendar_today),
+                        ),
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100),
+                          );
+                          if (pickedDate != null) {
+                            issueDateController.text =
+                                "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // 🔹 License File Picker (يدعم الويب)
+                Row(
+                  children: [
+                    Expanded(
+                      child: Obx(
+                        () => Text(
+                          licenseFileName.value.isEmpty
+                              ? "No file selected"
+                              : licenseFileName.value,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.attach_file, color: Colors.blue),
+                      onPressed: () async {
+                        // 🔹 يجب أن يكون هذا مباشرة داخل onPressed
+                        final result = await FilePicker.platform.pickFiles(
+                          type: FileType.custom,
+                          allowedExtensions: ['pdf', 'jpg', 'png'],
+                          withData: true, // مهم للويب
+                        );
+                        if (result != null &&
+                            result.files.single.bytes != null) {
+                          licenseFileBytes.value = result.files.single.bytes;
+                          licenseFileName.value = result.files.single.name;
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // 🔹 Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Get.back(),
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        controller.registerCenterAdmin(
+                          fullName: fullNameController.text,
+                          email: emailController.text,
+                          phone: phoneController.text,
+                          password: passwordController.text,
+                          centerName: centerNameController.text,
+                          centerLocation: centerLocationController.text,
+                          issuedBy: issuedByController.text,
+                          issueDate: issueDateController.text,
+                          licenseFileBytes: licenseFileBytes.value,
+                          licenseFileName:
+                              licenseFileName.value.isNotEmpty
+                                  ? licenseFileName.value
+                                  : null,
+                          amount: amountController.text, // بدل double.tryParse
+                        );
+                        Get.back();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                          horizontal: 24,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -253,7 +411,26 @@ class CenterAdminsPage extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 14,
+        ),
       ),
     );
   }
+
+  // Widget _buildTextField(
+  //   String label,
+  //   TextEditingController controller, {
+  //   bool isPassword = false,
+  // }) {
+  //   return TextField(
+  //     controller: controller,
+  //     obscureText: isPassword,
+  //     decoration: InputDecoration(
+  //       labelText: label,
+  //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+  //     ),
+  //   );
+  // }
 }
