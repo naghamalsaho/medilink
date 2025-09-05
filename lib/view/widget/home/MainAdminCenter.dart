@@ -192,7 +192,7 @@ class MainAdminCenter extends StatelessWidget {
                   child: Obx(() {
                     switch (sidebarController.selectedIndex.value) {
                       case 0:
-                        return const AdminDashbord();
+                        return AdminDashbord();
                       case 1:
                         return AdminSecretariesPage();
                       case 2:

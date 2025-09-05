@@ -41,12 +41,10 @@ class DashboardController extends GetxController {
 
     responseCases.fold(
       (l) {
-        
         print("Dashboard stats fetch failed with status: $l");
         statusRequest.value = l;
       },
       (r) async {
-        
         print("Dashboard stats fetched: $r");
         if (r['success'] == true) {
           pendingAppointments.value = r['data']['pending_appointments'];

@@ -118,13 +118,25 @@ class DoctorCandidatesDialog extends StatelessWidget {
                                 // زر الدعوة
                                 ElevatedButton(
                                   onPressed: () async {
-                                    if (doctor["invitation_status"] == null ||
-                                        doctor["invitation_status"] == "none") {
+                                    String status =
+                                        doctor["invitation_status"] ?? "none";
+
+                                    if (status == "none" ||
+                                        status == "rejected") {
+                                      // إرسال الدعوة
                                       bool success = await inviteController
                                           .inviteDoctor(doctor);
                                       if (success) {
-                                        doctor["invitation_status"] =
-                                            "pending"; // تحديث فورًا
+                                        doctor["invitation_status"] = "pending";
+                                        inviteController.candidatesList
+                                            .refresh();
+                                      }
+                                    } else if (status == "pending") {
+                                      // إلغاء الدعوة
+                                      bool success = await inviteController
+                                          .toggleInvitation(doctor); // ✅ هنا
+                                      if (success) {
+                                        doctor["invitation_status"] = "none";
                                         inviteController.candidatesList
                                             .refresh();
                                       }

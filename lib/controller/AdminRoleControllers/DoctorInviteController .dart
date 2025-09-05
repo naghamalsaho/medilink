@@ -120,4 +120,70 @@ class DoctorInviteController extends GetxController {
       return false;
     }
   }
+
+  Future<bool> toggleInvitation(Map<String, dynamic> doctor) async {
+    int userId = doctor["user_id"] ?? doctor["id"];
+    String? status = doctor["invitation_status"];
+
+    // إذا الحالة none أو rejected -> نرسل الدعوة
+    Map<String, dynamic> body = {};
+    if (status == "none" || status == "rejected") {
+      body = {
+        "doctor_user_id": userId,
+        "message": "Welcome to join our center.",
+      };
+    } else if (status == "pending") {
+      // إذا الحالة pending -> نلغي الدعوة
+      body = {"doctor_user_id": userId};
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse(AppLink.inviteDoctor),
+        headers: {
+          'Authorization': 'Bearer ${AppLink.token}',
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(body),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data['success'] == true) {
+        doctor["invitation_status"] =
+            data['data']['mode'] == "canceled" ? "none" : "pending";
+        candidatesList.refresh();
+
+        Get.snackbar(
+          "✅ Success",
+          data["message"] ?? "Action completed",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor:
+              data['data']['mode'] == "canceled" ? Colors.orange : Colors.green,
+          colorText: Colors.white,
+        );
+
+        return true;
+      } else {
+        Get.snackbar(
+          "❌ Error",
+          "Failed to perform action",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red.shade600,
+          colorText: Colors.white,
+        );
+        return false;
+      }
+    } catch (e) {
+      Get.snackbar(
+        "❌ Error",
+        e.toString(),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red.shade600,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+  }
 }

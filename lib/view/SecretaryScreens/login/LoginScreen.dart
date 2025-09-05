@@ -40,8 +40,9 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+     backgroundColor: theme.scaffoldBackgroundColor,
       body: Center(
         child: FadeTransition(
           opacity: _opacityAnimation,
@@ -63,11 +64,11 @@ class _LoginScreenState extends State<LoginScreen>
                     vertical: 40,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.95),
+                    color: theme.cardColor.withOpacity(0.95),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: theme.shadowColor.withOpacity(0.1),
                         blurRadius: 40,
                         offset: const Offset(0, 10),
                       ),

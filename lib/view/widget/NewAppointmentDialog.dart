@@ -1,16 +1,15 @@
 // lib/view/widget/NewAppointmentDialog.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:medilink/controller/PatientsController.dart';
 import 'package:medilink/controller/appointmentsController.dart';
 import 'package:medilink/controller/doctors_controller.dart';
-import 'package:medilink/core/services/MyServices.dart';
 import 'package:medilink/models/doctor_model.dart';
 import 'package:medilink/models/patient_model.dart';
+
 class NewAppointmentDialog extends StatefulWidget {
-  final int? patientId; 
+  final int? patientId;
   const NewAppointmentDialog({Key? key, this.patientId}) : super(key: key);
 
   @override
@@ -20,37 +19,49 @@ class NewAppointmentDialog extends StatefulWidget {
 class _NewAppointmentDialogState extends State<NewAppointmentDialog> {
   int? selectedPatientId;
   int? selectedDoctorId;
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
-  String? status;
-  String? attendanceStatus;
+  DateTime? selectedDateTime; // يحتوي التاريخ والوقت معاً
   final notesController = TextEditingController();
-
-  final statuses = ['pending', 'confirmed', 'cancelled'];
-  final attendanceOptions = ['present', 'absent'];
 
   @override
   void initState() {
     super.initState();
-   
     final doctorCtrl = Get.put(DoctorController());
     final patientCtrl = Get.put(PatientsController());
-  
     if (doctorCtrl.doctors.isEmpty) doctorCtrl.loadDoctors();
     if (patientCtrl.patients.isEmpty) patientCtrl.getPatients();
-
-    
     selectedPatientId = widget.patientId;
   }
 
-  int? _resolvePatientId() {
-    return selectedPatientId ?? widget.patientId;
+  int? _resolvePatientId() => selectedPatientId ?? widget.patientId;
+
+  String _formatRequestedDate(DateTime dt) {
+    // صيغة مطلوبة من السيرفر: yyyy-MM-dd HH:mm:ss
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dt.toLocal());
+  }
+
+  Future<void> _pickDateTime(BuildContext ctx) async {
+    final date = await showDatePicker(
+      context: ctx,
+      initialDate: selectedDateTime ?? DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 365 * 2)),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+    );
+    if (date == null) return;
+    final time = await showTimePicker(
+      context: ctx,
+      initialTime: selectedDateTime != null
+          ? TimeOfDay(hour: selectedDateTime!.hour, minute: selectedDateTime!.minute)
+          : TimeOfDay.now(),
+    );
+    if (time == null) return;
+    setState(() {
+      selectedDateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final appCtrl = Get.find<AppointmentsController>();
-  
     final doctorCtrl = Get.find<DoctorController>();
     final patientCtrl = Get.find<PatientsController>();
 
@@ -60,109 +71,53 @@ class _NewAppointmentDialogState extends State<NewAppointmentDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-          
-            GetBuilder<PatientsController>(
-              builder: (pc) {
-                final patients = pc.patients;
-                if (patients.isEmpty) {
-                  return const SizedBox(
-                      height: 60,
-                      child: Center(child: CircularProgressIndicator()));
-                }
-                return DropdownButtonFormField<int>(
-                  decoration: const InputDecoration(labelText: 'Patient (booked by)'),
-                  items: patients.map<DropdownMenuItem<int>>((PatientModel p) {
-               
-                    return DropdownMenuItem<int>(
-                      value: p.id,
-                      child: Text(p.fullName),
-                    );
-                  }).toList(),
-                  value: selectedPatientId ?? widget.patientId,
-                  onChanged: (v) => setState(() => selectedPatientId = v),
-                );
-              },
-            ),
-
+            // Patient
+            GetBuilder<PatientsController>(builder: (pc) {
+              final patients = pc.patients;
+              if (patients.isEmpty) {
+                return const SizedBox(height: 60, child: Center(child: CircularProgressIndicator()));
+              }
+              return DropdownButtonFormField<int>(
+                decoration: const InputDecoration(labelText: 'Patient (booked by)'),
+                items: patients.map<DropdownMenuItem<int>>((PatientModel p) {
+                  return DropdownMenuItem<int>(value: p.id, child: Text(p.fullName));
+                }).toList(),
+                value: selectedPatientId ?? widget.patientId,
+                onChanged: (v) => setState(() => selectedPatientId = v),
+              );
+            }),
             const SizedBox(height: 10),
 
-            GetBuilder<DoctorController>(
-              builder: (dc) {
-                final docs = dc.doctors;
-                if (docs.isEmpty) {
-                  return const SizedBox(
-                      height: 60,
-                      child: Center(child: CircularProgressIndicator()));
-                }
-                return DropdownButtonFormField<int>(
-                  decoration: const InputDecoration(labelText: 'Doctor'),
-                  items: docs.map<DropdownMenuItem<int>>((DoctorModel d) {
-                    return DropdownMenuItem<int>(
-                      value: d.id,
-                      child: Text(d.fullName),
-                    );
-                  }).toList(),
-                  value: selectedDoctorId,
-                  onChanged: (v) => setState(() => selectedDoctorId = v),
-                );
-              },
-            ),
-
+            // Doctor
+            GetBuilder<DoctorController>(builder: (dc) {
+              final docs = dc.doctors;
+              if (docs.isEmpty) {
+                return const SizedBox(height: 60, child: Center(child: CircularProgressIndicator()));
+              }
+              return DropdownButtonFormField<int>(
+                decoration: const InputDecoration(labelText: 'Doctor'),
+                items: docs.map<DropdownMenuItem<int>>((DoctorModel d) {
+                  return DropdownMenuItem<int>(value: d.id, child: Text(d.fullName));
+                }).toList(),
+                value: selectedDoctorId,
+                onChanged: (v) => setState(() => selectedDoctorId = v),
+              );
+            }),
             const SizedBox(height: 10),
 
-          
+            // Requested date (date + time) — العرض يكون بصيغة yyyy-MM-dd HH:mm:ss
             TextFormField(
               readOnly: true,
-              decoration: const InputDecoration(labelText: 'Date'),
+              decoration: const InputDecoration(labelText: 'Requested date (YYYY-MM-DD HH:mm:ss)'),
               controller: TextEditingController(
-                text: selectedDate == null ? '' : DateFormat('yyyy/MM/dd').format(selectedDate!),
-              ),
-              onTap: () async {
-                final picked = await showDatePicker(
-                  context: context,
-                  initialDate: selectedDate ?? DateTime.now(),
-                  firstDate: DateTime.now().subtract(const Duration(days: 1)),
-                  lastDate: DateTime.now().add(const Duration(days: 365)),
-                );
-                if (picked != null) setState(() => selectedDate = picked);
-              },
+                  text: selectedDateTime == null ? '' : _formatRequestedDate(selectedDateTime!)),
+              onTap: () => _pickDateTime(context),
             ),
-
             const SizedBox(height: 10),
 
-          
-            TextFormField(
-              readOnly: true,
-              decoration: const InputDecoration(labelText: 'Time'),
-              controller: TextEditingController(text: selectedTime == null ? '' : selectedTime!.format(context)),
-              onTap: () async {
-                final picked = await showTimePicker(context: context, initialTime: selectedTime ?? TimeOfDay.now());
-                if (picked != null) setState(() => selectedTime = picked);
-              },
-            ),
-
-            const SizedBox(height: 10),
-
-           
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Status'),
-              items: statuses.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
-              value: status,
-              onChanged: (v) => setState(() => status = v),
-            ),
-
-            const SizedBox(height: 10),
-
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Attendance'),
-              items: attendanceOptions.map((a) => DropdownMenuItem(value: a, child: Text(a))).toList(),
-              value: attendanceStatus,
-              onChanged: (v) => setState(() => attendanceStatus = v),
-            ),
-
-            const SizedBox(height: 10),
-
+            // Notes
             TextFormField(controller: notesController, decoration: const InputDecoration(labelText: 'Notes'), maxLines: 3),
+
           ],
         ),
       ),
@@ -170,7 +125,7 @@ class _NewAppointmentDialogState extends State<NewAppointmentDialog> {
         TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
         ElevatedButton(
           onPressed: () async {
-        
+            // validations
             if (_resolvePatientId() == null) {
               Get.snackbar('Error', 'Please select a patient');
               return;
@@ -179,30 +134,31 @@ class _NewAppointmentDialogState extends State<NewAppointmentDialog> {
               Get.snackbar('Error', 'Please select a doctor');
               return;
             }
-            if (selectedDate == null) {
-              Get.snackbar('Error', 'Please select a date');
-              return;
-            }
-            if (status == null || attendanceStatus == null) {
-              Get.snackbar('Error', 'Please select status and attendance');
+            if (selectedDateTime == null) {
+              Get.snackbar('Error', 'Please choose date and time');
               return;
             }
 
             final patientId = _resolvePatientId()!;
-            final dateStr = DateFormat('yyyy/MM/dd').format(selectedDate!);
+            final doctorId = selectedDoctorId!;
+            final requestedDateStr = _formatRequestedDate(selectedDateTime!);
+            final notes = notesController.text.isEmpty ? null : notesController.text;
 
-            print(' [UI] createAppointment -> doctorId=$selectedDoctorId patientId=$patientId date=$dateStr status=$status attendance=$attendanceStatus notes=${notesController.text}');
+            print('[UI] Book minimal -> doctorId=$doctorId patientId=$patientId requested_date=$requestedDateStr notes=$notes');
 
-            await appCtrl.createAppointment(
-              doctorId: selectedDoctorId!,
+            final ok = await appCtrl.bookAppointmentMinimal(
+              doctorId: doctorId,
               patientId: patientId,
-              date: selectedDate!,
-              apptStatus: status!,
-              attendanceStatus: attendanceStatus!,
-              notes: notesController.text.isEmpty ? null : notesController.text,
+              requestedDate: requestedDateStr,
+              notes: notes,
             );
 
-            Navigator.pop(context);
+            if (ok) {
+              // close dialog only on success
+              if (Navigator.canPop(context)) Navigator.pop(context);
+            } else {
+              // خطأ: الكونترولر عرض snackbar، ابقي الديالوج مفتوح
+            }
           },
           child: const Text('Book Appointment'),
         ),

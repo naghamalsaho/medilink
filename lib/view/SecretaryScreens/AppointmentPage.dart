@@ -4,27 +4,27 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:medilink/controller/PatientsController.dart';
 import 'package:medilink/controller/appointmentsController.dart';
 import 'package:medilink/controller/doctors_controller.dart';
 import 'package:medilink/core/class/handlingdataview.dart';
 import 'package:medilink/core/class/statusrequest.dart';
-import 'package:medilink/view/widget/AppointmentDetailsPage.dart';
+
 import 'package:medilink/view/widget/appointmentHeader.dart';
 
 class AppointmentsPage extends StatelessWidget {
   AppointmentsPage({Key? key}) : super(key: key);
   final selectedDate = DateTime.now();
-
 void _showTodayDialog(BuildContext ctx, AppointmentsController ctrl) {
   showDialog(
     context: ctx,
     builder: (_) => AlertDialog(
-      title: const Text('appointments today '),
+      title: const Text('appointments today'),
       contentPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       content: Builder(builder: (context) {
         final mq = MediaQuery.of(ctx);
-        final maxW = mq.size.width * 0.5; 
-        final maxH = mq.size.height * 0.5; 
+        final maxW = mq.size.width * 0.5;
+        final maxH = mq.size.height * 0.5;
 
         return ConstrainedBox(
           constraints: BoxConstraints(
@@ -48,7 +48,6 @@ void _showTodayDialog(BuildContext ctx, AppointmentsController ctrl) {
               );
             }
 
-           
             return SizedBox(
               height: maxH - 20,
               child: SingleChildScrollView(
@@ -61,7 +60,7 @@ void _showTodayDialog(BuildContext ctx, AppointmentsController ctrl) {
                     final time = (ap['time'] ?? ap['requested_time'] ?? '-').toString();
                     final specialty = (ap['specialty'] ?? '-').toString();
                     final notes = (ap['notes'] ?? ap['reason'] ?? '').toString();
-                    final statusText = (ap['status'] ?? '-').toString();
+                    final statusText = (ap['status'] ?? '-').toString().toLowerCase();
 
                     return Column(
                       children: [
@@ -75,33 +74,130 @@ void _showTodayDialog(BuildContext ctx, AppointmentsController ctrl) {
                               const SizedBox(height: 4),
                               Text('time: $time'),
                               Text('doctor: $doctor'),
-                              if (specialty.isNotEmpty && specialty != 'null') Text('specialty: $specialty'),
+                              if (specialty.isNotEmpty && specialty != 'null')
+                                Text('specialty: $specialty'),
                               if (notes.isNotEmpty) Text('notes: $notes'),
                             ],
                           ),
-                          isThreeLine: notes.isNotEmpty || specialty.isNotEmpty,
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                statusText,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: statusText.toLowerCase() == 'pending'
-                                      ? Colors.orange
-                                      : (statusText.toLowerCase() == 'approved' || statusText.toLowerCase() == 'confirmed')
-                                          ? Colors.green
-                                          : Colors.grey,
+                          trailing: statusText == 'approved'
+                              ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.check, color: Colors.green),
+                                      onPressed: () async {
+                                       await ctrl.markAttendance(
+  appointmentId: ap['id'] as int,
+  attendanceStatus: "present",
+);
+                                        Get.snackbar("تم التحديث", "تم تسجيل المريض حاضر");
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.close, color: Colors.red),
+                                      onPressed: () async {
+                                       await ctrl.markAttendance(
+  appointmentId: ap['id'] as int,
+  attendanceStatus: "absent",
+);
+
+                                        Get.snackbar("تم التحديث", "تم تسجيل المريض غائب");
+                                      },
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  statusText,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: statusText == 'pending'
+                                        ? Colors.orange
+                                        : (statusText == 'approved'
+                                            ? Colors.green
+                                            : Colors.grey),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                       
-                          },
                         ),
                         if (i < ctrl.todayAppts.length - 1) const Divider(height: 1),
+                      ],
+                    );
+                  }),
+                ),
+              ),
+            );
+          }),
+        );
+      }),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('إغلاق')),
+      ],
+    ),
+  );
+}
+
+
+
+void _showIgnoredDialog(BuildContext ctx, AppointmentsController ctrl) {
+  showDialog(
+    context: ctx,
+    builder: (_) => AlertDialog(
+      title: const Text('Ignored appointments'),
+      contentPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      content: Builder(builder: (context) {
+        final mq = MediaQuery.of(ctx);
+        final maxW = mq.size.width * 0.5;
+        final maxH = mq.size.height * 0.5;
+
+        return ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: maxW,
+            maxHeight: maxH,
+            minWidth: 300,
+            minHeight: 120,
+          ),
+          child: Obx(() {
+            if (ctrl.ignoredRequests.isEmpty) {
+              return const SizedBox(
+                height: 120,
+                child: Center(child: Text('No ignored appointments.')),
+              );
+            }
+
+            return SizedBox(
+              height: maxH - 20,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(ctrl.ignoredRequests.length, (i) {
+                    final ap = ctrl.ignoredRequests[i];
+                    final patient = (ap['patient_name'] ?? ap['patient'] ?? '-').toString();
+                    final doctor = (ap['doctor_name'] ?? ap['doctor'] ?? '-').toString();
+                    final time = (ap['time'] ?? ap['requested_time'] ?? '-').toString();
+                    final notes = (ap['notes'] ?? ap['reason'] ?? '').toString();
+                    final statusText = (ap['status'] ?? '-').toString();
+
+                    return Column(
+                      children: [
+                        ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          leading: const Icon(Icons.person_off),
+                          title: Text(patient, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 4),
+                              Text('time: $time'),
+                              Text('doctor: $doctor'),
+                              if (notes.isNotEmpty) Text('notes: $notes'),
+                            ],
+                          ),
+                          trailing: Text(statusText, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                          onTap: () {
+                            // اختياري: فتح تفاصيل أو اعادة تفعيل الطلب
+                          },
+                        ),
+                        if (i < ctrl.ignoredRequests.length - 1) const Divider(height: 1),
                       ],
                     );
                   }),
@@ -129,28 +225,68 @@ void _showTodayDialog(BuildContext ctx, AppointmentsController ctrl) {
         child: Column(
           children: [
            
-            Row(
-              children: [
-                Expanded(child: Appointmentheader()),
+           Row(
+  children: [
+    Expanded(child: Appointmentheader()),
 
-                const SizedBox(width: 12),
-                ElevatedButton.icon(
-  onPressed: () async {
-    final ctrl = Get.find<AppointmentsController>();
-    try {
-      await ctrl.loadToday(); 
-      _showTodayDialog(context, ctrl);
-    } catch (e, st) {
-      print('[UI] loadToday exception: $e\n$st');
-      Get.snackbar('Error', 'Failed to fetch today appointments');
-    }
-  },
-  icon: const Icon(Icons.today),
-  label: const Text(' Today appointments'),
-  style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+    const SizedBox(width: 12),
+
+    // أزرار صغيرة مخصّصة (Today, Ignored, Add Patient)
+    Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () async {
+            final ctrl = Get.find<AppointmentsController>();
+            try {
+              await ctrl.loadToday();
+              _showTodayDialog(context, ctrl);
+            } catch (e, st) {
+              print('[UI] loadToday exception: $e\n$st');
+              Get.snackbar('Error', 'Failed to fetch today appointments');
+            }
+          },
+          icon: const Icon(Icons.today, size: 18),
+          label: const Text('Today', style: TextStyle(fontSize: 13)),
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(90, 36),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            backgroundColor: Colors.teal,
+          ),
+        ),
+
+        const SizedBox(width: 8),
+
+        ElevatedButton.icon(
+          onPressed: () async {
+            final ctrl = Get.find<AppointmentsController>();
+            try {
+              await ctrl.loadIgnored(); 
+              _showIgnoredDialog(context, ctrl);
+            } catch (e, st) {
+              print('[UI] loadIgnored exception: $e\n$st');
+              Get.snackbar('Error', 'Failed to fetch ignored appointments');
+            }
+          },
+          icon: const Icon(Icons.visibility_off, size: 18),
+          label: const Text('Ignored', style: TextStyle(fontSize: 13)),
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(90, 36),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            backgroundColor: Colors.grey[700],
+          ),
+        ),
+
+        const SizedBox(width: 8),
+
+        
+        
+          
+        
+      ],
+    ),
+  ],
 ),
-              ],
-            ),
 
             const SizedBox(height: 16),
 
@@ -481,10 +617,19 @@ void _showEditDialog(BuildContext context, AppointmentsController ctrl, Map<Stri
       ? Get.find<DoctorController>()
       : Get.put(DoctorController());
 
-  if (doctorCtrl.doctors.isEmpty) {
-    doctorCtrl.loadDoctors();
-  }
+  final PatientsController patientCtrl = Get.isRegistered<PatientsController>()
+      ? Get.find<PatientsController>()
+      : Get.put(PatientsController());
 
+  if (doctorCtrl.doctors.isEmpty) doctorCtrl.loadDoctors();
+  if (patientCtrl.patients.isEmpty) patientCtrl.getPatients();
+
+  // patientId must remain what came with the appointment (we don't change it here)
+  final int? originalPatientId = ap['patient_id'] is int
+      ? ap['patient_id'] as int
+      : (ap['patient_id'] != null ? int.tryParse(ap['patient_id'].toString()) : null);
+
+  // init doctor
   int? selectedDoctorId;
   try {
     final d = ap['doctor_id'];
@@ -493,16 +638,27 @@ void _showEditDialog(BuildContext context, AppointmentsController ctrl, Map<Stri
     selectedDoctorId = null;
   }
 
+  // init date & time from appointment if present
   DateTime? selectedDate;
+  TimeOfDay? selectedTime;
   try {
     final rawDate = (ap['appointment_date'] ?? ap['requested_date'] ?? '').toString();
-    if (rawDate.isNotEmpty) selectedDate = DateTime.tryParse(rawDate);
+    if (rawDate.isNotEmpty) {
+      final parsed = DateTime.tryParse(rawDate);
+      if (parsed != null) {
+        selectedDate = DateTime(parsed.year, parsed.month, parsed.day);
+        selectedTime = TimeOfDay(hour: parsed.hour, minute: parsed.minute);
+      }
+    }
   } catch (_) {
     selectedDate = null;
+    selectedTime = null;
   }
 
-  String currentStatus = (ap['status'] ?? 'pending').toString();
-  String currentAttendance = (ap['attendance_status'] ?? 'present').toString();
+  // status must come from appointment (but we only allow approved/rejected in the UI)
+  String currentStatus = (ap['status'] ?? '').toString().toLowerCase();
+  if (currentStatus.isEmpty) currentStatus = 'approved'; // default if nothing
+
   final notesCtrl = TextEditingController(text: ap['notes']?.toString() ?? '');
 
   showDialog(
@@ -510,23 +666,34 @@ void _showEditDialog(BuildContext context, AppointmentsController ctrl, Map<Stri
     builder: (_) {
       return StatefulBuilder(builder: (context, setState) {
         final docs = doctorCtrl.doctors;
+
+        // allowed statuses shown in dropdown (ensure currentStatus included)
+        final allowed = <String>{};
+        if (currentStatus.isNotEmpty) allowed.add(currentStatus);
+        allowed.add('approved');
+        allowed.add('rejected');
+        final statusItems = allowed.toList();
+
         return AlertDialog(
-          title: const Text('Modify the appointment '),
+          title: const Text('Modify the appointment'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // --- Doctor selector
                 docs.isEmpty
                     ? const SizedBox(height: 60, child: Center(child: CircularProgressIndicator()))
                     : DropdownButtonFormField<int>(
                         decoration: const InputDecoration(labelText: 'Doctor'),
                         value: selectedDoctorId,
-                        items: docs.map<DropdownMenuItem<int>>((d) {
-                          return DropdownMenuItem<int>(value: d.id, child: Text(d.fullName));
-                        }).toList(),
+                        items: docs.map<DropdownMenuItem<int>>((d) =>
+                            DropdownMenuItem<int>(value: d.id, child: Text(d.fullName))).toList(),
                         onChanged: (v) => setState(() => selectedDoctorId = v),
                       ),
+
                 const SizedBox(height: 8),
+
+                // --- Date picker
                 TextFormField(
                   readOnly: true,
                   decoration: const InputDecoration(labelText: 'Date'),
@@ -543,25 +710,38 @@ void _showEditDialog(BuildContext context, AppointmentsController ctrl, Map<Stri
                     if (picked != null) setState(() => selectedDate = picked);
                   },
                 ),
+
                 const SizedBox(height: 8),
+
+                // --- Time picker
+                TextFormField(
+                  readOnly: true,
+                  decoration: const InputDecoration(labelText: 'Time'),
+                  controller: TextEditingController(
+                    text: selectedTime == null ? '' : selectedTime!.format(context),
+                  ),
+                  onTap: () async {
+                    final picked = await showTimePicker(
+                      context: context,
+                      initialTime: selectedTime ?? TimeOfDay.now(),
+                    );
+                    if (picked != null) setState(() => selectedTime = picked);
+                  },
+                ),
+
+                const SizedBox(height: 8),
+
+                // --- Status (only approved / rejected, default from appointment)
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: 'Status'),
-                  value: currentStatus,
-                  items: ['pending', 'confirmed', 'rejected', 'cancelled', 'complete','approved']
-                      .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                      .toList(),
+                  value: statusItems.contains(currentStatus) ? currentStatus : statusItems.first,
+                  items: statusItems.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
                   onChanged: (v) => setState(() => currentStatus = v ?? currentStatus),
                 ),
+
                 const SizedBox(height: 8),
-                DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(labelText: 'Attendance'),
-                  value: currentAttendance.isNotEmpty ? currentAttendance : 'present',
-                  items: ['present', 'absent', 'no_show']
-                      .map((a) => DropdownMenuItem(value: a, child: Text(a)))
-                      .toList(),
-                  onChanged: (v) => setState(() => currentAttendance = v ?? currentAttendance),
-                ),
-                const SizedBox(height: 8),
+
+                // --- Notes
                 TextField(controller: notesCtrl, maxLines: 3, decoration: const InputDecoration(labelText: 'Notes')),
               ],
             ),
@@ -569,37 +749,71 @@ void _showEditDialog(BuildContext context, AppointmentsController ctrl, Map<Stri
           actions: [
             TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
             ElevatedButton(
-              onPressed: () async {
-                if (selectedDoctorId == null || selectedDoctorId == 0) {
-                  Get.snackbar('Error', 'Please select a valid doctor');
-                  return;
-                }
-                if (selectedDate == null) {
-                  Get.snackbar('Error', 'Please select a date');
-                  return;
-                }
-                if (currentStatus.isEmpty || currentAttendance.isEmpty) {
-                  Get.snackbar('Error', 'Please select status and attendance');
-                  return;
-                }
+             // داخل ElevatedButton onPressed:
+onPressed: () async {
+  // validation: only date,time,doctor,status required (patient kept original)
+  if (selectedDoctorId == null) {
+    Get.snackbar('Error', 'Please select a doctor');
+    return;
+  }
+  if (selectedDate == null) {
+    Get.snackbar('Error', 'Please select a date');
+    return;
+  }
+  if (selectedTime == null) {
+    Get.snackbar('Error', 'Please select a time');
+    return;
+  }
+  if (currentStatus.isEmpty) {
+    Get.snackbar('Error', 'Please select status');
+    return;
+  }
+  if (originalPatientId == null) {
+    Get.snackbar('Error', 'Original patient id missing');
+    return;
+  }
 
-                final dateStr = DateFormat('yyyy-MM-dd').format(selectedDate!);
-                print('[UI] Updating appointment id=$appointmentId doctor=$selectedDoctorId date=$dateStr status=$currentStatus attendance=$currentAttendance notes=${notesCtrl.text}');
+  // combine date + time
+  final combined = DateTime(
+    selectedDate!.year,
+    selectedDate!.month,
+    selectedDate!.day,
+    selectedTime!.hour,
+    selectedTime!.minute,
+  );
 
-                await ctrl.updateAppointment(
-                  id: appointmentId,
-                  doctorId: selectedDoctorId!,
-                  appointmentDate: dateStr,
-                  apptStatus: currentStatus,
-                  attendanceStatus: currentAttendance,
-                  notes: notesCtrl.text.isEmpty ? null : notesCtrl.text,
-                  patientId: ap['patient_id'] is int
-                      ? ap['patient_id'] as int
-                      : (ap['patient_id'] != null ? int.tryParse(ap['patient_id'].toString()) : null),
-                );
+  // format exactly as backend expects
+  final dateTimeStr = DateFormat('yyyy-MM-dd HH:mm:ss').format(combined);
 
-                Navigator.pop(context);
-              },
+  // final body (patient_id kept as originalPatientId, status is the selected status)
+  final requestBody = {
+    'doctor_id': selectedDoctorId!,         // <-- non-null asserted
+    'requested_date': dateTimeStr,
+    'patient_id': originalPatientId!,      // <-- non-null asserted
+    'status': currentStatus,
+    if (notesCtrl.text.isNotEmpty) 'notes': notesCtrl.text,
+  };
+
+  // debug print
+  print('[UI] update appointment body: $requestBody');
+
+  // determine attendanceStatus to send (use existing appointment value or default)
+  final attendanceToSend = (ap['attendance_status']?.toString() ?? 'present');
+
+  // call controller update (controller -> datasource will send body)
+  await ctrl.updateAppointment(
+    id: appointmentId,
+    doctorId: selectedDoctorId!,                 // <-- non-null asserted here too
+    appointmentDate: dateTimeStr,
+    apptStatus: currentStatus,
+    attendanceStatus: attendanceToSend,         // must be non-null String
+    notes: notesCtrl.text.isEmpty ? null : notesCtrl.text,
+    patientId: originalPatientId!,              // <-- non-null asserted
+  );
+
+  Navigator.pop(context);
+},
+
               child: const Text('Save'),
             ),
           ],
@@ -608,6 +822,8 @@ void _showEditDialog(BuildContext context, AppointmentsController ctrl, Map<Stri
     },
   );
 }
+
+
 
   Widget _buildDetailRow(String title, dynamic value) {
     return Padding(

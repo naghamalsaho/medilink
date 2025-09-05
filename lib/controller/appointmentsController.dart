@@ -17,15 +17,30 @@ class AppointmentsController extends GetxController {
  var requests = <Map<String,dynamic>>[].obs;
  var todayAppts    = <Map<String,dynamic>>[].obs;
  var todayRequests= <AppointmentModel>[].obs;
+  var ignoredRequests = <Map<String, dynamic>>[].obs;
   @override
   void onInit() {
     super.onInit();
     loadStats();
         loadRequests();
        loadToday();
+        loadIgnored();
        
   }
-
+Future<void> loadIgnored() async {
+    print('[Controller] loading ignored requests...');
+    final res = await _requestsSource.fetchIgnored();
+    res.fold(
+      (err) {
+        print('[Controller] loadIgnored failed: $err');
+        // اختياري: التعامل مع الـ status لو بدك
+      },
+      (list) {
+        print('[Controller] loadIgnored success, items=${list.length}');
+        ignoredRequests.assignAll(list);
+      },
+    );
+  }
   Future<void> loadStats() async {
     status.value = StatusRequest.loading;
     final res = await _dataSource.fetchStats();
@@ -67,17 +82,18 @@ class AppointmentsController extends GetxController {
     },
   );
 }
-  Future<void> createAppointment({
+Future<bool> createAppointment({
   required int doctorId,
-  required int patientId, 
-  required DateTime date,
+  required int patientId,
+  required DateTime date, // date يحتوي على التاريخ + الوقت
   required String apptStatus,
   required String attendanceStatus,
   String? notes,
 }) async {
   status.value = StatusRequest.loading;
-  final dateStr = DateFormat('yyyy/MM/dd').format(date);
 
+  // FORMAT required by backend: "Y-m-d H:i:s" (no T, no Z)
+  final dateStr = DateFormat('yyyy-MM-dd HH:mm:ss').format(date.toLocal());
   print(' [Controller] createAppointment doctorId=$doctorId patientId=$patientId date=$dateStr');
 
   final res = await _dataSource.bookAppointment(
@@ -89,22 +105,67 @@ class AppointmentsController extends GetxController {
     notes: notes,
   );
 
+  bool success = false;
+
   res.fold(
     (l) {
       status.value = l;
       print(' [Controller] createAppointment failed: $l');
       Get.snackbar('Error', 'Failed to create appointment');
+      success = false;
     },
     (appt) {
       todayRequests.insert(0, appt);
       status.value = StatusRequest.success;
-     // Get.back();
       Get.snackbar('Success', 'Appointment created');
-    
+      // تحديث القوائم
       loadStats();
       loadRequests();
+      success = true;
     },
   );
+
+  return success;
+}
+// داخل AppointmentsController
+Future<bool> bookAppointmentMinimal({
+  required int doctorId,
+  required int patientId,
+  required String requestedDate, // already formatted 'yyyy-MM-dd HH:mm:ss'
+  String? notes,
+}) async {
+  status.value = StatusRequest.loading;
+  print('[Controller] bookAppointmentMinimal doctorId=$doctorId patientId=$patientId requested_date=$requestedDate notes=$notes');
+
+  final res = await _dataSource.bookAppointmentMinimal(
+    doctorId: doctorId,
+    patientId: patientId,
+    requestedDate: requestedDate,
+    notes: notes,
+  );
+
+  bool success = false;
+
+  res.fold(
+    (err) {
+      status.value = err;
+      print('[Controller] bookAppointmentMinimal failed: $err');
+      Get.snackbar('Error', 'Failed to book appointment');
+      success = false;
+    },
+    (data) {
+      print('[Controller] bookAppointmentMinimal success: $data');
+      status.value = StatusRequest.success;
+      // تحديث القوائم
+      loadStats();
+      loadRequests();
+      loadToday();
+      Get.snackbar('Success', 'Appointment request created successfully');
+      success = true;
+    },
+  );
+
+  return success;
 }
 
   var appointmentDetails = Rxn<Map<String, dynamic>>();
@@ -213,5 +274,34 @@ Future<void> removeAppointment(int id) async {
     },
   );
 }
+Future<void> markAttendance({
+  required int appointmentId,
+  required String attendanceStatus, // "present" or "absent"
+}) async {
+  print("[Controller] markAttendance id=$appointmentId status=$attendanceStatus");
+  
+  // استخدم status الكلاس
+  status.value = StatusRequest.loading;
+
+  final res = await _dataSource.updateAttendance(
+    appointmentId: appointmentId,
+    status: attendanceStatus,
+  );
+
+  res.fold(
+    (err) {
+      status.value = err;
+      Get.snackbar("Error", "Attendance update failed");
+    },
+    (data) {
+      status.value = StatusRequest.success;
+      Get.snackbar("Success", "Attendance updated to $attendanceStatus");
+      loadStats();
+      loadToday();
+      loadRequests();
+    },
+  );
+}
+
 
 }

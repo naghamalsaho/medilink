@@ -170,77 +170,119 @@ class AppointmentStatsDataSource {
   }
 
   Future<Either<StatusRequest, AppointmentModel>> bookAppointment({
-    required int doctorId,
-    required int patientId, 
-    required String appointmentDate,
-    required String status,
-    required String attendanceStatus,
-    String? notes,
-  }) async {
-    final body = <String, dynamic>{
-      'doctor_id': '$doctorId',
-      'patient_id': '$patientId',
-      'appointment_date': appointmentDate,
-      'status': status,
-      'attendance_status': attendanceStatus,
-    };
+  required int doctorId,
+  required int patientId,
+  required String appointmentDate, // ISO string
+  required String status,
+  required String attendanceStatus,
+  String? notes,
+}) async {
+  final body = <String, dynamic>{
+  'doctor_id': '$doctorId',
+  'patient_id': '$patientId',
+  'requested_date': appointmentDate,   // هذا السطر ضروري بصيغة "Y-m-d H:i:s"
+  'status': status,
+  'attendance_status': attendanceStatus,
+};
 
-    if (notes != null && notes.isNotEmpty) {
-      body['notes'] = notes;
-    }
 
-    print(' [DataSource] POST ${AppLink.bookAppointment} body: $body');
-
-    final map = await crud.postDataWithHeaders(AppLink.bookAppointment, body);
-
-    print(' [DataSource] bookAppointment response: $map');
-
-    if (map is Map && map['success'] == true && map['data'] != null) {
-      try {
-        final appt = AppointmentModel.fromJson(
-          map['data'] as Map<String, dynamic>,
-        );
-        return Right(appt);
-      } catch (e) {
-        print(' [DataSource] bookAppointment parse error: $e');
-        return Left(StatusRequest.failure);
-      }
-    } else {
-      print(' [DataSource] bookAppointment failed -> ${map.toString()}');
-      return Left(StatusRequest.failure);
-    }
+  if (notes != null && notes.isNotEmpty) {
+    body['notes'] = notes;
   }
 
-  Future<Either<StatusRequest, Map<String, dynamic>>> updateAppointment({
-    required int id,
-    required int doctorId,
-    String? appointmentDate, 
-    required String status,
-    required String attendanceStatus,
-    String? notes,
-    int? patientId,
-  }) async {
-    final url = "${AppLink.update}/$id";
-    final body = <String, dynamic>{
-      'doctor_id': '$doctorId',
-      if (appointmentDate != null) 'appointment_date': appointmentDate,
-      'status': status,
-      'attendance_status': attendanceStatus,
-      if (notes != null) 'notes': notes,
-      if (patientId != null) 'patient_id': '$patientId',
-    };
+  print(' [DataSource] POST ${AppLink.bookAppointment} body: $body');
 
-    print(' [DataSource] updateAppointment PUT $url body: $body');
+  final map = await crud.postDataWithHeaders(AppLink.bookAppointment, body);
 
+  print(' [DataSource] bookAppointment response: $map');
+
+  if (map is Map && map['success'] == true && map['data'] != null) {
+    try {
+      final appt = AppointmentModel.fromJson(
+        map['data'] as Map<String, dynamic>,
+      );
+      return Right(appt);
+    } catch (e) {
+      print(' [DataSource] bookAppointment parse error: $e');
+      return Left(StatusRequest.failure);
+    }
+  } else {
+    print(' [DataSource] bookAppointment failed -> ${map.toString()}');
+    return Left(StatusRequest.failure);
+  }
+}
+
+Future<Either<StatusRequest, Map<String, dynamic>>> bookAppointmentMinimal({
+  required int doctorId,
+  required int patientId,
+  required String requestedDate, // 'yyyy-MM-dd HH:mm:ss'
+  String? notes,
+}) async {
+  final body = <String, dynamic>{
+    'doctor_id': '$doctorId',
+    'patient_id': '$patientId',
+    'requested_date': requestedDate,
+  };
+  if (notes != null && notes.isNotEmpty) body['notes'] = notes;
+
+  print(' [DataSource] POST ${AppLink.bookAppointment} body: $body');
+
+  try {
+    final map = await crud.postDataWithHeaders(AppLink.bookAppointment, body);
+    print(' [DataSource] bookAppointmentMinimal response: $map');
+
+    if (map is Map && map['success'] == true && map['data'] != null) {
+      return Right(Map<String, dynamic>.from(map['data']));
+    } else {
+      print(' [DataSource] bookAppointmentMinimal failed -> $map');
+      return Left(StatusRequest.failure);
+    }
+  } catch (e, st) {
+    print(' [DataSource] bookAppointmentMinimal exception: $e');
+    print(st);
+    return Left(StatusRequest.offlineFail);
+  }
+}
+
+ Future<Either<StatusRequest, Map<String, dynamic>>> updateAppointment({
+  required int id,
+  required int doctorId,
+  String? appointmentDate, // يفترض أن تكون 'yyyy-MM-dd HH:mm:ss' أو ISO
+  required String status,
+  required String attendanceStatus,
+  String? notes,
+  int? patientId,
+}) async {
+  final url = "${AppLink.update}/$id";
+
+  // أرسل القيم بأنواع سليمة (int للبعض، String للتواريخ)
+  final body = <String, dynamic>{
+    'doctor_id': doctorId,
+    if (appointmentDate != null) 'requested_date': appointmentDate, // <-- المهم: requested_date
+    'status': status,
+    'attendance_status': attendanceStatus,
+    if (notes != null) 'notes': notes,
+    if (patientId != null) 'patient_id': patientId,
+  };
+
+  print(' [DataSource] updateAppointment PUT $url body: $body');
+
+  try {
     final map = await crud.putWithToken(url, body);
     print(' [DataSource] updateAppointment response: $map');
 
-    if (map['success'] == true && map['data'] != null) {
+    if (map is Map && map['success'] == true && map['data'] != null) {
       return Right(Map<String, dynamic>.from(map['data']));
     } else {
       return Left(StatusRequest.failure);
     }
+  } catch (e, st) {
+    print(' [DataSource] updateAppointment exception: $e');
+    print(st);
+    return Left(StatusRequest.offlineFail);
   }
+}
+
 
  
   Future<Either<StatusRequest, Map<String, dynamic>>> deleteAppointment(
@@ -258,4 +300,40 @@ class AppointmentStatsDataSource {
       return Left(StatusRequest.failure);
     }
   }
+
+  Future<Either<StatusRequest, List<Map<String, dynamic>>>> fetchIgnored() async {
+  final res = await crud.getData(AppLink.appointmentIgnored);
+  print('[DataSource] fetchIgnored response raw: $res');
+  return res.fold((l) => Left(l), (r) {
+    if (r['success'] == true && r['data'] is List) {
+      return Right(List<Map<String, dynamic>>.from(r['data']));
+    }
+    return Left(StatusRequest.failure);
+  });
+}
+Future<Either<StatusRequest, Map<String, dynamic>>> updateAttendance({
+  required int appointmentId,
+  required String status, // present or absent
+}) async {
+  final url = "${AppLink.appointmentAttendance}/$appointmentId/attendance";
+  final body = {"status": status};
+
+  print("[DataSource] POST $url body: $body");
+
+  try {
+    final map = await crud.postDataWithHeaders(url, body);
+    print("[DataSource] updateAttendance response: $map");
+
+    if (map is Map && map['success'] == true && map['data'] != null) {
+      return Right(Map<String, dynamic>.from(map['data']));
+    } else {
+      return Left(StatusRequest.failure);
+    }
+  } catch (e, st) {
+    print("[DataSource] updateAttendance exception: $e");
+    print(st);
+    return Left(StatusRequest.offlineFail);
+  }
+}
+
 }

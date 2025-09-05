@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:medilink/core/services/MyServices.dart';
 
 class AppLink {
@@ -54,11 +53,14 @@ class AppLink {
       "$server/api/secretary/appointment-requests/$id/reject";
   static const String delete = "$server/api/secretary/appointments";
   static const String update = "$server/api/secretary/appointments";
+  static const String appointmentIgnored =
+      "$server/api/secretary/appointment-requests/ignored";
+  static const String appointmentAttendance =
+      "$server/api/secretary/appointments";
   // Dashboard
   static const String dashboard = "$server/api/secretary/dashboard-stats?";
   static const String todaysAppointments =
       "$server/api/secretary/appointments/today";
-
   // ================= Secretary Medical Files =================
   static String medicalFiles(int patientId) =>
       "$server/api/secretary/patients/$patientId/medical-file";
@@ -71,6 +73,8 @@ class AppLink {
 
   // ================= Admin Endpoints =================
   static const String doctorsApi = '$server/api/admin/doctors';
+  // ================= Admin Dashboard =================
+  static const String adminDashboard = "$server/api/admin/dashboard";
 
   static const String secretariesApi = '$server/api/admin/secretaries';
   static String deleteSecretary(int id) => "$server/api/admin/secretaries/$id";
