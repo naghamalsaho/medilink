@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -251,6 +250,7 @@ class CenterAdminsPage extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // 🔹 Center Name + Center Location
+                // 🔹 Center Name + Center Location
                 Row(
                   children: [
                     Expanded(
@@ -268,6 +268,10 @@ class CenterAdminsPage extends StatelessWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 16),
+
+                // 🔹 Amount Field (المبلغ)
+                _buildTextField("Amount", amountController),
                 const SizedBox(height: 16),
 
                 // 🔹 Issued By + Issue Date (مع تقويم)

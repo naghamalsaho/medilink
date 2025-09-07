@@ -121,15 +121,18 @@ class AppLink {
   static const String centerServices = "$server/api/admin/centers/services";
 
   // ================= Admin Reports =================
-  static const String appointmentsTrend =
-      "https://medical.doctorme.site/api/admin/reports/appointments-trend?from=2025-08-20&to=2025-08-27";
+  static String appointmentsTrend(DateTime from, DateTime to) =>
+      "https://medical.doctorme.site/api/admin/reports/appointments-trend?from=${from.toIso8601String().split('T').first}&to=${to.toIso8601String().split('T').first}";
 
-  static String centerDetailed(String from, String to) =>
-      "$server/api/admin/reports/center-detailed?from=$from&to=$to";
+  static String centerDetailed(DateTime from, DateTime to) =>
+      "https://medical.doctorme.site/api/admin/reports/center-detailed?from=${from.toIso8601String().split('T').first}&to=${to.toIso8601String().split('T').first}";
 
   //  Super Admin Endpoints
   static const String superAdminStatistics =
       "$server/superadmin/dashboard/statistics";
+  static String allDoctorsSuperAdmin =
+      "https://medical.doctorme.site/api/superadmin/doctors";
+
   static const pendingDoctors =
       "https://medical.doctorme.site/api/super-admin/doctors/pending";
 

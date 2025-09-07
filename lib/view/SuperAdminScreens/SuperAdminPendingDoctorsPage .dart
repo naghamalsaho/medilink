@@ -9,7 +9,6 @@ class SuperAdminPendingDoctorsPage extends StatelessWidget {
     SuperAdminPendingDoctorsController(),
   );
 
-  // فورمات التأكيد (Approve / Reject) بحجم متناسق
   void _confirmAction({
     required String title,
     required String message,

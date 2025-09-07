@@ -321,6 +321,7 @@ class CenterAdminsController extends GetxController {
   }
 
   //=============================
+  // ================= Register admin =================
   Future<void> registerCenterAdmin({
     required String fullName,
     required String email,
@@ -330,9 +331,9 @@ class CenterAdminsController extends GetxController {
     required String phone,
     required String issuedBy,
     required String issueDate,
-    required String amount, // أضفنا المبلغ
-    Uint8List? licenseFileBytes, // للويب
-    String? licenseFileName, // اسم الملف
+    required String amount,
+    Uint8List? licenseFileBytes,
+    String? licenseFileName,
   }) async {
     try {
       isLoading.value = true;
@@ -345,7 +346,7 @@ class CenterAdminsController extends GetxController {
       request.headers['Authorization'] = "Bearer ${AppLink.token}";
       request.headers['Accept'] = 'application/json';
 
-      // الحقول
+      // الحقول الأساسية
       request.fields['full_name'] = fullName;
       request.fields['email'] = email;
       request.fields['password'] = password;
@@ -354,9 +355,11 @@ class CenterAdminsController extends GetxController {
       request.fields['phone'] = phone;
       request.fields['issued_by'] = issuedBy;
       request.fields['issue_date'] = issueDate;
-      request.fields['amount'] = amount; // 💡 ضفناها هون
+      request.fields['amount'] = amount;
+      request.fields['status'] = "pending"; // ✅ لازم نص
+      request.fields['file_path'] = ""; // ✅ إذا ما في ملف
 
-      // الملف (إذا موجود)
+      // الملف إذا موجود
       if (licenseFileBytes != null && licenseFileName != null) {
         request.files.add(
           http.MultipartFile.fromBytes(
@@ -379,10 +382,7 @@ class CenterAdminsController extends GetxController {
         Get.snackbar("Success", "Center admin registered successfully");
         fetchCenterAdmins();
       } else {
-        Get.snackbar(
-          "Error",
-          data["message"] ?? "Failed to register center admin",
-        );
+        Get.snackbar("Error", data["message"] ?? "Failed to register admin");
       }
     } catch (e) {
       Get.snackbar("Error", "Exception: $e");

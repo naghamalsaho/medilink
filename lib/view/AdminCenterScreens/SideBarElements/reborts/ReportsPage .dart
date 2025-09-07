@@ -179,11 +179,12 @@ class _ReportsPageState extends State<ReportsPage> {
   // ================= Chart Widget =================
   Widget appointmentsChart() {
     return Obx(() {
-      if (controller.appointmentsTrend.isEmpty) {
+      var chartData = controller.appointmentsTrend;
+
+      if (chartData.isEmpty) {
         return const Center(child: Text('No data available'));
       }
 
-      var chartData = controller.appointmentsTrend;
       return Card(
         elevation: 3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -192,9 +193,25 @@ class _ReportsPageState extends State<ReportsPage> {
           child: LineChart(
             LineChartData(
               minY: 0,
+              maxY:
+                  ([
+                    ...chartData.map((e) => e.newRequests),
+                    ...chartData.map((e) => e.completed),
+                  ].reduce((a, b) => a > b ? a : b).toDouble()) +
+                  2, // إضافة 2 وحدة فوق أعلى قيمة ليظهر الرسم بشكل واضح
               titlesData: FlTitlesData(
                 leftTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: true, reservedSize: 40),
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 40,
+                    interval: 2,
+                    getTitlesWidget: (value, meta) {
+                      return Text(
+                        value.toInt().toString(),
+                        style: const TextStyle(fontSize: 12),
+                      );
+                    },
+                  ),
                 ),
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
@@ -202,9 +219,9 @@ class _ReportsPageState extends State<ReportsPage> {
                     interval: 1,
                     getTitlesWidget: (value, meta) {
                       int index = value.toInt();
-                      if (index < 0 || index >= chartData.length) {
+                      if (index < 0 || index >= chartData.length)
                         return const Text('');
-                      }
+                      // عرض اليوم فقط من التاريخ
                       return Text(
                         chartData[index].date.split("-").last,
                         style: const TextStyle(fontSize: 12),
@@ -213,9 +230,23 @@ class _ReportsPageState extends State<ReportsPage> {
                   ),
                 ),
               ),
-              gridData: FlGridData(show: true),
-              borderData: FlBorderData(show: true),
+              gridData: FlGridData(
+                show: true,
+                drawVerticalLine: true,
+                horizontalInterval: 2,
+                verticalInterval: 1,
+              ),
+              borderData: FlBorderData(
+                show: true,
+                border: const Border(
+                  left: BorderSide(color: Colors.black12),
+                  bottom: BorderSide(color: Colors.black12),
+                  right: BorderSide(color: Colors.transparent),
+                  top: BorderSide(color: Colors.transparent),
+                ),
+              ),
               lineBarsData: [
+                // خط الطلبات الجديدة
                 LineChartBarData(
                   spots: List.generate(
                     chartData.length,
@@ -227,7 +258,9 @@ class _ReportsPageState extends State<ReportsPage> {
                   isCurved: true,
                   color: Colors.blue,
                   barWidth: 3,
+                  dotData: FlDotData(show: true),
                 ),
+                // خط الطلبات المكتملة
                 LineChartBarData(
                   spots: List.generate(
                     chartData.length,
@@ -237,6 +270,7 @@ class _ReportsPageState extends State<ReportsPage> {
                   isCurved: true,
                   color: Colors.green,
                   barWidth: 3,
+                  dotData: FlDotData(show: true),
                 ),
               ],
             ),

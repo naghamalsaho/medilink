@@ -58,17 +58,9 @@ class UsersManagementPage extends StatelessWidget {
                                     DataColumn(label: Text("Name")),
                                     DataColumn(label: Text("Email")),
                                     DataColumn(label: Text("Status")),
-                                    DataColumn(label: Text("Role")),
                                   ],
                                   rows:
                                       controller.users.map((user) {
-                                        final safeRole =
-                                            controller.roles.contains(
-                                                  user["role"],
-                                                )
-                                                ? user["role"]
-                                                : controller.roles.first;
-
                                         return DataRow(
                                           cells: [
                                             DataCell(Text(user["name"] ?? "")),
@@ -81,29 +73,6 @@ class UsersManagementPage extends StatelessWidget {
                                                     user["id"],
                                                     val,
                                                   );
-                                                },
-                                              ),
-                                            ),
-                                            DataCell(
-                                              DropdownButton<String>(
-                                                value: safeRole,
-                                                items:
-                                                    controller.roles
-                                                        .map(
-                                                          (r) =>
-                                                              DropdownMenuItem(
-                                                                value: r,
-                                                                child: Text(r),
-                                                              ),
-                                                        )
-                                                        .toList(),
-                                                onChanged: (val) async {
-                                                  if (val != null) {
-                                                    await controller.assignRole(
-                                                      user["id"],
-                                                      val,
-                                                    );
-                                                  }
                                                 },
                                               ),
                                             ),

@@ -41,7 +41,7 @@ class ReportsController extends GetxController {
 
       // Fetch trend
       final trendResponse = await http.get(
-        Uri.parse(AppLink.appointmentsTrend),
+        Uri.parse(AppLink.appointmentsTrend(startDate.value, endDate.value)),
         headers: {'Authorization': 'Bearer ${AppLink.token}'},
       );
 
@@ -52,14 +52,8 @@ class ReportsController extends GetxController {
         );
       }
 
-      // Fetch detailed report باستخدام التواريخ المختارة
       final detailedResponse = await http.get(
-        Uri.parse(
-          AppLink.centerDetailed(
-            startDate.value.toIso8601String().split("T").first,
-            endDate.value.toIso8601String().split("T").first,
-          ),
-        ),
+        Uri.parse(AppLink.centerDetailed(startDate.value, endDate.value)),
         headers: {'Authorization': 'Bearer ${AppLink.token}'},
       );
 

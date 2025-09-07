@@ -108,7 +108,6 @@ class AdminSecretariesPage extends StatelessWidget {
                                 "is_active":
                                     isActive, // سيقوم controller بتحويله
                                 "role": "secretary", // 🔑 مهم
-                                "center_id": 1, // 🔑 حسب المركز
                               });
                               Get.back();
                             },
