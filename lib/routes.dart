@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:medilink/core/constants/routes.dart';
 import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
 
-import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
 import 'package:medilink/view/SecretaryScreens/SideBarElements/DashboardPage.dart';
 import 'package:medilink/view/SecretaryScreens/SideBarElements/DoctorsPage.dart';
 import 'package:medilink/view/SecretaryScreens/login/SplashScreen.dart';
@@ -25,6 +24,6 @@ List<GetPage<dynamic>> appPages = [
   GetPage(name: AppRoute.editProfile, page: () => const EditProfilePage()),
   GetPage(name: AppRoute.appointments, page: () => AppointmentsPage()),
   GetPage(name: AppRoute.MainSecretary, page: () => MainSecretary()),
-  GetPage(name: AppRoute.reports, page: () => ReportsPage()),
-  GetPage(name: AppRoute.doctors, page: ()=>DoctorsPage()),
+  // GetPage(name: AppRoute.reports, page: () => ReportsPage()),
+  GetPage(name: AppRoute.doctors, page: () => DoctorsPage()),
 ];

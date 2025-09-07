@@ -3,11 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:medilink/controller/auth/logoutController.dart';
 import 'package:medilink/controller/profileController.dart';
 import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
-
-import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
+import 'package:medilink/view/SecretaryScreens/ReportsPageSecretary%20.dart';
 import 'package:medilink/view/SecretaryScreens/SideBarElements/DashboardPage.dart';
 import 'package:medilink/view/SecretaryScreens/SideBarElements/DoctorsPage.dart';
 import 'package:medilink/view/SecretaryScreens/SideBarElements/PatientsPage.dart';
@@ -24,6 +24,7 @@ class MainSecretary extends StatelessWidget {
   final SidebarController sidebarController = Get.find<SidebarController>();
   final ThemeController themeController = Get.find<ThemeController>();
   final ProfileController userController = Get.find<ProfileController>();
+  final AuthController authCtrl = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +135,50 @@ class MainSecretary extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
 
+                    IconButton(
+                      icon: Icon(Icons.logout, color: iconColor),
+                      tooltip: 'Logout',
+                      onPressed: () async {
+                        // تأكيد خروج
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder:
+                              (_) => AlertDialog(
+                                title: const Text('Confirm logout'),
+                                content: const Text(
+                                  'Are you sure you want to log out?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, false),
+                                    child: const Text('cancel'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, true),
+                                    child: const Text('Exit'),
+                                  ),
+                                ],
+                              ),
+                        );
+
+                        if (confirm == true) {
+                          // اظهار مؤشر تحميل modal
+                          Get.dialog(
+                            const Center(child: CircularProgressIndicator()),
+                            barrierDismissible: false,
+                          );
+                          await authCtrl.logout();
+                          // اغلاق مؤشر التحميل لو مفتوح
+                          try {
+                            if (Get.isDialogOpen ?? false) Get.back();
+                          } catch (_) {}
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 10),
+
                     GestureDetector(
                       onTap: () => sidebarController.selectedIndex.value = 99,
                       child: Obx(() {
@@ -212,7 +257,7 @@ class MainSecretary extends StatelessWidget {
                         return DoctorsPage();
 
                       case 4:
-                        return ReportsPage();
+                        return ReportsPageSecretary();
                       case 30:
                         return NotificationPage();
                       case 99:

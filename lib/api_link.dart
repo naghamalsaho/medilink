@@ -9,6 +9,7 @@ class AppLink {
 
   // ================= Auth =================
   static const String logIn = "$server/api/login";
+  static const String logout = "$server/api/logout";
 
   // ================= Tokens =================
   static String get token => Get.find<MyServices>().box.read("token") ?? "";
@@ -71,9 +72,22 @@ class AppLink {
   static String deleteMedicalFile(int patientId, int fileId) =>
       "$server/api/secretary/patients/$patientId/medical-file/$fileId";
 
+  // روابط السكرتيرة
+  static String secretaryReportWeek() =>
+      "https://medical.doctorme.site/api/secretary/reports/secretary-detailed?scope=week";
+
+  static String secretaryReportDay() =>
+      "https://medical.doctorme.site/api/secretary/reports/secretary-detailed?scope=day";
+
+  static String secretaryReportCustom({
+    required String from,
+    required String to,
+  }) =>
+      "https://medical.doctorme.site/api/secretary/reports/secretary-detailed?from=$from&to=$to";
+
   // ================= Admin Endpoints =================
   static const String doctorsApi = '$server/api/admin/doctors';
-  // ================= Admin Dashboard =================
+  // Admin Dashboard
   static const String adminDashboard = "$server/api/admin/dashboard";
 
   static const String secretariesApi = '$server/api/admin/secretaries';
@@ -106,7 +120,14 @@ class AppLink {
   static const String catalogServices = "$server/api/admin/services/catalog";
   static const String centerServices = "$server/api/admin/centers/services";
 
-  // ================= Super Admin Endpoints =================
+  // ================= Admin Reports =================
+  static const String appointmentsTrend =
+      "https://medical.doctorme.site/api/admin/reports/appointments-trend?from=2025-08-20&to=2025-08-27";
+
+  static String centerDetailed(String from, String to) =>
+      "$server/api/admin/reports/center-detailed?from=$from&to=$to";
+
+  //  Super Admin Endpoints
   static const String superAdminStatistics =
       "$server/superadmin/dashboard/statistics";
   static const pendingDoctors =
@@ -135,10 +156,22 @@ class AppLink {
       "$server/api/superadmin/center-admins/$id/toggle-status";
   static const String registerCenterAdmin =
       '$server/api/superadmin/register-center-admin';
-  static const String toggleUserStatus = "$server/api/superadmin/users";
-  static const String assignUserRole = "$server/api/superadmin/users";
+  // Toggle user status endpoint
+  static String toggleUserStatus(int userId) =>
+      "$server/api/superadmin/users/$userId/toggle-status";
+
+  // Assign user role endpoint
+  static String assignUserRole(int userId) =>
+      "$server/api/superadmin/users/$userId/assign-role";
 
   static const String superAdminLicenses = "$server/api/superadmin/licenses";
   static String updateLicenseStatus(int id) =>
       "$server/api/superadmin/licenses/$id/status";
+
+  static const String users = "$server/api/superadmin/users";
+
+  // Super Admin Reports
+  static const String superAdminReports = "$server/api/superadmin/reports";
+  static String superAdminReportById(int reportId) =>
+      "$server/api/superadmin/reports/$reportId";
 }

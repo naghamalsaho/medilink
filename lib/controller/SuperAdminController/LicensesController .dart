@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
@@ -7,9 +8,7 @@ import 'package:medilink/api_link.dart';
 class LicensesController extends GetxController {
   var licensesList = <Map<String, dynamic>>[].obs;
   var isLoading = true.obs;
-
-  final String apiUrl = 'https://medical.doctorme.site/api/superadmin/licenses';
-  final box = GetStorage(); // for storing and retrieving token
+  final box = GetStorage();
 
   @override
   void onInit() {
@@ -19,9 +18,7 @@ class LicensesController extends GetxController {
 
   void fetchLicenses() async {
     isLoading.value = true;
-
     String? token = box.read('token');
-
     if (token == null) {
       Get.snackbar('Error', 'No token found, please login again');
       isLoading.value = false;
@@ -30,7 +27,7 @@ class LicensesController extends GetxController {
 
     try {
       var response = await http.get(
-        Uri.parse(apiUrl),
+        Uri.parse(AppLink.superAdminLicenses), // الرابط الصحيح للباك
         headers: {
           'Authorization': 'Bearer $token',
           'Accept': 'application/json',
@@ -51,8 +48,7 @@ class LicensesController extends GetxController {
   }
 
   Future<void> updateLicenseStatus(int licenseId, String newStatus) async {
-    String? token = box.read('token'); // ✅ fix: get token from storage
-
+    String? token = box.read('token');
     if (token == null) {
       Get.snackbar('Error', 'No token found, please login again');
       return;
@@ -71,17 +67,29 @@ class LicensesController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        var index = licensesList.indexWhere((l) => l['id'] == licenseId);
+        var data = json.decode(response.body)['data'];
+        final index = licensesList.indexWhere((l) => l['id'] == licenseId);
         if (index != -1) {
-          licensesList[index]['status'] = newStatus;
+          licensesList[index]['status'] = data['status'];
           licensesList.refresh();
         }
-        Get.snackbar("Success", "License status updated successfully");
+
+        Get.snackbar(
+          'License Updated',
+          'Status: ${data['status']}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor:
+              data['status'] == 'approved'
+                  ? Colors.green.withOpacity(0.8)
+                  : Colors.red.withOpacity(0.8),
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
       } else {
-        Get.snackbar("Error", "Failed to update license status");
+        Get.snackbar('Error', 'Failed to update license status');
       }
     } catch (e) {
-      Get.snackbar("Exception", e.toString());
+      Get.snackbar('Exception', e.toString());
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:medilink/controller/AdminRoleControllers/AdminDashboardController%20.dart';
 import 'package:medilink/view/AdminCenterScreens/AdminDashbord/WelcomeBanner.dart';
 import 'package:medilink/view/widget/dashbord/StatCard%20.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class AdminDashbord extends StatelessWidget {
   AdminDashbord({super.key});
@@ -36,6 +37,7 @@ class AdminDashbord extends StatelessWidget {
               return Center(
                 child: Wrap(
                   spacing: 20,
+                  runSpacing: 20,
                   children: [
                     StatsCard(
                       title: "Total Appointments",
@@ -128,8 +130,82 @@ class AdminDashbord extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Text("Chart data loaded: ${chartData.length} days"),
-                      // لاحقًا يمكنك وضع أي مكتبة Charts هنا
+
+                      SizedBox(
+                        height: 200,
+                        child: LineChart(
+                          LineChartData(
+                            titlesData: FlTitlesData(
+                              leftTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 40,
+                                ),
+                              ),
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  interval: 1,
+                                  getTitlesWidget: (value, meta) {
+                                    int index = value.toInt();
+                                    if (index < 0 || index >= chartData.length)
+                                      return const Text('');
+                                    return Text(
+                                      chartData[index].date.split("-").last,
+                                      style: const TextStyle(fontSize: 10),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            gridData: FlGridData(show: true),
+                            borderData: FlBorderData(show: true),
+                            lineBarsData: [
+                              LineChartBarData(
+                                spots: List.generate(
+                                  chartData.length,
+                                  (i) => FlSpot(
+                                    i.toDouble(),
+                                    chartData[i].newRequests.toDouble(),
+                                  ),
+                                ),
+                                isCurved: true,
+                                color: Colors.blue,
+                                barWidth: 3,
+                                belowBarData: BarAreaData(show: false),
+                              ),
+                              LineChartBarData(
+                                spots: List.generate(
+                                  chartData.length,
+                                  (i) => FlSpot(
+                                    i.toDouble(),
+                                    chartData[i].completed.toDouble(),
+                                  ),
+                                ),
+                                isCurved: true,
+                                color: Colors.green,
+                                barWidth: 3,
+                                belowBarData: BarAreaData(show: false),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // 🔹 Legend
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          LegendItem(
+                            color: Colors.blue,
+                            text: "New Appointments",
+                          ),
+                          SizedBox(width: 20),
+                          LegendItem(color: Colors.green, text: "Completed"),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -142,7 +218,24 @@ class AdminDashbord extends StatelessWidget {
   }
 }
 
-// ================= Center Status =================
+// ================= Legend Widget =================
+class LegendItem extends StatelessWidget {
+  final Color color;
+  final String text;
+  const LegendItem({super.key, required this.color, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(width: 16, height: 16, color: color),
+        const SizedBox(width: 4),
+        Text(text),
+      ],
+    );
+  }
+}
+
 // ================= Center Status =================
 class CenterStatusWidget extends StatelessWidget {
   final CenterStatus centerStatus;
@@ -164,7 +257,7 @@ class CenterStatusWidget extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Row of circular indicators
+            // Row of circular indicators with spacing
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -220,8 +313,9 @@ class CenterStatusWidget extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.w500),
+          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
         ),
+        const SizedBox(height: 16),
       ],
     );
   }

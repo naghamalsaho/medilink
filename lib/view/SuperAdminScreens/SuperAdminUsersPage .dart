@@ -1,28 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:medilink/controller/SuperAdminController/UsersController%20.dart';
 
 class UsersManagementPage extends StatelessWidget {
   UsersManagementPage({super.key});
-
-  final RxList<Map<String, dynamic>> users =
-      <Map<String, dynamic>>[
-        {
-          "id": 1,
-          "name": "John Doe",
-          "email": "john@example.com",
-          "status": true,
-          "role": "doctor",
-        },
-        {
-          "id": 2,
-          "name": "Sarah Smith",
-          "email": "sarah@example.com",
-          "status": false,
-          "role": "secretary",
-        },
-      ].obs;
-
-  final roles = ["doctor", "secretary", "admin", "superadmin"];
+  final controller = Get.put(UsersController());
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +15,6 @@ class UsersManagementPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // العنوان
             const Text(
               "Users Management",
               style: TextStyle(
@@ -43,82 +24,102 @@ class UsersManagementPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-
-            // الجدول بكرت كامل العرض
             Expanded(
-              child: Card(
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Obx(() {
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: SizedBox(
-                        width: double.infinity, // <<< ياخد عرض الصفحة كامل
-                        child: DataTable(
-                          headingRowColor: WidgetStateProperty.all(
-                            const Color(0xFFF3F4F6),
-                          ),
-                          columnSpacing: 24,
-                          border: TableBorder.all(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          columns: const [
-                            DataColumn(label: Text("Name")),
-                            DataColumn(label: Text("Email")),
-                            DataColumn(label: Text("Status")),
-                            DataColumn(label: Text("Role")),
-                            DataColumn(label: Text("Actions")),
-                          ],
-                          rows:
-                              users.map((user) {
-                                return DataRow(
-                                  cells: [
-                                    DataCell(Text(user["name"])),
-                                    DataCell(Text(user["email"])),
-                                    DataCell(
-                                      Switch(
-                                        value: user["status"],
-                                        onChanged: (val) {
-                                          user["status"] = val;
-                                          users.refresh();
-                                        },
-                                      ),
-                                    ),
-                                    DataCell(Text(user["role"])),
-                                    DataCell(
-                                      Row(
-                                        children: [
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.edit,
-                                              color: Colors.blue,
-                                            ),
-                                            onPressed: () {},
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            ),
-                                            onPressed: () {},
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+              child: Obx(() {
+                if (controller.users.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minWidth: constraints.maxWidth,
+                            ),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: SizedBox(
+                                width: constraints.maxWidth,
+                                child: DataTable(
+                                  columnSpacing: 24,
+                                  headingRowColor: MaterialStateProperty.all(
+                                    const Color(0xFFF3F4F6),
+                                  ),
+                                  columns: const [
+                                    DataColumn(label: Text("Name")),
+                                    DataColumn(label: Text("Email")),
+                                    DataColumn(label: Text("Status")),
+                                    DataColumn(label: Text("Role")),
                                   ],
-                                );
-                              }).toList(),
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              ),
+                                  rows:
+                                      controller.users.map((user) {
+                                        final safeRole =
+                                            controller.roles.contains(
+                                                  user["role"],
+                                                )
+                                                ? user["role"]
+                                                : controller.roles.first;
+
+                                        return DataRow(
+                                          cells: [
+                                            DataCell(Text(user["name"] ?? "")),
+                                            DataCell(Text(user["email"] ?? "")),
+                                            DataCell(
+                                              Switch(
+                                                value: user["status"] ?? false,
+                                                onChanged: (val) async {
+                                                  await controller.toggleStatus(
+                                                    user["id"],
+                                                    val,
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            DataCell(
+                                              DropdownButton<String>(
+                                                value: safeRole,
+                                                items:
+                                                    controller.roles
+                                                        .map(
+                                                          (r) =>
+                                                              DropdownMenuItem(
+                                                                value: r,
+                                                                child: Text(r),
+                                                              ),
+                                                        )
+                                                        .toList(),
+                                                onChanged: (val) async {
+                                                  if (val != null) {
+                                                    await controller.assignRole(
+                                                      user["id"],
+                                                      val,
+                                                    );
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }).toList(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              }),
             ),
           ],
         ),

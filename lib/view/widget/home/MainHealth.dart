@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:medilink/controller/auth/logoutController.dart';
 import 'package:medilink/controller/profileController.dart';
 import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/view/SuperAdminScreens/CenterAdmins/CenterAdminsPage%20.dart';
@@ -9,6 +10,7 @@ import 'package:medilink/view/SuperAdminScreens/HealthSidebar.dart';
 import 'package:medilink/view/SuperAdminScreens/Dashbord/SuperAdminDashboardPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/Licenses%20Management.dart';
 import 'package:medilink/view/SuperAdminScreens/LicensesPage%20.dart';
+import 'package:medilink/view/SuperAdminScreens/SuperAdminCenters/ReportsPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/SuperAdminCenters/SuperAdminCentersPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/SuperAdminPendingDoctorsPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/SuperAdminUsersPage%20.dart';
@@ -23,6 +25,7 @@ class MainHealth extends StatelessWidget {
   );
   final ThemeController themeController = Get.find<ThemeController>();
   final ProfileController userController = Get.find<ProfileController>();
+  final AuthController authCtrl = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +147,49 @@ class MainHealth extends StatelessWidget {
                       onPressed: () {},
                     ),
                     const SizedBox(width: 8),
+                    IconButton(
+                      icon: Icon(Icons.logout, color: iconColor),
+                      tooltip: 'Logout',
+                      onPressed: () async {
+                        // تأكيد خروج
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder:
+                              (_) => AlertDialog(
+                                title: const Text('Confirm logout'),
+                                content: const Text(
+                                  'Are you sure you want to log out?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, false),
+                                    child: const Text('cancel'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, true),
+                                    child: const Text('Exit'),
+                                  ),
+                                ],
+                              ),
+                        );
+
+                        if (confirm == true) {
+                          // اظهار مؤشر تحميل modal
+                          Get.dialog(
+                            const Center(child: CircularProgressIndicator()),
+                            barrierDismissible: false,
+                          );
+                          await authCtrl.logout();
+                          // اغلاق مؤشر التحميل لو مفتوح
+                          try {
+                            if (Get.isDialogOpen ?? false) Get.back();
+                          } catch (_) {}
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 10),
 
                     GestureDetector(
                       onTap: () => sidebarController.selectedIndex.value = 999,
@@ -221,11 +267,11 @@ class MainHealth extends StatelessWidget {
                       case 5:
                         return LicensesPage();
                       case 6:
-                        return Center(child: Text("📑 Reports"));
+                        return SuperAdminReportsPage();
                       // case 7:
                       //   return Center(child: Text("➕ Register Center Admin"));
-                      case 999:
-                        return Center(child: Text("🙍 Profile Page"));
+                      // case 999:
+                      //   return Center(child: Text("🙍 Profile Page"));
                       default:
                         return Center(
                           child: Text(

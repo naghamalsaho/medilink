@@ -1,8 +1,7 @@
-// main_admin_center.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-
+import 'package:medilink/controller/auth/logoutController.dart';
 import 'package:medilink/controller/profileController.dart';
 import 'package:medilink/controller/ThemeController.dart';
 import 'package:medilink/view/AdminCenterScreens/AdminDashbord/AdminSidbar.dart';
@@ -10,8 +9,8 @@ import 'package:medilink/view/AdminCenterScreens/AdminDoctors/AdminDoctorsPage.d
 import 'package:medilink/view/AdminCenterScreens/AdminSecretariesPage.dart';
 import 'package:medilink/view/AdminCenterScreens/Services.dart/ServicesPage%20.dart';
 import 'package:medilink/view/AdminCenterScreens/SideBarElements/AdminDashbord.dart';
+import 'package:medilink/view/AdminCenterScreens/SideBarElements/reborts/ReportsPage%20.dart';
 import 'package:medilink/view/SecretaryScreens/AppointmentPage.dart';
-import 'package:medilink/view/SecretaryScreens/Reports/ReportsPage.dart';
 import 'package:medilink/view/SecretaryScreens/notification/NotificationsPage.dart';
 import 'package:medilink/view/SecretaryScreens/profile/ProfilePage.dart';
 import 'package:medilink/view/widget/LanguageDialog.dart';
@@ -30,12 +29,12 @@ class MainAdminCenter extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = themeController.themeMode.value == ThemeMode.dark;
     final iconColor = isDark ? const Color(0xFF1E7F5C) : Colors.grey[700];
+    final AuthController authCtrl = Get.put(AuthController());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
       body: Column(
         children: [
-          // 🔹 الهيدر
           Container(
             height: 60,
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -128,6 +127,51 @@ class MainAdminCenter extends StatelessWidget {
                           () => sidebarController.selectedIndex.value = 30,
                     ),
                     const SizedBox(width: 8),
+
+                    IconButton(
+                      icon: Icon(Icons.logout, color: iconColor),
+                      tooltip: 'Logout',
+                      onPressed: () async {
+                        // تأكيد خروج
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder:
+                              (_) => AlertDialog(
+                                title: const Text('Confirm logout'),
+                                content: const Text(
+                                  'Are you sure you want to log out?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, false),
+                                    child: const Text('cancel'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, true),
+                                    child: const Text('Exit'),
+                                  ),
+                                ],
+                              ),
+                        );
+
+                        if (confirm == true) {
+                          // اظهار مؤشر تحميل modal
+                          Get.dialog(
+                            const Center(child: CircularProgressIndicator()),
+                            barrierDismissible: false,
+                          );
+                          await authCtrl.logout();
+                          // اغلاق مؤشر التحميل لو مفتوح
+                          try {
+                            if (Get.isDialogOpen ?? false) Get.back();
+                          } catch (_) {}
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 10),
+
                     GestureDetector(
                       onTap: () => sidebarController.selectedIndex.value = 99,
                       child: Obx(() {
@@ -198,10 +242,8 @@ class MainAdminCenter extends StatelessWidget {
                       case 2:
                         return AdminDoctorsPage(); // الآن يفتح صح
                       case 3:
-                        return AppointmentsPage();
-                      case 4:
                         return ReportsPage();
-                      case 5:
+                      case 4:
                         return ServicesPage();
 
                       case 30:

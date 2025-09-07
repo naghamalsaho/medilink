@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medilink/controller/SuperAdminController/LicensesController .dart';
+import 'package:medilink/controller/SuperAdminController/LicensesController%20.dart';
 
 class LicensesPage extends StatelessWidget {
   final LicensesController controller = Get.put(LicensesController());
@@ -13,11 +13,10 @@ class LicensesPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // العنوان الكبير
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Licenses Managment',
+                'Licenses Management',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -25,8 +24,6 @@ class LicensesPage extends StatelessWidget {
                 ),
               ),
             ),
-
-            // القائمة
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
@@ -39,8 +36,10 @@ class LicensesPage extends StatelessWidget {
                   itemCount: controller.licensesList.length,
                   itemBuilder: (context, index) {
                     var license = controller.licensesList[index];
-                    var user = license['user'];
-                    var center = license['center'];
+                    var user = license['user'] ?? {};
+                    var center = license['center'] ?? {};
+                    String status = license['status'] ?? 'pending';
+
                     return Card(
                       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       shape: RoundedRectangleBorder(
@@ -53,7 +52,7 @@ class LicensesPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              user['full_name'] ?? '-',
+                              user['name'] ?? '-',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -64,36 +63,39 @@ class LicensesPage extends StatelessWidget {
                             Text('Center: ${center['name'] ?? '-'}'),
                             Text('Issued By: ${license['issued_by'] ?? '-'}'),
                             Text('Issue Date: ${license['issue_date'] ?? '-'}'),
-                            Text('Status: ${license['status'] ?? '-'}'),
-
+                            Text('Status: $status'),
                             SizedBox(height: 12),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 ElevatedButton(
-                                  onPressed: () {
-                                    controller.updateLicenseStatus(
-                                      license['id'],
-                                      'approved',
-                                    );
-                                  },
+                                  onPressed:
+                                      status != 'approved'
+                                          ? () =>
+                                              controller.updateLicenseStatus(
+                                                license['id'],
+                                                'approved',
+                                              )
+                                          : null,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green,
                                   ),
-                                  child: Text('approved'),
+                                  child: Text('Approve'),
                                 ),
                                 SizedBox(width: 8),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    controller.updateLicenseStatus(
-                                      license['id'],
-                                      'rejected',
-                                    );
-                                  },
+                                  onPressed:
+                                      status != 'rejected'
+                                          ? () =>
+                                              controller.updateLicenseStatus(
+                                                license['id'],
+                                                'rejected',
+                                              )
+                                          : null,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
                                   ),
-                                  child: Text('rejected'),
+                                  child: Text('Reject'),
                                 ),
                               ],
                             ),

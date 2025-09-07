@@ -8,9 +8,11 @@ class AdminSecretariesController extends GetxController {
   var isLoading = true.obs;
   var searchQuery = "".obs;
   var statusFilter = "all".obs;
+  late int currentCenterId;
 
   @override
   void onInit() {
+    currentCenterId = 1; // مثال: المركز الأول
     fetchSecretaries();
     super.onInit();
   }
@@ -153,8 +155,7 @@ class AdminSecretariesController extends GetxController {
 
   //================= Add Secretary ==================
   Future<void> addSecretary(Map<String, dynamic> body) async {
-    isLoading.value = true; // 🔹 بداية التحميل
-    final url = Uri.parse(AppLink.addSecretary);
+    isLoading.value = true;
 
     try {
       if (body.containsKey("is_active") && body["is_active"] is bool) {
@@ -162,10 +163,10 @@ class AdminSecretariesController extends GetxController {
       }
 
       body['role'] = 'secretary';
-      body['center_id'] = 1;
+      body['center_id'] = currentCenterId; // 🔹 رقم المركز الحالي
 
       final response = await http.post(
-        url,
+        Uri.parse(AppLink.addSecretary),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -174,20 +175,8 @@ class AdminSecretariesController extends GetxController {
         body: jsonEncode(body),
       );
 
-      print("🟢 Add response: ${response.body}");
-
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-
-        secretariesList.add({
-          "user_id": data['data']['user_id'],
-          "full_name": body['full_name'],
-          "email": body['email'],
-          "phone": body['phone'],
-          "shift": body['shift'],
-          "is_active": body['is_active'],
-        });
-
+        fetchSecretaries(); // 🔹 تحديث القائمة بعد الإضافة
         Get.snackbar(
           "Success",
           "Secretary added successfully",
@@ -201,10 +190,9 @@ class AdminSecretariesController extends GetxController {
         );
       }
     } catch (e) {
-      print("🔥 Exception: $e");
       Get.snackbar("Error", e.toString(), snackPosition: SnackPosition.BOTTOM);
     } finally {
-      isLoading.value = false; // 🔹 نهاية التحميل
+      isLoading.value = false;
     }
   }
 
