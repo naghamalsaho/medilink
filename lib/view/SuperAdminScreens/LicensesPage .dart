@@ -36,9 +36,12 @@ class LicensesPage extends StatelessWidget {
                   itemCount: controller.licensesList.length,
                   itemBuilder: (context, index) {
                     var license = controller.licensesList[index];
-                    var user = license['user'] ?? {};
-                    var center = license['center'] ?? {};
+                    var user = license['user'];
+                    var center = license['center'];
                     String status = license['status'] ?? 'pending';
+
+                    // زر البداية: رمادي إذا approved و المركز موجود
+                    bool isInitialGray = status == 'approved' && center != null;
 
                     return Card(
                       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -70,30 +73,44 @@ class LicensesPage extends StatelessWidget {
                               children: [
                                 ElevatedButton(
                                   onPressed:
-                                      status != 'approved'
+                                      isInitialGray || status == 'approved'
                                           ? () =>
                                               controller.updateLicenseStatus(
                                                 license['id'],
                                                 'approved',
                                               )
-                                          : null,
+                                          : () =>
+                                              controller.updateLicenseStatus(
+                                                license['id'],
+                                                'approved',
+                                              ),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
+                                    backgroundColor:
+                                        isInitialGray
+                                            ? Colors.grey
+                                            : Colors.green,
                                   ),
                                   child: Text('Approve'),
                                 ),
                                 SizedBox(width: 8),
                                 ElevatedButton(
                                   onPressed:
-                                      status != 'rejected'
+                                      isInitialGray || status == 'rejected'
                                           ? () =>
                                               controller.updateLicenseStatus(
                                                 license['id'],
                                                 'rejected',
                                               )
-                                          : null,
+                                          : () =>
+                                              controller.updateLicenseStatus(
+                                                license['id'],
+                                                'rejected',
+                                              ),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
+                                    backgroundColor:
+                                        isInitialGray
+                                            ? Colors.grey
+                                            : Colors.red,
                                   ),
                                   child: Text('Reject'),
                                 ),

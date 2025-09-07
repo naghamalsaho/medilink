@@ -28,10 +28,10 @@ class HealthSidebar extends StatelessWidget {
     {'icon': Icons.people_outline, 'label': 'Users'}, // إدارة المستخدمين
     {'icon': Icons.assignment_outlined, 'label': 'Licenses'}, // إدارة التراخيص
     {'icon': Icons.pie_chart_outline, 'label': 'Reports'}, // التقارير
-    // {
-    //   'icon': Icons.person_add_alt_1,
-    //   'label': 'Register Center Admin',
-    // }, // تسجيل مدير مركز جديد
+    {
+      'icon': Icons.miscellaneous_services,
+      'label': 'Services',
+    }, // تسجيل مدير مركز جديد
   ];
 
   final Color sidebarBg = const Color(0xFFFDFEFE); // خلفية فاتحة

@@ -13,6 +13,7 @@ import 'package:medilink/view/SuperAdminScreens/LicensesPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/SuperAdminCenters/ReportsPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/SuperAdminCenters/SuperAdminCentersPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/SuperAdminPendingDoctorsPage%20.dart';
+import 'package:medilink/view/SuperAdminScreens/SuperAdminServicesPage%20.dart';
 import 'package:medilink/view/SuperAdminScreens/SuperAdminUsersPage%20.dart';
 import 'package:medilink/view/widget/LanguageDialog.dart';
 import 'package:medilink/view/widget/login/PulsingLogo.dart';
@@ -268,8 +269,8 @@ class MainHealth extends StatelessWidget {
                         return LicensesPage();
                       case 6:
                         return SuperAdminReportsPage();
-                      // case 7:
-                      //   return Center(child: Text("➕ Register Center Admin"));
+                      case 7:
+                        return SuperAdminServicesPage();
                       // case 999:
                       //   return Center(child: Text("🙍 Profile Page"));
                       default:

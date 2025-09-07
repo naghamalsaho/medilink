@@ -174,4 +174,10 @@ class AppLink {
   static const String superAdminReports = "$server/api/superadmin/reports";
   static String superAdminReportById(int reportId) =>
       "$server/api/superadmin/reports/$reportId";
+
+  static const String superAdminServices =
+      "https://medical.doctorme.site/api/super-admin/services";
+
+  static String superAdminServiceById(int id) =>
+      "https://medical.doctorme.site/api/super-admin/services/$id";
 }
